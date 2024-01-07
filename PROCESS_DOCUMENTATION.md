@@ -10,15 +10,7 @@ It helps with things like optimizing physical goods movement, plan, execute, bot
 
 The idea I have is to create a TMS either of a simulated environment or see if I can tap in to a real shipment API or something.
 
-I am now thinking of getting google map's api to get the world map, then simulate locations with some other program. So the main ideas and functioning of this app are:
-
-- User Interface
-  - Live tracking
-  - Order from other companies
-  - Deliver from inventory
-  - Choose routes
-
-- Live Tracking
+I am now thinking of getting google map's api to get the world map, then simulate locations with some other program.
 
 ## Main Goal
 
@@ -45,11 +37,6 @@ My main goal is to create a large-scale project that will help me boost my real-
 
   - Manage and track inventory levels throughout the transportation process.
   - Integrate with warehouse management systems.
-
-- Carrier Management:
-
-  - Maintain a database of carriers and their capabilities.
-  - Facilitate the selection of appropriate carriers based on various criteria.
 
 - Document Management:
 
@@ -79,3 +66,49 @@ My main goal is to create a large-scale project that will help me boost my real-
 
   - Include features to track and report on the environmental impact of transportation activities.
   - Support sustainable and eco-friendly transportation options.
+
+## Initial Overall Design
+
+So the main ideas and functioning of this app are:
+
+- User Interface
+
+  - Live tracking
+  - Order from other companies
+  - Deliver from inventory
+  - Choose routes
+
+- Shipment Planning
+
+  - Choose between routes
+    - Use algorithms? (TODO: Investigate how)
+    - Route optimization
+  - Schedule shipments
+
+- Route optimization
+
+  - Route calculating costs, time, traffic, fuel efficiency
+
+- Live Tracking
+
+  - Map with routes
+  - Current location of shipments
+  - Location of businesses
+
+- Virtual businesses
+
+  - Create shipments
+    - Create deliveries
+    - Create orders
+  - Manage inventory
+    - Create inventory
+
+- Document management
+
+  - Store shipment documentation
+  - Retrieve shipment documentation
+
+- Billing
+  - Generate cost
+  - Generate profit
+  - Generate receipts
