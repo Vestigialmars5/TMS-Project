@@ -112,3 +112,9 @@ So the main ideas and functioning of this app are:
   - Generate cost
   - Generate profit
   - Generate receipts
+
+## Initial Roadmap
+
+- Investigate about TMS, WMS
+
+- Define what I'm going to do with the map stuff
