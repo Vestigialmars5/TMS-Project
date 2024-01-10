@@ -118,3 +118,5 @@ So the main ideas and functioning of this app are:
 - Investigate about TMS, WMS
 
 - Define what I'm going to do with the map stuff
+
+- Investigate how people do their app roadmaps 
