@@ -152,6 +152,9 @@ So the main ideas and functioning of this app are:
 
 ## Project timeline
 
+### Start Date (11/Jan/2024)
+### Approximate End Date (21/Mar/2024)
+
 Research (2 days)
 
 Design and Prototyping (5 days)
@@ -159,7 +162,7 @@ Design and Prototyping (5 days)
 - Investigate about wireframes
 - Build a wire-frame
 
-Development and Testing
+Development and Testing (9 weeks)
 
 - Front-End (2 weeks)
   - Design user interface (FIGMA or other tool) (2-4 days)
