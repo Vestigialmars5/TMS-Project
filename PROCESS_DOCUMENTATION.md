@@ -134,16 +134,16 @@ Cloud Provider: To be decided
 
 #### Research
 
-- Technical Requirements: Define the technology stack, scalability needs, and data security requirements.
-- Project Timeline: Develop a realistic timeline with milestones and deadlines.
+- Technical Requirements: Define the technology stack, and data security requirements.
+- Project Timeline: Develop a realistic timeline with milestones and deadlines. (TODO)
 
-#### Design and Prototyping: Bringing Your Vision to Life
+#### Design and Prototyping
 
-- Wire-framing: Create wireframes to outline the layout and navigation of your web app.
-- Prototyping: Build a prototype to test the user experience and gather feedback.
+- Wire-framing: Create wireframes to outline the layout and navigation of your web app. (TODO)
+- Prototyping: Build a prototype to test the user experience and gather feedback. (TODO)
 
-#### Development and Testing: Building the Engine
+#### Development and Testing
 
-- Front-End Development: Design the user interface and user experience.
-- Back-End Development: Create the server-side logic, databases, and application functionality.
-- Testing: Rigorously test the web app for bugs, security vulnerabilities, and performance issues.
+- Front-End Development: Design the user interface and user experience. (TODO)
+- Back-End Development: Create the server-side logic, databases, and application functionality. (TODO)
+- Testing: Rigorously test the web app for bugs, security vulnerabilities, and performance issues. (TODO)
