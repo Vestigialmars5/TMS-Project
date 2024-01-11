@@ -113,10 +113,37 @@ So the main ideas and functioning of this app are:
   - Generate profit
   - Generate receipts
 
+## Technology Stack
+
+#### Backend:
+
+- Programming Language: Python (Flask)
+- Database: SQLite3
+- User Authentication: Third-party solution (to be decided later)
+
+#### Frontend:
+
+- Framework/Library: React
+- Map Visualization: To be decided (Chart.js, D3.js, or other options)
+
+#### Deployment:
+
+Cloud Provider: To be decided
+
 ## Initial Roadmap
 
-- Investigate about TMS, WMS
+#### Research
 
-- Define what I'm going to do with the map stuff
+- Technical Requirements: Define the technology stack, scalability needs, and data security requirements.
+- Project Timeline: Develop a realistic timeline with milestones and deadlines.
 
-- Investigate how people do their app roadmaps 
+#### Design and Prototyping: Bringing Your Vision to Life
+
+- Wire-framing: Create wireframes to outline the layout and navigation of your web app.
+- Prototyping: Build a prototype to test the user experience and gather feedback.
+
+#### Development and Testing: Building the Engine
+
+- Front-End Development: Design the user interface and user experience.
+- Back-End Development: Create the server-side logic, databases, and application functionality.
+- Testing: Rigorously test the web app for bugs, security vulnerabilities, and performance issues.
