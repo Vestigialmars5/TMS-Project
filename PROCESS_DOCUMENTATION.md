@@ -119,7 +119,7 @@ So the main ideas and functioning of this app are:
 #### Backend:
 
 - Programming Language: Python (Flask)
-- Database: SQLite3
+- Database: SQLite3 or PostgreSQL
 - User Authentication: Third-party solution (to be decided later)
 
 #### Frontend:
@@ -176,3 +176,15 @@ Development and Testing (9 weeks)
   - Performance issues
   - Bugs
   - Design optimizations
+
+## Research
+
+I found a repository or another way to make the map. Using graph nodes instead of a grid. I might use OSMNX to import to python a real location graph. I'm hoping I can edit the exported graph as I want.
+
+From what I've found I could technically manipulate the data I get and simulate live tracking too, also distance, and speed, traffic and other.
+
+I will also have to research more about NetworkX and OSMNX.
+
+Also from what I'm reading I should probably work on making a WMS and ERP.
+
+## 
