@@ -139,7 +139,7 @@ So the main ideas and functioning of this app are:
 - Technical Requirements: Define the technology stack, and data security requirements.
 - Project Timeline: Develop a realistic timeline with milestones and deadlines.
 
-#### Design and Prototyping
+#### Designing and Prototyping
 
 - Wire-framing: Create wireframes to outline the layout and navigation of your web app.
 - Prototyping: Build a prototype to test the user experience and gather feedback.
@@ -187,4 +187,8 @@ I will also have to research more about NetworkX and OSMNX.
 
 Also from what I'm reading I should probably work on making a WMS and ERP.
 
-## 
+## Design and prototyping
+
+I'm going to start working on making something out of the OSMNX (Jan 17 2024), since I think based on what Find I'll be able to decipher things like the database and stuff.
+
+I also started wireframimg using Figma, I will clean it up later.
