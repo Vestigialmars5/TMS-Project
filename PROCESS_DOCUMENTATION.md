@@ -153,6 +153,7 @@ So the main ideas and functioning of this app are:
 ## Project timeline
 
 ### Start Date (11/Jan/2024)
+
 ### Approximate End Date (21/Mar/2024)
 
 Research (2 days)
@@ -192,3 +193,10 @@ Also from what I'm reading I should probably work on making a WMS and ERP.
 I'm going to start working on making something out of the OSMNX (Jan 17 2024), since I think based on what Find I'll be able to decipher things like the database and stuff.
 
 I also started wireframimg using Figma, I will clean it up later.
+
+So I startes playing with the graph and osmnx, from what I figured out is that im going to need to follow something along this
+
+```
+Deside place in map -> get graph from osmnx -> save file ->
+assign bussinesses based on node ids (probably more than x distance) -> show graph -> select origin and destination (by selecting businesses, which will select the nodes) -> get route -> place an item in the graph -> move that item to the next node following path (probably will have to move it along some coordinates between the nodes in the route over time)
+```
