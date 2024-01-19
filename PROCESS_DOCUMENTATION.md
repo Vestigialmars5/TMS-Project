@@ -200,3 +200,5 @@ So I startes playing with the graph and osmnx, from what I figured out is that i
 Deside place in map -> get graph from osmnx -> save file ->
 assign bussinesses based on node ids (probably more than x distance) -> show graph -> select origin and destination (by selecting businesses, which will select the nodes) -> get route -> place an item in the graph -> move that item to the next node following path (probably will have to move it along some coordinates between the nodes in the route over time)
 ```
+
+I was able to get a LineString of an edge, that linestring contains the coordinates, so now I can make the route, and for each edge in the route get the linestring and just keep adding to the list of coordinates of all edges.
