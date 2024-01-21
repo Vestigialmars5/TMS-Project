@@ -56,7 +56,7 @@ def plot_route(graph, route):
 
     # Plot lines connecting the nodes along the route
     for i in range(len(coordinates) - 1):
-        start_coords = coordinates[i]
+        origin_coords = coordinates[i]
         end_coords = coordinates[i + 1]
         plt.plot(
             [start_coords[1], end_coords[1]],
@@ -217,15 +217,15 @@ def test_nx():
 
 def load_multidigraph(filepath):
     # Load a graph (replace with your graph file or creation method)
-    return ox.load_graphml(filepath=filepath)
+    graph = ox.load_graphml(filepath=filepath)
+    graph = ox.add_edge_speeds(graph)
+    return ox.speed.add_edge_travel_times(graph)
 
 
 # Returns list of node IDs
 def select_origin_destination(graph):
     # Plot the graph
-    ox.plot_graph(
-        graph, node_color="blue", node_size=10, show=False, close=False
-    )
+    ox.plot_graph(graph, node_color="blue", node_size=10, show=False, close=False)
 
     # Allow the user to interactively click on two nodes
     selected_nodes = plt.ginput(2, timeout=0)
@@ -293,15 +293,82 @@ def get_edge_length(edges_data, node1, node2):
     return result
 
 
+def dijkstra_algorithm(graph, origin, destination):
+    # Makes sure I'm working with a multidigraph
+    if not isinstance(graph, nx.MultiDiGraph):
+        return ValueError("not multidigraph")
+
+    # Create a dicitonary of the distances from origin
+    distances = {node: float("inf") for node in graph.nodes}
+    distances[origin] = 0
+
+    # Create a dicitonary of the maxspeed from origin
+    travel_time = {node: float("inf") for node in graph.nodes}
+    travel_time[origin] = 0
+
+    # Create a dictionary for the queue to keep track of the distances
+    priority_queue_distances = {node: float("inf") for node in graph.nodes}
+    priority_queue_distances[origin] = 0
+
+    # Create a dictionary for the queue to keep track of the travel_times
+    priority_queue_travel_time = {node: float("inf") for node in graph.nodes}
+    priority_queue_travel_time[origin] = 0
+
+    # To recunstruct the path later
+    parents_distances = {node: None for node in graph.nodes}
+    parents_travel_time = {node: None for node in graph.nodes}
+
+    while priority_queue_distances:
+        # Get the node with the minimum distance, and remove it from queue
+        current_node = min(priority_queue_distances, key=priority_queue_distances.get)
+        del priority_queue_distances[current_node]
+
+        for neighbor, edge_data in graph[current_node].items():
+            estimated_distance = distances[current_node] + edge_data[0]["length"]
+            if estimated_distance < distances[neighbor]:
+                distances[neighbor] = estimated_distance
+                priority_queue_distances[neighbor] = estimated_distance
+                parents_distances[neighbor] = current_node
+
+    length_path = []
+    current = destination
+    while current is not None:
+        length_path.insert(0, current)
+        current = parents_distances[current]
+
+
+
+    while priority_queue_travel_time:
+        # Get the node with the minimum travel time
+        current_node = min(priority_queue_travel_time, key=priority_queue_travel_time.get)
+        del priority_queue_travel_time[current_node]
+
+        for neighbor, edge_data in graph[current_node].items():
+            estimated_travel_time = travel_time[current_node] + edge_data[0]["travel_time"]
+
+            if estimated_travel_time < travel_time[neighbor]:
+                travel_time[neighbor] = estimated_travel_time
+                priority_queue_travel_time[neighbor] = estimated_travel_time
+                parents_travel_time[neighbor] = current_node
+
+    speed_path = []
+    current = destination
+    while current is not None:
+        speed_path.insert(0, current)
+        current = parents_travel_time[current]
+
+    return (length_path, speed_path)
+
+
 def main():
-    graph = load_multidigraph("./test-graph.graphml")
+    graph = load_multidigraph("./point_graph.graphml")
     origin, destination = select_origin_destination(graph)
     if origin is None or destination is None:
         print("here")
         return
+    print(dijkstra_algorithm(graph, origin, destination))
     route = get_shortest_route(graph, origin, destination)
     route_info = get_route_info_per_road(graph, route)
-    print(route_info)
 
 
 if __name__ == "__main__":
