@@ -55,7 +55,7 @@ def plot_route(graph, route):
     ox.plot_graph(graph, show=False, close=False)
 
     # Plot lines connecting the nodes along the route
-    for i in range(len(coordinates)-1):
+    for i in range(len(coordinates) - 1):
         start_coords = coordinates[i]
         end_coords = coordinates[i + 1]
         plt.plot(
@@ -223,9 +223,9 @@ def load_multidigraph(filepath):
 # Returns list of node IDs
 def select_origin_destination(graph):
     # Plot the graph
-    tmp = ox.plot_graph(
+    ox.plot_graph(
         graph, node_color="blue", node_size=10, show=False, close=False
-    )  # returns fig, ax tuple hence the tmp
+    )
 
     # Allow the user to interactively click on two nodes
     selected_nodes = plt.ginput(2, timeout=0)
@@ -249,17 +249,23 @@ def get_shortest_route(graph, origin_node_id, destination_node_id):
     return ox.shortest_path(graph, origin_node_id, destination_node_id)
 
 
-# Returns a list of tuples
-def get_coordinates_for_route(graph, route):
+# Returns a dictionary
+def get_route_info_per_road(graph, route):
     edges_data = ox.graph_to_gdfs(graph, nodes=False, edges=True)
     edges_data = edges_data.sort_index(level=["u", "v"])
 
-    all_coordinates = []
+    route_info = []
 
     for i in range(len(route) - 1):
-        all_coordinates += get_edge_coordinates(edges_data, route[i], route[i + 1])
+        road_info = {
+            "coordinates": get_edge_coordinates(edges_data, route[i], route[i + 1]),
+            "highway": get_edge_highway(edges_data, route[i], route[i + 1]),
+            "maxspeed": get_edge_maxspeed(edges_data, route[i], route[i + 1]),
+            "length": get_edge_length(edges_data, route[i], route[i + 1]),
+        }
+        route_info.append(road_info)
 
-    return all_coordinates
+    return route_info
 
 
 # To get the exact coordinates that make an edge
@@ -269,15 +275,33 @@ def get_edge_coordinates(edges_data, node1, node2):
     return list(linestring.coords)
 
 
+def get_edge_highway(edges_data, node1, node2):
+    edge_highway = edges_data.loc[(node1, node2), "highway"]
+    result = edge_highway.iloc[0]
+    return result
+
+
+def get_edge_maxspeed(edges_data, node1, node2):
+    edge_maxspeed = edges_data.loc[(node1, node2), "maxspeed"]
+    result = edge_maxspeed.iloc[0]
+    return result
+
+
+def get_edge_length(edges_data, node1, node2):
+    edge_length = edges_data.loc[(node1, node2), "length"]
+    result = edge_length.iloc[0]
+    return result
+
+
 def main():
-    graph = load_multidigraph("./point_graph.graphml")
+    graph = load_multidigraph("./test-graph.graphml")
     origin, destination = select_origin_destination(graph)
-    if origin == None or origin == None:
+    if origin is None or destination is None:
         print("here")
         return
     route = get_shortest_route(graph, origin, destination)
-    coords = get_coordinates_for_route(graph, route)
-    plot_line(coords)
+    route_info = get_route_info_per_road(graph, route)
+    print(route_info)
 
 
 if __name__ == "__main__":
