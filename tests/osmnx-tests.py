@@ -117,7 +117,7 @@ def plot_edge_route(graph, coords):
     plt.show()
 
 
-def main():
+def testing():
     graph = load_graph()
 
     # Plot and select nodes interactively
@@ -269,7 +269,7 @@ def get_edge_coordinates(edges_data, node1, node2):
     return list(linestring.coords)
 
 
-def testing():
+def main():
     graph = load_multidigraph("./point_graph.graphml")
     origin, destination = select_origin_destination(graph)
     if origin == None or origin == None:
@@ -281,4 +281,4 @@ def testing():
 
 
 if __name__ == "__main__":
-    testing()
+    main()
