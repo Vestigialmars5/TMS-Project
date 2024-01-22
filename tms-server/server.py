@@ -8,6 +8,28 @@ import json
 app = Flask(__name__)
 CORS(app)
 
+TEST_GRAPH = (
+    "C:/Users/Milo/OneDrive/Escritorio/ROAD/Portfolio/tms/tests/test-graph.graphml"
+)
+
+
+# Returns the list of coordinates
+@app.route("/api-test")
+def api_coordinates():
+    graph = load_multidigraph(TEST_GRAPH)
+    origin, destination = 65295287, 65300107
+    route = get_shortest_route(graph, origin, destination)
+    route_info = get_route_info_per_road(graph, route)
+
+    print(route_info)
+
+    coordinates = []
+    for street in route_info:
+        for coordinate in street["coordinates"]:
+            coordinates.append(coordinate)
+
+    return jsonify(coordinates)
+
 
 @app.route("/first-test")
 def first_test():
@@ -20,7 +42,9 @@ def first_test():
 
 def read_graphml_file_content():
     # Open the .graphml file and read its content
-    file_path = 'C:/Users/Milo/OneDrive/Escritorio/ROAD/Portfolio/tms/tms-server/data.json'
+    file_path = (
+        "C:/Users/Milo/OneDrive/Escritorio/ROAD/Portfolio/tms/tms-server/data.json"
+    )
     with open(file_path) as file:
         graph_content = json.load(file)
     return jsonify(graph_content)
@@ -60,7 +84,7 @@ def get_shortest_route(graph, origin_node_id, destination_node_id):
     return ox.shortest_path(graph, origin_node_id, destination_node_id)
 
 
-# Returns a dictionary
+# Returns a list of dictionaries
 def get_route_info_per_road(graph, route):
     edges_data = ox.graph_to_gdfs(graph, nodes=False, edges=True)
     edges_data = edges_data.sort_index(level=["u", "v"])
@@ -83,7 +107,9 @@ def get_route_info_per_road(graph, route):
 def get_edge_coordinates(edges_data, node1, node2):
     edge_geometry = edges_data.loc[(node1, node2), "geometry"]
     linestring = edge_geometry.iloc[0]
-    return list(linestring.coords)
+    linestring_list = list(linestring.coords)
+    sorted_lat_long = [(lat, long) for long, lat in linestring_list]
+    return sorted_lat_long
 
 
 def get_edge_highway(edges_data, node1, node2):
@@ -182,6 +208,7 @@ def main_runner():
     print(dijkstra_algorithm(graph, origin, destination))
     route = get_shortest_route(graph, origin, destination)
     route_info = get_route_info_per_road(graph, route)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
