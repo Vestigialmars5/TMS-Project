@@ -360,6 +360,24 @@ def dijkstra_algorithm(graph, origin, destination):
     return (length_path, speed_path)
 
 
+def extract_data_for_api(graph):
+    for node in graph.nodes:
+        for neighbor, edge_data in graph[node].items():
+            print(node)
+    for edge in graph.edges:
+        print(edge)
+
+    return 0
+
+
+def extract():
+    graph = load_multidigraph("./point_graph.graphml")
+    nodes, edges = extract_data_for_api(graph)
+    print(nodes)
+    print()
+    print(edges)
+
+
 def main():
     graph = load_multidigraph("./point_graph.graphml")
     origin, destination = select_origin_destination(graph)
@@ -372,4 +390,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    extract()
