@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import osmnx as ox
 import matplotlib.pyplot as plt
@@ -14,21 +14,38 @@ TEST_GRAPH = (
 
 
 # Returns the list of coordinates
-@app.route("/api-test")
+@app.route("/api-test", methods=["GET", "POST"])
 def api_coordinates():
-    graph = load_multidigraph(TEST_GRAPH)
-    origin, destination = 65295287, 65300107
-    route = get_shortest_route(graph, origin, destination)
-    route_info = get_route_info_per_road(graph, route)
+    if request.method == "POST":
+        print("request was post")
+        try:
+            data = request.get_json()
+            print(data)
+            origin = [data.get("originLat"), data.get("originLng")]
+            destination = [data.get("destinationLat"), data.get("destinationLng")]
+            print(origin, destination)
 
-    print(route_info)
+            graph = load_multidigraph(TEST_GRAPH)
 
-    coordinates = []
-    for street in route_info:
-        for coordinate in street["coordinates"]:
-            coordinates.append(coordinate)
+            origin_id = get_closest_node(graph, origin[1], origin[0])
+            destination_id = get_closest_node(graph, destination[1], destination[0])
+            print(origin_id, destination_id)
 
-    return jsonify(coordinates)
+            route = get_shortest_route(graph, origin_id, destination_id)
+            route_info = get_route_info_per_road(graph, route, coordinates=True)
+
+            coordinates = [ 
+                coordinate
+                for street in route_info
+                for coordinate in street["coordinates"]
+            ]
+
+            return jsonify(coordinates)
+        except Exception as e:
+            result = {"status": "error", "message": str(e)}
+            return jsonify(result)
+    else:
+        return {}
 
 
 @app.route("/first-test")
@@ -38,6 +55,10 @@ def first_test():
 
     # Pass the content as JSON
     return graphml_content
+
+
+def get_closest_node(graph, x, y):
+    return ox.distance.nearest_nodes(graph, x, y)
 
 
 def read_graphml_file_content():
@@ -85,19 +106,35 @@ def get_shortest_route(graph, origin_node_id, destination_node_id):
 
 
 # Returns a list of dictionaries
-def get_route_info_per_road(graph, route):
+def get_route_info_per_road(
+    graph, route, coordinates=False, highway=False, maxspeed=False, length=False
+):
+    if not coordinates and not highway and not maxspeed and not length:
+        return []
+
     edges_data = ox.graph_to_gdfs(graph, nodes=False, edges=True)
     edges_data = edges_data.sort_index(level=["u", "v"])
 
     route_info = []
 
     for i in range(len(route) - 1):
-        road_info = {
-            "coordinates": get_edge_coordinates(edges_data, route[i], route[i + 1]),
-            "highway": get_edge_highway(edges_data, route[i], route[i + 1]),
-            "maxspeed": get_edge_maxspeed(edges_data, route[i], route[i + 1]),
-            "length": get_edge_length(edges_data, route[i], route[i + 1]),
-        }
+        road_info = {}
+
+        if coordinates:
+            road_info["coordinates"] = get_edge_coordinates(
+                edges_data, route[i], route[i + 1]
+            )
+
+        if highway:
+            road_info["highway"] = get_edge_highway(edges_data, route[i], route[i + 1])
+
+        if maxspeed:
+            road_info["maxspeed"] = get_edge_maxspeed(
+                edges_data, route[i], route[i + 1]
+            )
+
+        if length:
+            road_info["length"] = get_edge_length(edges_data, route[i], route[i + 1])
         route_info.append(road_info)
 
     return route_info
