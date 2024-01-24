@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import get_coordinates from "./get_api_data";
+import DraggableMarker from "./dragable";
 
 import "leaflet/dist/leaflet.css";
 
@@ -17,34 +18,72 @@ import {
 } from "react-leaflet";
 
 function LeafletComponent() {
-  const polyline = get_coordinates();
+  console.log("inside leaflet");
+  const [polyline, setPolyline] = useState(null);
   const limeOptions = { color: "lime" };
 
-  const center = [37.7928594, -122.4027912];
-  const destination = [37.7870311, -122.403019];
+  const center = [37.79066, -122.40945];
+
+  const [origin, setOrigin] = useState(null);
+  const [destination, setDestination] = useState(null);
 
   const maxBounds = [
-    [37.976523, -84.570034],
-    [38.076587, -84.449871],
+    [37.78319, -122.41879],
+    [37.79696, -122.40127],
   ];
 
-  if (!polyline) {
-    return <div>Loading...</div>;
+  const bounds = [
+    [51.49, -0.08],
+    [51.5, -0.06],
+  ];
+
+  function getStuff() {
+    console.log("inside stuff");
+    if (origin && destination) {
+      console.log("here");
+      get_coordinates(
+        {
+          originLat: origin.lat,
+          originLng: origin.lng,
+          destinationLat: destination.lat,
+          destinationLng: destination.lng,
+        },
+        (data) => {
+          console.log("recieved:", data);
+          setPolyline(data);
+        }
+      );
+    } else {
+      console.log("eerrrooorr");
+    }
   }
 
+  const handleOriginDragEnd = (newPosition) => {
+    setOrigin(newPosition);
+  };
+
+  const handleDestinationDragEnd = (newPosition) => {
+    setDestination(newPosition);
+  };
+
   return (
-    <MapContainer center={center} zoom={15} minZoom={13}>
+    <MapContainer center={center} zoom={16} maxBounds={maxBounds}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={center}>
-        <Popup>Here's start</Popup>
-      </Marker>
-      <Marker position={destination}>
-        <Popup>Here's destination</Popup>
-      </Marker>
-      <Polyline pathOptions={limeOptions} positions={polyline} />
+      {polyline ? (
+        <Polyline pathOptions={limeOptions} positions={polyline} />
+      ) : null}
+      <DraggableMarker onDragEnd={handleOriginDragEnd} text={"origin"} />
+      <DraggableMarker
+        onDragEnd={handleDestinationDragEnd}
+        text={"destination"}
+      />
+
+      <button type="button" onClick={getStuff} className="button">
+        Get Route
+      </button>
     </MapContainer>
   );
 }
