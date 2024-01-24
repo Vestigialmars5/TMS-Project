@@ -188,6 +188,12 @@ I will also have to research more about NetworkX and OSMNX.
 
 Also from what I'm reading I should probably work on making a WMS and ERP.
 
+I guess the research never stops.
+
+Alan has been helping me figure out how it needs to work.
+
+So the TMS should have a list of pending movements or deliveries, and from those be able to schedule the route and stuff.
+
 ## Design and prototyping
 
 I'm going to start working on making something out of the OSMNX (Jan 17 2024), since I think based on what Find I'll be able to decipher things like the database and stuff.
@@ -202,3 +208,7 @@ assign bussinesses based on node ids (probably more than x distance) -> show gra
 ```
 
 I was able to get a LineString of an edge, that linestring contains the coordinates, so now I can make the route, and for each edge in the route get the linestring and just keep adding to the list of coordinates of all edges.
+
+So, today is Jan/23/2024 I was working with D3 but I found that Leaflet has everything I need, as of right now I was able to drag a marker to origin and one to destination, make my api call and draw with a polyline on top of the map (a real world map).
+
+I think what comes next is being able to get the closest edge and coordinate to the destination so it doesnt stop drawing at the edge, then comes making the moving icon.
