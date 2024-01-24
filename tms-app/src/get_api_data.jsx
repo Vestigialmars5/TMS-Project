@@ -1,25 +1,24 @@
-import { React, useState, useEffect } from "react";
+async function getCoordinates(props, callback) {
+  console.log(props)
+  try {
+    const response = await fetch("http://127.0.0.1:5000/api-test", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(props),
+    });
 
-function get_coordinates() {
-  const [coordinates, setCoordinates] = useState(null);
+    if (!response.ok) {
+      throw new Error("Error Getting Coordinates");
+    }
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:5000/api-test")
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("hi");
-      })
-      .then((data) => {
-        setCoordinates(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  return coordinates;
+    const data = await response.json();
+    callback(data);
+    console.log("datata", data)
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-export default get_coordinates;
+export default getCoordinates;
