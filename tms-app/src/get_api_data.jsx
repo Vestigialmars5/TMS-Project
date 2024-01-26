@@ -1,24 +1,23 @@
 async function getCoordinates(props, callback) {
-  console.log(props)
-  try {
-    const response = await fetch("http://127.0.0.1:5000/api-test", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(props),
+  fetch("http://127.0.0.1:5000/api-test", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(props),
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      throw new Error("Error Getting Data From API");
+    })
+    .then((data) => {
+      callback(data);
+    })
+    .catch((error) => {
+      console.log(error);
     });
-
-    if (!response.ok) {
-      throw new Error("Error Getting Coordinates");
-    }
-
-    const data = await response.json();
-    callback(data);
-    console.log("datata", data)
-  } catch (error) {
-    console.error(error);
-  }
 }
 
 export default getCoordinates;
