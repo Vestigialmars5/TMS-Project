@@ -1,5 +1,3 @@
-from os import close
-from click import option
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import osmnx as ox
@@ -70,48 +68,39 @@ def calculate_route_coordinates(
     edges_data = edges_data.sort_index(level=["u", "v"])
 
     # Get coordinates and new origin_coordinates node to get precise starting location
-    print("starting pre")
     option1, option2 = get_segment_to_starting_node(
         graph, edges_data, origin_coordinates, origin_id
     )
-    print("done pre", option1, option2)
 
     new_origin_id = option1[1]
 
     # Calculate the route from the new origin to the destination
-    print("starting route", new_origin_id, destination_id)
     route = get_shortest_route(graph, new_origin_id, destination_id)
-    print("done route", route)
 
-    # Check if second node is the second option
-    if route[1] == option2[1]:
-        # Makes starting node option2 start
-        route.pop(0)
-        pre_coordinates = option2[0]
-    else:
-        pre_coordinates = option1[0]
+    pre_coordinates = option1[0]
 
-    print("starting route_info")
+    if option2:
+        # Check if second node is the second option
+        if len(route) > 1 and route[1] == option2[1]:
+
+            # Makes starting node option2 start
+            route.pop(0)
+            pre_coordinates = option2[0]
+
     route_info = get_route_info_per_road(edges_data, route, coordinates=True)
-    print(
-        "done route info",
-        len(route_info),
-    )
 
     # Extract coordinates into usable list
-    print("starting getting coordinates from route info")
     coordinates = []
     for road in route_info:
         coordinates += list(road["coordinates"].coords)
-    print("done getting coords from route info", coordinates)
 
-    complete_coordinates = merge_lists(coordinates, pre_coordinates)
+    return merge_lists(coordinates, pre_coordinates)
 
 
 # Decides what will be the starting node for the route, checking if edge exists
 # Returns a list of tuples, (pre_start, starting_node) and the inverse if the road is two-ways else an empty tuple
 def decide_starting_node_and_edge(edges_data, found_edge, closest_node):
-    if edges_data.loc[(found_edge[0], found_edge[1]), "oneway"].bool():
+    if edges_data.loc[(found_edge[0], found_edge[1]), "oneway"].item():
         # One way street
         return [(found_edge[0], found_edge[1]), ()]
 
@@ -122,39 +111,6 @@ def decide_starting_node_and_edge(edges_data, found_edge, closest_node):
         )
 
         return [(furthest_node, closest_node), (closest_node, furthest_node)]
-
-
-"""
-    print("edge that im using", found_edge)
-    # Assign node thats not closest as furthest
-         if found_edge[0] == closest_node:
-        # furthest->closest exists
-        furthest_node = found_edge[0]
-
-        # Check if closest->furthest exists
-        if (closest_node, furthest_node) in graph.edges:
-            # Both exist
-            print("succesful found edge")
-        else:
-            print("no edge found")
-
-    else:
-        # closest->furthest exists
-        furthest_node = found_edge[1]
-
-        # Check if furthes->closest exists
-        if (furthest_node, closest_node) in graph.edges:
-            print("succesful found edge")
-            # if exists starting node is closest, edge is furthest->closest
-            starting_node = closest_node
-    else:
-        # if not starting node is furthest, edge is closest->furthest
-        print("no edge found")
-        starting_node = furthest_node
-        furthest_node = closest_node
-
-    print("done decide")
-    return (starting_node, furthest_node) """
 
 
 def merge_lists(coordinates, pre):
@@ -174,17 +130,13 @@ def merge_lists(coordinates, pre):
 
 
 def get_segment_to_starting_node(graph, edges_data, origin_coordinates, origin_id):
-    print("starting get_segment")
     found_edge = ox.distance.nearest_edges(
         graph, origin_coordinates[1], origin_coordinates[0]
     )
 
-    print("found edge", found_edge[0], "->", found_edge[1])
 
     # Find the options for pre and start, in case the node is in the route change start with pre
-    print("starting decide")
     decided_nodes = decide_starting_node_and_edge(edges_data, found_edge, origin_id)
-    print("starting", decided_nodes)
 
     option1 = decided_nodes[0]
     option2 = decided_nodes[1]
@@ -199,12 +151,10 @@ def get_segment_to_starting_node(graph, edges_data, origin_coordinates, origin_i
     )
 
     interpolated1 = list(interpolated1)
-    print("interpolated1", interpolated1, "hi")
 
     starting_index1 = get_closest_coordinate_index(
         interpolated1, origin_coordinates[1], origin_coordinates[0]
     )
-    print("done segment")
 
     path_option1 = (
         find_path_from_edge_to_origin(interpolated1, starting_index1),
@@ -222,14 +172,13 @@ def get_segment_to_starting_node(graph, edges_data, origin_coordinates, origin_i
         )
 
         interpolated2 = list(interpolated2)
-        print("interpolated2", interpolated2, "hi")
 
         starting_index2 = get_closest_coordinate_index(
-            interpolated1, origin_coordinates[1], origin_coordinates[0]
+            interpolated2, origin_coordinates[1], origin_coordinates[0]
         )
-        print("done segment")
+
         path_option2 = (
-            find_path_from_edge_to_origin(interpolated1, starting_index2),
+            find_path_from_edge_to_origin(interpolated2, starting_index2),
             option2[1],
         )
     else:
@@ -238,7 +187,6 @@ def get_segment_to_starting_node(graph, edges_data, origin_coordinates, origin_i
 
 
 def get_closest_coordinate_index(coordinates, x, y):
-    print("started closest")
     closest = {"index": 0, "distance": float("inf")}
 
     for i in range(len(coordinates)):
@@ -248,16 +196,13 @@ def get_closest_coordinate_index(coordinates, x, y):
             closest["index"] = i
             closest["distance"] = curr_dist
 
-    print("closest", closest["index"])
     return closest["index"]
 
 
 def find_path_from_edge_to_origin(linestring, starting_index):
-    print("started find_path...")
     coords = []
     for i in range(starting_index, len(linestring)):
         coords.append(linestring[i])
-    print("done path")
     return coords
 
 
@@ -317,7 +262,6 @@ def get_route_info_per_road(
         return []
 
     route_info = []
-    print("inside routeinfo", route)
     for i in range(len(route) - 1):
         road_info = {}
 
