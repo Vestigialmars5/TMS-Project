@@ -1,7 +1,12 @@
+from os import close
 import matplotlib.pyplot as plt
 import geopandas as gpd
 import networkx as nx
+import numpy as np
 import osmnx as ox
+from math import dist
+from shapely.geometry import LineString
+import osmnx.utils_geo as og
 
 
 def plot_and_select_nodes(graph):
@@ -223,7 +228,7 @@ def load_multidigraph(filepath):
 
 
 # Returns list of node IDs
-def select_origin_destination(graph):
+def select_origin_destination_nodes(graph):
     # Plot the graph
     ox.plot_graph(graph, node_color="blue", node_size=10, show=False, close=False)
 
@@ -244,25 +249,61 @@ def select_origin_destination(graph):
     return selected_node_ids
 
 
+def select_origin_coordinates(graph):
+    # Plot the graph
+    ox.plot_graph(graph, node_color="blue", node_size=10, show=False, close=False)
+
+    # Allow the user to interactively click on one place
+    selected_coordinate = plt.ginput(1, timeout=0)
+
+    if not selected_coordinate:
+        return None
+
+    x, y = selected_coordinate[0]
+
+    # Close the plot
+    plt.close()
+
+    return x, y
+
+
 # Returns route's nodes information as a list
 def get_shortest_route(graph, origin_node_id, destination_node_id):
     return ox.shortest_path(graph, origin_node_id, destination_node_id)
 
 
 # Returns a dictionary
-def get_route_info_per_road(graph, route):
+def get_route_info_per_road(
+    graph, route, coordinates=False, highway=False, maxspeed=False, length=False
+):
+    if not coordinates and not highway and not maxspeed and not length:
+        return []
+
     edges_data = ox.graph_to_gdfs(graph, nodes=False, edges=True)
     edges_data = edges_data.sort_index(level=["u", "v"])
+
+    print("heehehehehehehhe", edges_data.loc[(1580501206, 1580501216)])
 
     route_info = []
 
     for i in range(len(route) - 1):
-        road_info = {
-            "coordinates": get_edge_coordinates(edges_data, route[i], route[i + 1]),
-            "highway": get_edge_highway(edges_data, route[i], route[i + 1]),
-            "maxspeed": get_edge_maxspeed(edges_data, route[i], route[i + 1]),
-            "length": get_edge_length(edges_data, route[i], route[i + 1]),
-        }
+        road_info = {}
+
+        if coordinates:
+            road_info["coordinates"] = get_edge_coordinates(
+                edges_data, route[i], route[i + 1]
+            )
+
+        if highway:
+            road_info["highway"] = get_edge_highway(edges_data, route[i], route[i + 1])
+
+        if maxspeed:
+            road_info["maxspeed"] = get_edge_maxspeed(
+                edges_data, route[i], route[i + 1]
+            )
+
+        if length:
+            road_info["length"] = get_edge_length(edges_data, route[i], route[i + 1])
         route_info.append(road_info)
 
     return route_info
@@ -336,15 +377,17 @@ def dijkstra_algorithm(graph, origin, destination):
         length_path.insert(0, current)
         current = parents_distances[current]
 
-
-
     while priority_queue_travel_time:
         # Get the node with the minimum travel time
-        current_node = min(priority_queue_travel_time, key=priority_queue_travel_time.get)
+        current_node = min(
+            priority_queue_travel_time, key=priority_queue_travel_time.get
+        )
         del priority_queue_travel_time[current_node]
 
         for neighbor, edge_data in graph[current_node].items():
-            estimated_travel_time = travel_time[current_node] + edge_data[0]["travel_time"]
+            estimated_travel_time = (
+                travel_time[current_node] + edge_data[0]["travel_time"]
+            )
 
             if estimated_travel_time < travel_time[neighbor]:
                 travel_time[neighbor] = estimated_travel_time
@@ -379,15 +422,103 @@ def extract():
 
 
 def main():
-    graph = load_multidigraph("./point_graph.graphml")
-    origin, destination = select_origin_destination(graph)
+    graph = load_multidigraph("./test-graph.graphml")
+    origin, destination = select_origin_destination_nodes(graph)
     if origin is None or destination is None:
         print("here")
         return
     print(dijkstra_algorithm(graph, origin, destination))
     route = get_shortest_route(graph, origin, destination)
-    route_info = get_route_info_per_road(graph, route)
+    route_info = get_route_info_per_road(graph, route, coordinates=True)
+
+
+def get_segment_to_nearest_node(graph, origin_coordinates, origin_id):
+    origin_edge = ox.distance.nearest_edges(
+        graph, origin_coordinates[1], origin_coordinates[0]
+    )
+    pre_origin = origin_edge[0] if origin_edge[1] == origin_id else origin_edge[1]
+
+    pre_route_info = get_route_info_per_road(
+        graph, [pre_origin, origin_id], coordinates=True
+    )
+    pre_coordinates = [
+        coordinate for street in pre_route_info for coordinate in street["coordinates"]
+    ]
+
+    starting_index = get_closest_coordinate_index(
+        pre_coordinates, origin_coordinates[1], origin_coordinates[0]
+    )
+
+    return find_path_from_edge_to_origin(pre_coordinates, starting_index)
+
+
+def get_closest_coordinate_index(coordinates, x, y):
+    closest = {"index": 0, "distance": float("inf")}
+
+    for i in range(len(coordinates)):
+        xy_points = [point for point in coordinates[i]]
+        curr_dist = dist(xy_points, [x, y])
+        if curr_dist < closest["distance"]:
+            closest["index"] = i
+            closest["distance"] = curr_dist
+    return closest["index"]
+
+
+def find_path_from_edge_to_origin(linestring, starting_index):
+    coords = []
+    for i in range(starting_index, len(linestring)):
+        coords.append(linestring[i])
+    return coords
+
+
+def precise():
+    graph = load_multidigraph("./point_graph.graphml")
+    origin, destination = select_origin_destination_nodes(graph)
+    x, y = select_origin_coordinates(graph)
+    print(x, y)
+
+    nearest_edge = ox.distance.nearest_edges(graph, x, y)
+    print(nearest_edge)
+
+    a, b, c = nearest_edge
+    furthest = a if b == origin else b
+
+    route_info = get_route_info_per_road(graph, [furthest, origin], coordinates=True)
+
+    coordinates = [
+        coordinate for street in route_info for coordinate in street["coordinates"]
+    ]
+    closest = {"index": 0, "distance": float("inf")}
+
+    for i in range(len(coordinates)):
+        coords = [x for x in coordinates[i]]
+        curr_dist = dist(coords, [x, y])
+        if curr_dist < closest["distance"]:
+            closest["index"] = i
+            closest["distance"] = curr_dist
+
+    print(closest)
+
+    path = find_path_from_edge_to_origin(coordinates, closest["index"])
+
+    draw_line(graph, path)
+
+
+def merge_lists(coordinates, pre):
+    n = len(pre)
+    missing = []
+    index = 0
+    for i in range(n):
+        if pre[i] not in coordinates:
+            missing.append(pre[i])
+        else:
+            index = coordinates.index(pre[i])
+            break
+
+    merged = missing + coordinates[index:]
+
+    return merged
 
 
 if __name__ == "__main__":
-    extract()
+    main()
