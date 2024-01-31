@@ -213,4 +213,4 @@ So, today is Jan/23/2024 I was working with D3 but I found that Leaflet has ever
 
 I think what comes next is being able to get the closest edge and coordinate to the destination so it doesnt stop drawing at the edge, then comes making the moving icon.
 
-The map has been going well, I finally finished pre origin logic. Next thing to do is 
+The map has been going well, I finally finished pre origin logic. Next thing to do is do the same with the destination.
