@@ -212,3 +212,5 @@ I was able to get a LineString of an edge, that linestring contains the coordina
 So, today is Jan/23/2024 I was working with D3 but I found that Leaflet has everything I need, as of right now I was able to drag a marker to origin and one to destination, make my api call and draw with a polyline on top of the map (a real world map).
 
 I think what comes next is being able to get the closest edge and coordinate to the destination so it doesnt stop drawing at the edge, then comes making the moving icon.
+
+The map has been going well, I finally finished pre origin logic. Next thing to do is 
