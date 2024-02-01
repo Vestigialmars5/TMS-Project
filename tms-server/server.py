@@ -90,10 +90,11 @@ def calculate_route_coordinates(
     print() 
 
     # Calculate the route from the new origin to the new destination
-    route = get_shortest_route(graph, new_origin_id, destination_id)
+    route = get_shortest_route(graph, new_origin_id, new_destination_id)
 
     pre_coordinates = starting_option1[0]
-    post_coordinates = finishing_option1[0] 
+    post_coordinates = finishing_option1[0]
+    print("post coords", post_coordinates)
 
     if starting_option2:
         # Check if second node is the second starting option
@@ -243,6 +244,8 @@ def get_segment_to_finishing_node(
     found_edge = ox.distance.nearest_edges(
         graph, destination_coordinates[1], destination_coordinates[0]
     )
+    print("found edge", found_edge)
+    print("closest edge", destination_id)
 
     # Find the options for post and start, in case the node is in the route change start with post
     decided_nodes = decide_finishing_node_and_edge(
@@ -269,7 +272,7 @@ def get_segment_to_finishing_node(
 
     path_option1 = (
         find_path_from_destination_to_edge(interpolated1, finishing_index1),
-        option1[1],
+        option1[0],
     )
 
     # If option2 exists get interpolation
@@ -294,6 +297,9 @@ def get_segment_to_finishing_node(
         )
     else:
         path_option2 = []
+    print("options", path_option1)
+    print("options", path_option2)
+    print()
     return (path_option1, path_option2)
 
 
@@ -302,7 +308,7 @@ def get_segment_to_finishing_node(
 def decide_finishing_node_and_edge(edges_data, found_edge, closest_node):
     if edges_data.loc[(found_edge[0], found_edge[1]), "oneway"].item():
         # One way street
-        return [(found_edge[1], found_edge[0]), ()]
+        return [(found_edge[0], found_edge[1]), ()]
 
     else:
         # Two way
