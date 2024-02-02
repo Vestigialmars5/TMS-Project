@@ -65,7 +65,7 @@ def calculate_route_coordinates(
 ):
     # Extract nodes data for finding specific node coordinates
     nodes_data = ox.graph_to_gdfs(graph, nodes=True, edges=False)
-    print(nodes_data.loc[:, ("y", "x")])
+
     # Extract edges data for finding specific edges
     edges_data = ox.graph_to_gdfs(graph, nodes=False, edges=True)
     edges_data = edges_data.sort_index(level=["u", "v"])
@@ -76,25 +76,20 @@ def calculate_route_coordinates(
     )
 
     new_origin_id = starting_option1[1]
-    print("finished starting options", new_origin_id, starting_option2)
-    print()
 
     print("starting finishing options")
     # Get coordinates and new origin_coordinates node to get precise finishing location
     finishing_option1, finishing_option2 = get_segment_to_finishing_node(
         graph, edges_data, destination_coordinates, destination_id
-    ) 
+    )
 
     new_destination_id = finishing_option1[1]
-    print("finished options", new_destination_id, finishing_option1)
-    print() 
 
     # Calculate the route from the new origin to the new destination
     route = get_shortest_route(graph, new_origin_id, new_destination_id)
 
     pre_coordinates = starting_option1[0]
     post_coordinates = finishing_option1[0]
-    print("post coords", post_coordinates)
 
     if starting_option2:
         # Check if second node is the second starting option
@@ -108,7 +103,8 @@ def calculate_route_coordinates(
         if (len(route) - 1 > 0) and (route[-1] == finishing_option2[1]):
             # Makes finishing node finishing_option2 finish
             route.pop()
-            post_coordinates = finishing_option2[0] 
+            post_coordinates = finishing_option2[0]
+    print("route", route, "\n")
 
     route_info = get_route_info_per_road(edges_data, route, coordinates=True)
 
@@ -116,6 +112,12 @@ def calculate_route_coordinates(
     coordinates = []
     for road in route_info:
         coordinates += list(road["coordinates"].coords)
+
+    print("pre coords", pre_coordinates)
+    print()
+    print(coordinates)
+    print()
+    print("post coords", post_coordinates)
 
     return merge_lists(pre_coordinates, coordinates, post_coordinates)
 
@@ -149,7 +151,6 @@ def decide_starting_node_and_edge(
             found_edge[0] if node1_distance < node2_distance else found_edge[1]
         )
 
-
     if edges_data.loc[(found_edge[0], found_edge[1]), "oneway"].item():
         # One way street
         return [(found_edge[0], found_edge[1]), ()]
@@ -160,11 +161,14 @@ def decide_starting_node_and_edge(
             found_edge[0] if found_edge[1] == closest_usable_node else found_edge[1]
         )
 
-        return [(furthest_node, closest_usable_node), (closest_usable_node, furthest_node)]
+        return [
+            (furthest_node, closest_usable_node),
+            (closest_usable_node, furthest_node),
+        ]
 
 
 def merge_lists(pre, coordinates, post):
-    """ n = len(pre)
+    """n = len(pre)
     missing = []
     index = 0
     for i in range(n):
@@ -174,7 +178,12 @@ def merge_lists(pre, coordinates, post):
             index = coordinates.index(pre[i])
             break
 
-    merged = missing + coordinates[index:] """
+    merged = missing + coordinates[index:]"""
+    print("here", pre, post, "hi")
+    n = len(post)
+    for i in range(n):
+        if post[i] in pre:
+            return post[i:]
 
     return pre + coordinates + post
 
