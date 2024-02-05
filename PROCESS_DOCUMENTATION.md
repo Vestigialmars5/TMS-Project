@@ -194,6 +194,8 @@ Alan has been helping me figure out how it needs to work.
 
 So the TMS should have a list of pending movements or deliveries, and from those be able to schedule the route and stuff.
 
+I branched the repository, to try to catch some of the cases befoe calculating everything.
+
 ## Design and prototyping
 
 I'm going to start working on making something out of the OSMNX (Jan 17 2024), since I think based on what Find I'll be able to decipher things like the database and stuff.
