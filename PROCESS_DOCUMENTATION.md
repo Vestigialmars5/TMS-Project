@@ -219,4 +219,4 @@ The map has been going well, I finally finished pre origin logic. Next thing to 
 
 There is currently an error happening when the closest node is not part of the closest edge. For example closest node is A which connects to D, and closest edge is B to C. In this case I'm thinking that the closest edge should take priority. If this is the case I would have to change the closest node to be the closest node from the edge to the coordinate.
 
-I'm redoing my logic, changing a lot of things. I might branch it just in case.
+I'm redoing my logic, changing a lot of things. I might branch it just in case.  
