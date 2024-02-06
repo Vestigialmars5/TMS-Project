@@ -202,28 +202,82 @@ def get_full_route(
         ):
             # If its oneway and it is O->D
             if starting_edge_direction:
-                if is_direct():
-                    return get_pre_and_post()
+                if is_direct(closest_edge_to_origin):
+                    return get_pre_and_post(
+                        edges_data,
+                        closest_edge_to_origin,
+                        origin_coordinates,
+                        destination_coordinates,
+                    )
             else:
                 # a<-O---D->b would return (a,b)
                 get_starting_and_ending_node()
                 # Basically making it a oneway
                 get_pre_and_post()
-    
+
+
+# Function to determine if a origin to destination is o->d and not o<-d
+def is_direct(nodes_data, edge, origin_coordinates, destination_coordinates):
+    # Get starting node coordinates (x,y)
+    starting_node_coordinates = get_node_coordinates(nodes_data, edge[0])
+
+    distance_to_origin = dist(
+        [origin_coordinates[1], origin_coordinates[0]],
+        [starting_node_coordinates[0], starting_node_coordinates[1]],
+    )
+    distance_to_destination = dist(
+        [destination_coordinates[1], destination_coordinates[0]],
+        [starting_node_coordinates[0], starting_node_coordinates[1]],
+    )
+
+    if distance_to_origin <= distance_to_destination:
+        # If origin is closer to starting node returns true
+        return True
+
+    # Destination is closer to starting point o<-d
+    return False
+
 
 # For same edge case where we dont need a route
-def get_pre_and_post(start, finish):
+def get_pre_and_post(edges_data, edge, origin_coordinates, destination_coordinates):
+    # Get interpolation
+    road_coordinates = get_route_info_per_road(
+        edges_data, [edge[0], edge[1]], coordinates=True
+    )
+    interpolated = ox.utils_geo.interpolate_points(
+        road_coordinates[0]["coordinates"], 0.00001
+    )
+    interpolated = list(interpolated)
+
+    # Get closest index for origin and destination
+    closest_index_origin = get_closest_coordinate_index(
+        interpolated, origin_coordinates[1], origin_coordinates[0]
+    )
+    closest_index_destination = get_closest_coordinate_index(
+        interpolated, destination_coordinates[1], destination_coordinates[0]
+    )
+
+    pre_post = get_coordinates_pre_post()
+
     return (pre, post)
 
 
-# Check if node forms part of the closest edge, if not assign a node of the found edge as the new closest node
+# Get coordinates between a start and a finish, returns a list of coords
+def get_coordinates_pre_post(linestring, starting_index, finishing_index):
+    coords = []
+    for i in range(starting_index, finishing_index + 1):
+        coords.append(linestring[i])
+    return coords
+
+
+# Check if node forms part of the closest edge, if not assign a node of the found edge as the new closest node. Returns node id
 def get_usable_node(nodes_data, closest_node, closest_edge, coordinates):
     if not is_node_in_edge(closest_node, closest_edge):
         return assign_usable_node(nodes_data, closest_edge, coordinates)
     return closest_node
 
 
-# Gets the direction of usable
+# Gets the direction of edges returns true or false, oneway and not respectively
 def get_direction_of_edges(
     edges_data,
     closest_edge_to_origin,
@@ -236,6 +290,7 @@ def get_direction_of_edges(
     return (starting_edge_direction, finishing_edge_direction)
 
 
+# Returns true if 2 edges are the same edge
 def is_same_edge(oneway, edge1, edge2):
     # For oneway
     if oneway:
@@ -250,6 +305,7 @@ def is_same_edge(oneway, edge1, edge2):
         return False
 
 
+# Returns true if oneway else false
 def is_oneway(edges_data, edge):
     if edges_data.loc[(edge[0], edge[1]), "oneway"].item():
         # One way street
@@ -259,25 +315,32 @@ def is_oneway(edges_data, edge):
         return False
 
 
+# Get the (x,y) coordinates of a node
+def get_node_coordinates(nodes_data, node):
+    # Extract info from the nodes df
+    node_coordinates = nodes_data.loc[node, ["y", "x"]]
+    x = node_coordinates.at["x"]
+    y = node_coordinates.at["y"]
+
+    return (x, y)
+
+
+# Returns the closest node to the coordinates that is part of the found edge
 def assign_usable_node(nodes_data, found_edge, coordinates):
     # Get both coordinates
-    node1_coords = nodes_data.loc[found_edge[0], ["y", "x"]]
-    node1_x = node1_coords.at["x"]
-    node1_y = node1_coords.at["y"]
+    node1_x, node1_y = get_node_coordinates(nodes_data, found_edge[0])
+    node2_x, node2_y = get_node_coordinates(nodes_data, found_edge[1])
 
-    node2_coords = nodes_data.loc[found_edge[1], ["y", "x"]]
-    node2_x = node2_coords.at["x"]
-    node2_y = node2_coords.at["y"]
+    marker_x = coordinates[1]
+    marker_y = coordinates[0]
 
-    origin_x = coordinates[1]
-    origin_y = coordinates[0]
-
-    node1_distance = dist([origin_x, origin_y], [node1_x, node1_y])
-    node2_distance = dist([origin_x, origin_y], [node2_x, node2_y])
+    node1_distance = dist([marker_x, marker_y], [node1_x, node1_y])
+    node2_distance = dist([marker_x, marker_y], [node2_x, node2_y])
 
     return found_edge[0] if node1_distance < node2_distance else found_edge[1]
 
 
+# Checks if a node is part of the found edge
 def is_node_in_edge(node, found_edge):
     # Node not part of the closest edge
     if node != found_edge[0] and node != found_edge[1]:
