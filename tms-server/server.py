@@ -56,6 +56,7 @@ def api_coordinates():
         return {}
 
 
+# Calculates the coordinates along the route including pre and post
 def calculate_route_coordinates(
     graph,
     origin_id,
@@ -167,6 +168,7 @@ def decide_starting_node_and_edge(
         ]
 
 
+# Merges the list of coordinates
 def merge_lists(pre, coordinates, post):
     """n = len(pre)
     missing = []
@@ -188,6 +190,7 @@ def merge_lists(pre, coordinates, post):
     return pre + coordinates + post
 
 
+# Gets the segment bewteen the closest point in the coordinate on the edge to the node
 def get_segment_to_starting_node(
     graph, nodes_data, edges_data, origin_coordinates, origin_id
 ):
@@ -247,6 +250,7 @@ def get_segment_to_starting_node(
     return (path_option1, path_option2)
 
 
+# Gets the segment bewteen the closest point in the coordinate on the edge to the node
 def get_segment_to_finishing_node(
     graph, edges_data, destination_coordinates, destination_id
 ):
