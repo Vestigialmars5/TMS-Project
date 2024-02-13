@@ -28,8 +28,9 @@ def api_coordinates():
                 data.get("destinationLat"),
                 data.get("destinationLng"),
             ]
+            print(destination_coordinates)
 
-            # Loads graph and retrieves the edges data
+            # Loads graph
             graph = load_multidigraph(TEST_GRAPH)
 
             # Closest node to the coordinate inputed
@@ -182,10 +183,10 @@ def merge_lists(pre, coordinates, post):
 
     merged = missing + coordinates[index:]"""
     print("here", pre, post, "hi")
-    n = len(post)
+    """n = len(post)
     for i in range(n):
         if post[i] in pre:
-            return post[i:]
+            return post[i:]"""
 
     return pre + coordinates + post
 
@@ -374,7 +375,7 @@ def read_graphml_file_content():
 
 
 def load_multidigraph(filepath):
-    # Load a graph (replace with your graph file or creation method)
+    # Load a graph
     graph = ox.load_graphml(filepath=filepath)
     graph = ox.add_edge_speeds(graph)
     return ox.speed.add_edge_travel_times(graph)
