@@ -222,3 +222,6 @@ There is currently an error happening when the closest node is not part of the c
 I'm redoing my logic, changing a lot of things. I might branch it just in case.  
 
 I now need to take into account that the algorithm that will avoid and decide the route based on pricing or time needs to have a different approach when it comes to assigning starting and finishing nodes.
+
+I'm asking in stack overflow, now I need to extarct only the necessary code to explain my situation.
+I think I'm going to create a file in my repository to help with it.
