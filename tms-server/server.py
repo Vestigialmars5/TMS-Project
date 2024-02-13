@@ -115,12 +115,6 @@ def calculate_route_coordinates(
     for road in route_info:
         coordinates += list(road["coordinates"].coords)
 
-    print("pre coords", pre_coordinates)
-    print()
-    print(coordinates)
-    print()
-    print("post coords", post_coordinates)
-
     return merge_lists(pre_coordinates, coordinates, post_coordinates)
 
 
@@ -188,6 +182,7 @@ def merge_lists(pre, coordinates, post):
         if post[i] in pre:
             return post[i:]"""
 
+    print("\n", pre + coordinates)
     return pre + coordinates + post
 
 
