@@ -7,6 +7,7 @@ GRAPH = "./test-graph.graphml"
 
 def main():
     # Retrieved as lat, long (normally gotten from a post request)
+    # Oneway street case
     origin_coordinates = [37.79109950401872, -122.4096465110779]
     destination_coordinates = [37.79067577012899, -122.41325139999391]
 
@@ -58,7 +59,6 @@ def calculate_route_coordinates(
 
     new_origin_id = direction1[1]
 
-
     # Calculate the route from the new origin to the new destination
     route = ox.shortest_path(graph, new_origin_id, destination_id)
 
@@ -73,7 +73,7 @@ def calculate_route_coordinates(
             route.pop(0)
             pre_coordinates = direction2[0]
 
-    route_info = get_route_info_per_road(edges_data, route, coordinates=True)
+    route_info = get_route_info_per_road(edges_data, route)
 
     # Extract coordinates into usable list
     coordinates = []
@@ -100,9 +100,11 @@ def get_segment_to_starting_node(
     option1 = decided_nodes[0]
     option2 = decided_nodes[1]
 
+    print(option1, option2)
+
     # Get interpolation for option 1
     pre_route_info_option1 = get_route_info_per_road(
-        edges_data, [option1[0], option1[1]], coordinates=True
+        edges_data, [option1[0], option1[1]]
     )
 
     interpolated1 = ox.utils_geo.interpolate_points(
@@ -123,7 +125,7 @@ def get_segment_to_starting_node(
     # If option2 exists get interpolation
     if option2:
         pre_route_info_option2 = get_route_info_per_road(
-            edges_data, [option2[0], option2[1]], coordinates=True
+            edges_data, [option2[0], option2[1]]
         )
 
         interpolated2 = ox.utils_geo.interpolate_points(
@@ -200,6 +202,7 @@ def get_route_info_per_road(edges_data, route):
         road_info["coordinates"] = get_edge_coordinates(
             edges_data, route[i], route[i + 1]
         )
+        route_info.append(road_info)
 
     return route_info
 
@@ -233,3 +236,7 @@ def find_path_from_edge_to_origin(linestring, starting_index):
     for i in range(starting_index, len(linestring)):
         coords.append(linestring[i])
     return coords
+
+
+if __name__ == "__main__":
+    main()
