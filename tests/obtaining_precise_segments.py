@@ -35,7 +35,7 @@ def main():
     return coordinates
 
 
-# Calculates the coordinates along the route including pre and post
+# Calculates the coordinates along the route including pre and post (excluded logic for destination segment for simplicity)
 def calculate_route_coordinates(
     graph,
     origin_id,
@@ -51,41 +51,27 @@ def calculate_route_coordinates(
     edges_data = edges_data.sort_index(level=["u", "v"])
 
     # Get coordinates and a new origin node to get precise starting location
-    # Each option has the coordinates from a point to a target node and the target node
-    starting_option1, starting_option2 = get_segment_to_starting_node(
+    # Each option has the coordinates from a point to a target node, and the target node
+    direction1, direction2 = get_segment_to_starting_node(
         graph, nodes_data, edges_data, origin_coordinates, origin_id
     )
 
-    new_origin_id = starting_option1[1]
+    new_origin_id = direction1[1]
 
-    # Get coordinates and new destination node to get precise finishing location
-    finishing_option1, finishing_option2 = get_segment_to_finishing_node(
-        graph, edges_data, destination_coordinates, destination_id
-    )
-
-    new_destination_id = finishing_option1[1]
 
     # Calculate the route from the new origin to the new destination
-    route = ox.shortest_path(graph, new_origin_id, new_destination_id)
+    route = ox.shortest_path(graph, new_origin_id, destination_id)
 
     # Segments in between the edges
-    pre_coordinates = starting_option1[0]
-    post_coordinates = finishing_option1[0]
+    pre_coordinates = direction1[0]
 
-    if starting_option2:
+    if direction2:
         # Check if second node is the second starting option, this takes care of going to the target node and coming back throught
         # that same direction. Changing to second option just switches the direction (doesn't handle twoway roads, same edge cases)
-        if len(route) > 1 and route[1] == starting_option2[1]:
+        if len(route) > 1 and route[1] == direction2[1]:
             # Makes starting node option2 start
             route.pop(0)
-            pre_coordinates = starting_option2[0]
-
-    if finishing_option2:
-        # Check if second to last node is the second finishing option, takes care of the same as the starting segment but in reverse
-        if (len(route) - 1 > 0) and (route[-1] == finishing_option2[1]):
-            # Makes finishing node finishing_option2 finish
-            route.pop()
-            post_coordinates = finishing_option2[0]
+            pre_coordinates = direction2[0]
 
     route_info = get_route_info_per_road(edges_data, route, coordinates=True)
 
@@ -95,7 +81,7 @@ def calculate_route_coordinates(
         coordinates += list(road["coordinates"].coords)
 
     # Return the list of coordinates that makes up the full route
-    return pre_coordinates + coordinates + post_coordinates
+    return pre_coordinates + coordinates
 
 
 # Gets the segment between the closest point in the coordinate on the edge, to the node
@@ -204,88 +190,6 @@ def decide_starting_node_and_edge(
         ]
 
 
-# Decides what will be the finishing node for the route, checking if edge exists
-# Returns a list of tuples, (post_finish, finishing_node) and the inverse if the road is two-ways else an empty tuple
-def decide_finishing_node_and_edge(edges_data, found_edge, closest_node):
-    if edges_data.loc[(found_edge[0], found_edge[1]), "oneway"].item():
-        # One way street
-        return [(found_edge[0], found_edge[1]), ()]
-
-    else:
-        # Two way
-        furthest_node = (
-            found_edge[0] if found_edge[1] == closest_node else found_edge[1]
-        )
-
-        return [(furthest_node, closest_node), (closest_node, furthest_node)]
-
-
-# Gets the segment between the closest point in the coordinate on the edge, to the node
-def get_segment_to_finishing_node(
-    graph, edges_data, destination_coordinates, destination_id
-):
-    found_edge = ox.distance.nearest_edges(
-        graph, destination_coordinates[1], destination_coordinates[0]
-    )
-    print("found edge", found_edge)
-    print("closest edge", destination_id)
-
-    # Find the options for post and start, in case the node is in the route change start with post
-    decided_nodes = decide_finishing_node_and_edge(
-        edges_data, found_edge, destination_id
-    )
-
-    option1 = decided_nodes[0]
-    option2 = decided_nodes[1]
-
-    # Get interpolation for option 1
-    post_route_info_option1 = get_route_info_per_road(
-        edges_data, [option1[0], option1[1]], coordinates=True
-    )
-
-    interpolated1 = ox.utils_geo.interpolate_points(
-        post_route_info_option1[0]["coordinates"], 0.0001
-    )
-
-    interpolated1 = list(interpolated1)
-
-    finishing_index1 = get_closest_coordinate_index(
-        interpolated1, destination_coordinates[1], destination_coordinates[0]
-    )
-
-    path_option1 = (
-        find_path_from_destination_to_edge(interpolated1, finishing_index1),
-        option1[0],
-    )
-
-    # If option2 exists get interpolation
-    if option2:
-        post_route_info_option2 = get_route_info_per_road(
-            edges_data, [option2[0], option2[1]], coordinates=True
-        )
-
-        interpolated2 = ox.utils_geo.interpolate_points(
-            post_route_info_option2[0]["coordinates"], 0.0001
-        )
-
-        interpolated2 = list(interpolated2)
-
-        finishing_index2 = get_closest_coordinate_index(
-            interpolated2, destination_coordinates[1], destination_coordinates[0]
-        )
-
-        path_option2 = (
-            find_path_from_destination_to_edge(interpolated2, finishing_index2),
-            option2[1],
-        )
-    else:
-        path_option2 = []
-    print("options", path_option1)
-    print("options", path_option2)
-    print()
-    return (path_option1, path_option2)
-
-
 # Returns a list of dictionaries with specific information for each road (this function handles some other information retrieval, excluded)
 def get_route_info_per_road(edges_data, route):
 
@@ -327,13 +231,5 @@ def get_closest_coordinate_index(coordinates, x, y):
 def find_path_from_edge_to_origin(linestring, starting_index):
     coords = []
     for i in range(starting_index, len(linestring)):
-        coords.append(linestring[i])
-    return coords
-
-
-# Returns a list of coordinates that make up the segment from the point in between the edge and the target node
-def find_path_from_destination_to_edge(linestring, finishing_index):
-    coords = []
-    for i in range(finishing_index + 1):
         coords.append(linestring[i])
     return coords
