@@ -219,6 +219,6 @@ The map has been going well, I finally finished pre origin logic. Next thing to 
 
 There is currently an error happening when the closest node is not part of the closest edge. For example closest node is A which connects to D, and closest edge is B to C. In this case I'm thinking that the closest edge should take priority. If this is the case I would have to change the closest node to be the closest node from the edge to the coordinate.
 
-I'm redoing my logic, changing a lot of things. I might branch it just in case.
+I'm redoing my logic, changing a lot of things. I might branch it just in case.  
 
 I now need to take into account that the algorithm that will avoid and decide the route based on pricing or time needs to have a different approach when it comes to assigning starting and finishing nodes.
