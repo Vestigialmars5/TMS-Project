@@ -328,6 +328,7 @@ def decide_finishing_node_and_edge(edges_data, found_edge, closest_node):
         return [(furthest_node, closest_node), (closest_node, furthest_node)]
 
 
+# Returns index of a point in the edge closest to the given coordinates
 def get_closest_coordinate_index(coordinates, x, y):
     closest = {"index": 0, "distance": float("inf")}
 
@@ -341,6 +342,7 @@ def get_closest_coordinate_index(coordinates, x, y):
     return closest["index"]
 
 
+# Returns list of coordinates, segment from point to target node
 def find_path_from_edge_to_origin(linestring, starting_index):
     coords = []
     for i in range(starting_index, len(linestring)):
@@ -348,6 +350,7 @@ def find_path_from_edge_to_origin(linestring, starting_index):
     return coords
 
 
+# Returns list of coordinates, segment from point to target node
 def find_path_from_destination_to_edge(linestring, finishing_index):
     coords = []
     for i in range(finishing_index + 1):
@@ -355,6 +358,7 @@ def find_path_from_destination_to_edge(linestring, finishing_index):
     return coords
 
 
+# Returns node id
 def get_closest_node(graph, x, y):
     return ox.distance.nearest_nodes(graph, x, y)
 
