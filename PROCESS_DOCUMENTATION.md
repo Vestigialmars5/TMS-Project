@@ -225,3 +225,5 @@ I now need to take into account that the algorithm that will avoid and decide th
 
 I'm asking in stack overflow, now I need to extarct only the necessary code to explain my situation.
 I think I'm going to create a file in my repository to help with it.
+
+From asking online I came up with the idea that maybe I can create a node and edge for each coordinate in the interpolated edge. This could potentially solve the issue when deciding a starting edge considering the thing I'm going to base the route on. For example I wouldn't have to worry about changing directions or starting and finishing nodes. I would have to calculate estimated times and ignore the found edge. It could work.
