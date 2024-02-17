@@ -4,7 +4,7 @@
 
 ## Detailed Description
 
-It helps with things like optimizing physical goods movement, plan, execute, both outgoing and incoming, documentation, etc.
+It helps with things like optimizing physical goods movement, plan, execute, both outgoing and incoming, documentation, etc.  
 
 #### Project idea
 
