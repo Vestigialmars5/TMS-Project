@@ -1,6 +1,6 @@
 # Transportation Management System Mock Project
 
-#### Description:   
+#### Description: Description here
 
 ## Detailed Description
 
