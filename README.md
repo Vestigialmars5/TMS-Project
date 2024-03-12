@@ -10,7 +10,7 @@ more details
 
 ## Main Goal
 
-Goal here
+Goal here. 
 
 ## Features   
 
