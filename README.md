@@ -6,7 +6,7 @@
 
 #### Project idea
 
-more details
+more details 
 
 ## Main Goal
 
