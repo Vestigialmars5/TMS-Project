@@ -282,7 +282,7 @@ def get_route_info_per_road(
     edges_data = ox.graph_to_gdfs(graph, nodes=False, edges=True)
     edges_data = edges_data.sort_index(level=["u", "v"])
 
-    print("heehehehehehehhe", edges_data.loc[(1580501206, 1580501216)])
+    print(edges_data.loc[(65307376, 65319940)])
 
     route_info = []
 
@@ -414,7 +414,7 @@ def extract_data_for_api(graph):
 
 
 def extract():
-    graph = load_multidigraph("./point_graph.graphml")
+    graph = load_multidigraph("./test-graph.graphml")
     nodes, edges = extract_data_for_api(graph)
     print(nodes)
     print()
@@ -518,6 +518,58 @@ def merge_lists(coordinates, pre):
     merged = missing + coordinates[index:]
 
     return merged
+
+
+def optimize_route(pre_route, route, post_route):
+    full_route = pre_route + route + post_route
+    visited_nodes = set()
+    loop_detected = False
+    optimized_route = []
+
+    for node in full_route:
+        if node in visited_nodes:
+            loop_detected = True
+            break
+        else:
+            visited_nodes.add(node)
+
+    if loop_detected:
+        optimized_route = find_optimal_route(pre_route, route, post_route)
+    else:
+        optimized_route = pre_route + route + post_route
+
+    return optimized_route
+
+
+def find_optimal_route(pre_route, route, post_route):
+    loop_start = find_start_of_loop(route)
+    optimized_route = []
+
+    for node in pre_route:
+        if node == loop_start:
+            break
+        else:
+            optimized_route.append(node)
+
+    for node in post_route:
+        if node == loop_start:
+            break
+        else:
+            optimized_route.append(node)
+
+    return optimized_route
+
+
+def find_start_of_loop(route):
+    visited_nodes = set()
+
+    for node in route:
+        if node in visited_nodes:
+            return node
+        else:
+            visited_nodes.add(node)
+
+    return None
 
 
 if __name__ == "__main__":
