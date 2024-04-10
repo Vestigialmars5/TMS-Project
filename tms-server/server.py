@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import json
 from math import dist
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Point
+import geopy.distance
 
 
 app = Flask(__name__)
@@ -165,6 +166,7 @@ def calculate_route_coordinates(
 # To have a pre_route and post_route we need to get the direction of the
 
 
+# Function to get a full route of coordinates returns list of coordinates
 def get_full_route(
     graph,
     nodes_data,
@@ -200,36 +202,77 @@ def get_full_route(
         if is_same_edge(
             starting_edge_direction, closest_edge_to_origin, closest_edge_to_destination
         ):
-            # If its oneway and it is O->D
+            # Same edge, changing name to found edge for clearer reading
+            found_edge = closest_edge_to_origin
+
+            # Get coordinates for the starting node
+            target_node_coordinates = get_node_coordinates(nodes_data, found_edge[0])
+
+            # Get distance from starting node to the origin or destination
+            origin_distance_to_starting_node = get_distance_to_node(
+                nodes_data, origin_coordinates, target_node_coordinates
+            )
+            destination_distance_to_starting_node = get_distance_to_node(
+                nodes_data, destination_coordinates, target_node_coordinates
+            )
+
+            # Oneway
             if starting_edge_direction:
-                if is_direct(closest_edge_to_origin):
+                if is_direct(
+                    origin_distance_to_starting_node,
+                    destination_distance_to_starting_node,
+                ):
                     return get_pre_and_post(
                         edges_data,
-                        closest_edge_to_origin,
-                        origin_coordinates,
-                        destination_coordinates,
+                        found_edge,
+                        origin_distance_to_starting_node,
+                        destination_distance_to_starting_node,
                     )
+
+            # Twoway
             else:
-                # a<-O---D->b would return (a,b)
-                get_starting_and_ending_node()
-                # Basically making it a oneway
-                get_pre_and_post()
+                if not is_direct(
+                    origin_distance_to_starting_node,
+                    destination_distance_to_starting_node,
+                ):
+                    # If it's not direct we can just inverse the found edge and we would get a direct edge
+                    direct_edge = (found_edge[1], found_edge[0])
+
+                    # Calculate previous coordinates and distance to new edge
+                    target_node_coordinates = get_node_coordinates(
+                        nodes_data, direct_edge[0]
+                    )
+                    origin_distance_to_starting_node = get_distance_to_node(
+                        origin_coordinates, target_node_coordinates
+                    )
+                    destination_distance_to_starting_node = get_distance_to_node(
+                        destination_coordinates, target_node_coordinates
+                    )
+
+                # Found edge is direct
+                else:
+                    direct_edge = found_edge
+
+                return get_pre_and_post(
+                    edges_data,
+                    direct_edge,
+                    origin_coordinates,
+                    destination_coordinates,
+                )
+
+    # 2 cases left, one where route is needed and one where no route is needed because there is only 2 edges in total (a--->b--->c)
 
 
-# Function to determine if a origin to destination is o->d and not o<-d
-def is_direct(nodes_data, edge, origin_coordinates, destination_coordinates):
-    # Get starting node coordinates (x,y)
-    starting_node_coordinates = get_node_coordinates(nodes_data, edge[0])
-
-    distance_to_origin = dist(
-        [origin_coordinates[1], origin_coordinates[0]],
-        [starting_node_coordinates[0], starting_node_coordinates[1]],
+# Function to calculate a distance from a coordinate to the coordinates of a target node, returns a float distance
+def get_distance_to_node(node_coordinates, target_node_coordinates):
+    return dist(
+        [node_coordinates[1], node_coordinates[0]],
+        [target_node_coordinates[0], target_node_coordinates[1]],
     )
-    distance_to_destination = dist(
-        [destination_coordinates[1], destination_coordinates[0]],
-        [starting_node_coordinates[0], starting_node_coordinates[1]],
-    )
 
+
+# Function to determine if a origin to destination is o->d and not o<-d, returns bool
+def is_direct(distance_to_origin, distance_to_destination):
     if distance_to_origin <= distance_to_destination:
         # If origin is closer to starting node returns true
         return True
@@ -238,7 +281,7 @@ def is_direct(nodes_data, edge, origin_coordinates, destination_coordinates):
     return False
 
 
-# For same edge case where we dont need a route
+# For direct case where we dont need a route, returns list of coordinates
 def get_pre_and_post(edges_data, edge, origin_coordinates, destination_coordinates):
     # Get interpolation
     road_coordinates = get_route_info_per_road(
@@ -257,10 +300,11 @@ def get_pre_and_post(edges_data, edge, origin_coordinates, destination_coordinat
         interpolated, destination_coordinates[1], destination_coordinates[0]
     )
 
-    pre_post = get_coordinates_pre_post()
+    pre_post = get_coordinates_pre_post(
+        interpolated, closest_index_origin, closest_index_destination
+    )
 
-    return (pre, post)
-
+    return pre_post
 
 # Get coordinates between a start and a finish, returns a list of coords
 def get_coordinates_pre_post(linestring, starting_index, finishing_index):
@@ -277,7 +321,7 @@ def get_usable_node(nodes_data, closest_node, closest_edge, coordinates):
     return closest_node
 
 
-# Gets the direction of edges returns true or false, oneway and not respectively
+# Gets the direction of edges, returns (direction1, direction2), directions are bool
 def get_direction_of_edges(
     edges_data,
     closest_edge_to_origin,
@@ -315,7 +359,7 @@ def is_oneway(edges_data, edge):
         return False
 
 
-# Get the (x,y) coordinates of a node
+# Get the coordinates of a node returns (x,y)
 def get_node_coordinates(nodes_data, node):
     # Extract info from the nodes df
     node_coordinates = nodes_data.loc[node, ["y", "x"]]
@@ -325,7 +369,7 @@ def get_node_coordinates(nodes_data, node):
     return (x, y)
 
 
-# Returns the closest node to the coordinates that is part of the found edge
+# Returns the closest node to the coordinates that is part of the found edge, returns node id
 def assign_usable_node(nodes_data, found_edge, coordinates):
     # Get both coordinates
     node1_x, node1_y = get_node_coordinates(nodes_data, found_edge[0])
@@ -340,7 +384,7 @@ def assign_usable_node(nodes_data, found_edge, coordinates):
     return found_edge[0] if node1_distance < node2_distance else found_edge[1]
 
 
-# Checks if a node is part of the found edge
+# Checks if a node is part of the found edge, returns bool
 def is_node_in_edge(node, found_edge):
     # Node not part of the closest edge
     if node != found_edge[0] and node != found_edge[1]:
@@ -576,6 +620,16 @@ def decide_finishing_node_and_edge(edges_data, found_edge, closest_node):
         )
         print("stuff", (furthest_node, closest_node), (closest_node, furthest_node))
         return [(furthest_node, closest_node), (closest_node, furthest_node)]
+
+
+# Returns a lat long location of a coordinate snapped to an edge
+def snap_to_closest_road(linestring, lat, long):
+    nearest_point = linestring.interpolate(linestring.project(Point(long, lat)))
+    distance = geopy.distance.distance((lat, long), nearest_point.coords[0]).meters
+    if distance < min_distance:
+        snapped_location = nearest_point.coords[0]
+        min_distance = distance
+    return snapped_location
 
 
 def get_closest_coordinate_index(coordinates, x, y):

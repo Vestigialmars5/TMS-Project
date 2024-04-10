@@ -80,7 +80,7 @@ function LeafletComponent() {
         onDragEnd={handleDestinationDragEnd}
         text={"destination"}
       />
-      <Marker position={[37.791838, -122.4108302]}></Marker>
+      <Marker position={[37.7916306, -122.4124799]}></Marker>
       <button type="button" onClick={getStuff} className="button">
         Get Route
       </button>
