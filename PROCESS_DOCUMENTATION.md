@@ -228,4 +228,6 @@ I think I'm going to create a file in my repository to help with it.
 
 From asking online I came up with the idea that maybe I can create a node and edge for each coordinate in the interpolated edge. This could potentially solve the issue when deciding a starting edge considering the thing I'm going to base the route on. For example I wouldn't have to worry about changing directions or starting and finishing nodes. I would have to calculate estimated times and ignore the found edge. It could work.
 
-I will have to calculate the speed, distance and other things about the road, I'm going to have to come up with a specific measurment for the interpolation, since im going to have to divide the street evenly within a certain distance.  
+I will have to calculate the speed, distance and other things about the road, I'm going to have to come up with a specific measurment for the interpolation, since im going to have to divide the street evenly within a certain distance.
+
+I looked into OSRM but I want to be able to choose between shortest distance, fastest distance.
