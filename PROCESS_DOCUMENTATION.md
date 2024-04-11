@@ -231,3 +231,8 @@ From asking online I came up with the idea that maybe I can create a node and ed
 I will have to calculate the speed, distance and other things about the road, I'm going to have to come up with a specific measurment for the interpolation, since im going to have to divide the street evenly within a certain distance.
 
 I looked into OSRM but I want to be able to choose between shortest distance, fastest distance.
+
+Okay, new approach. I'm going to divide everything into smaller sections. Clearing up the files into different tasks.
+I'm also going to start with the logic of the database and after some parts are done, continue with the routing algorithms.
+
+For routing algorithms node --> Dijktra, A search algorithm, euclian distance, graphHopper
