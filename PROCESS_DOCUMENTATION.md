@@ -236,3 +236,6 @@ Okay, new approach. I'm going to divide everything into smaller sections. Cleari
 I'm also going to start with the logic of the database and after some parts are done, continue with the routing algorithms.
 
 For routing algorithms node --> Dijktra, A search algorithm, euclian distance, graphHopper
+
+Apr 17
+I'm going to start marking dates for easier reference to my progress. Right now I'm going very slow and changing a lot of things, but learning for future projects.
