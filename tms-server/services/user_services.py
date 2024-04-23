@@ -1,37 +1,13 @@
+from flask import session, g
+import sqlite3 as sql
+
 # ADMIN (permision to everything, managing accounts, system config, performance)
 # EDIT DATABSE
 # ADD USERS
 # DELETE ACCOUNTS
 # ACCESS TO LOGS
 
-from flask import redirect, session, g
-import sqlite3 as sql
-from functools import wraps
-import datetime
-import requests
-import xml.etree.ElementTree as ET
 
-
-# Establish db connection, returns db connection from g
-def get_db():
-    # Create a connection if doesn't exist
-    if "db" not in g:
-        g.db = sql.connect("one_life.db")
-
-        # Set queries to return Row objects
-        g.db.row_factory = sql.Row
-    return g.db
-
-# Define login_required decorator, redirects to login if not logged in 
-""" Change per user """
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("user_id"):
-            return f(*args, **kwargs)
-        else:
-            return redirect("/login")
-    return decorated_function
 
 
 """ ORGANIZE BELOW """
