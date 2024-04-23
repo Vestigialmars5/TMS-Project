@@ -239,3 +239,6 @@ For routing algorithms node --> Dijktra, A search algorithm, euclian distance, g
 
 Apr 17
 I'm going to start marking dates for easier reference to my progress. Right now I'm going very slow and changing a lot of things, but learning for future projects.
+
+Apr 22
+Research about blueprints, I'm trying to figure out where to put what. For example my routing for thing like index, dashboard in routing, should I manage all routes in one file? Should I have separate files for different routes?
