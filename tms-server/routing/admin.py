@@ -1,13 +1,11 @@
-from flask import session, g
-import sqlite3 as sql
+from flask import Blueprint, render_template
 
-# Close db connection after every request
-@app.teardown_appcontext
-def close_db(exception):
-    if "db" in g:
-        g.db.close()
+admin_blueprint = Blueprint("admin", __name__, url_prefix="/admin")
 
 
+@admin_blueprint.route("/dashboard")
+def dashboard():
+    return 
 # ADMIN (permision to everything, managing accounts, system config, performance)
 # EDIT DATABSE
 # ADD USERS
