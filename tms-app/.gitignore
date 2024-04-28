@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Ignore updates for __pycache__ directories
-__pycache__/
+*/__pycache__/
