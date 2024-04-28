@@ -13,7 +13,7 @@ more details
 Goal here. 
 
 
-## Features   
+## Features
   
 - features here  
 - features here
