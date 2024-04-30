@@ -91,6 +91,7 @@ def logout():
     return redirect(url_for("index"))
 
 
+# Testing for db across files
 @auth_blueprint.route("/db_test")
 def db_test():
     db = get_db()
