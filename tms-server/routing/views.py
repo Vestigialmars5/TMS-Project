@@ -1,5 +1,5 @@
 """ ORGANIZE BELOW """
-# TODO: Make files for each
+# TODO: Transfer descriptions to proper files
 
 # Transportation Manager (panning, scheduling, executing functionalities)
 # Roles: Responsible for managing transportation operations, including route planning, carrier selection, freight management, tracking shipments, and optimizing transportation costs.
