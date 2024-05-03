@@ -16,6 +16,8 @@ from db import get_db
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
+# TODO: check auth libraries
+
 # TODO: check this, copied from flask's official website
 @auth_blueprint.route("/register", methods=("GET", "POST"))
 def register():
