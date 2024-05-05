@@ -6,7 +6,7 @@ from routing.auth import auth_blueprint
 app = Flask(__name__)
 
 
-# Close db connection after every request
+# Close db connection after every request 
 @app.teardown_appcontext
 def close_db(exception):
     db = g.pop("db", None)
