@@ -247,3 +247,6 @@ Apr 23
 So blueprints can be used to have multiple routing files, then putting them together into the main app at the end. I'm going to divide the routing by role and a views.py, I'm going to have the teardown for closing db connections in app.py so it runs after each request (to be tested).
 
 I'm also going to have an auth.py for login stuff, and forms.py
+
+May 8
+I have been concentrated on another thing, which has left this project stuck, so in order to keep it moving, even if I don't add code, I'll develop ideas to add, or just plan our my next steps.
