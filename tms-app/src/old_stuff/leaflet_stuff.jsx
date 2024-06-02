@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import get_coordinates from "./get_api_data";
-import DraggableMarker from "./dragable";
+import get_coordinates from "./old_stuff/get_api_data";
+import DraggableMarker from "./old_stuff/dragable";
 
 import "leaflet/dist/leaflet.css";
 
