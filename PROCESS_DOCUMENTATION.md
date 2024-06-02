@@ -250,3 +250,8 @@ I'm also going to have an auth.py for login stuff, and forms.py
 
 May 8
 I have been concentrated on another thing, which has left this project stuck, so in order to keep it moving, even if I don't add code, I'll develop ideas to add, or just plan our my next steps.
+
+June 1
+I am finally free to start putting a lot of time to this project.
+What I'm going to do is do all rendering with react, since react is a spa, I have to do something when building to handle joining both servers or something.
+I am now going to start with the login page, as well as the register, but the register can only be accesed by the admin so I will have to work on the auth section.
