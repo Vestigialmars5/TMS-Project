@@ -11,8 +11,8 @@ app = Flask(__name__)
 def close_db(exception):
     db = g.pop("db", None)
     if db is not None:
-        print("closing db connection")
-        g.db.close()
+        db.close()
+        print("closed db connection")
 
 
 # Register blueprints
