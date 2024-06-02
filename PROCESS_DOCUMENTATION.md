@@ -255,3 +255,5 @@ June 1
 I am finally free to start putting a lot of time to this project.
 What I'm going to do is do all rendering with react, since react is a spa, I have to do something when building to handle joining both servers or something.
 I am now going to start with the login page, as well as the register, but the register can only be accesed by the admin so I will have to work on the auth section.
+I'm finishing today with the login form from other places as to not spend too much time on it. What's next is to figure out form submition, add a 
+TODO for real-time validation, I don't think I should be spending too much time in that either.
