@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LoginForm from "../../components/Login/LoginForm";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
@@ -9,71 +10,55 @@ const Login = (props) => {
 
   const navigate = useNavigate();
 
-  const onButtonClick = () => {
+  const validateInputs = () => {
     // Set initial error values to empty
     setEmailError("");
     setPasswordError("");
 
     // Check if the user has entered both fields correctly
-    if ("" === email) {
+    if (email === "") {
       setEmailError("Please enter your email");
-      return;
+      return false;
     }
 
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
       setEmailError("Please enter a valid email");
-      return;
+      return false;
     }
 
-    if ("" === password) {
+    if (password === "") {
       setPasswordError("Please enter a password");
-      return;
+      return false;
     }
 
-    if (password.length < 7) {
+    if (password.length < 8) {
       setPasswordError("The password must be 8 characters or longer");
-      return;
+      return false;
     }
+
+    return true;
 
     // Authentication calls will be made here...
   };
 
+  const handleLogin = () => {
+    if (validateInputs()) {
+      // TODO: Authenticate login
+      // TODO: Redirect to appropriate dashboard
+      navigate("/NoPage")
+    }
+  };
+
   return (
-    // TODO: Make a component for this
-    <div className={"mainContainer"}>
-      <div className={"titleContainer"}>
-        <div>Login</div>
-      </div>
-      <br />
-      <div className={"inputContainer"}>
-        <input
-          value={email}
-          placeholder="Enter your email here"
-          onChange={(ev) => setEmail(ev.target.value)}
-          className={"inputBox"}
-        />
-        <label className="errorLabel">{emailError}</label>
-      </div>
-      <br />
-      <div className={"inputContainer"}>
-        <input
-          value={password}
-          placeholder="Enter your password here"
-          onChange={(ev) => setPassword(ev.target.value)}
-          className={"inputBox"}
-        />
-        <label className="errorLabel">{passwordError}</label>
-      </div>
-      <br />
-      <div className={"inputContainer"}>
-        <input
-          className={"inputButton"}
-          type="button"
-          onClick={onButtonClick}
-          value={"Log in"}
-        />
-      </div>
-    </div>
+    <LoginForm
+      email={email}
+      setEmail={setEmail}
+      password={password}
+      setPassword={setPassword}
+      emailError={emailError}
+      passwordError={passwordError}
+      handleLogin={handleLogin}
+    />
   );
 };
 
