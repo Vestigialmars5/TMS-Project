@@ -257,3 +257,7 @@ What I'm going to do is do all rendering with react, since react is a spa, I hav
 I am now going to start with the login page, as well as the register, but the register can only be accesed by the admin so I will have to work on the auth section.
 I'm finishing today with the login form from other places as to not spend too much time on it. What's next is to figure out form submition, add a 
 TODO for real-time validation, I don't think I should be spending too much time in that either.
+
+June 2
+The login form component should have validations for that form, the login page file should have log in handling.
+The handle login should verify account, retrieve data for user and redirect to appropriate dashboard.
