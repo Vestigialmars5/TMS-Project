@@ -8,7 +8,7 @@ const Home = (props) => {
 
   const onButtonClick = () => {
     console.log("here");
-    return navigate("Login");
+    return navigate("/Login");
   };
 
   return (
