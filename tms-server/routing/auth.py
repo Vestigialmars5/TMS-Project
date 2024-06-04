@@ -91,6 +91,7 @@ def checkLoginCredentials():
     # TODO: Validations between data being passed and from db
     ############
 
+    # Example unsuccessful return jsonify({'success': False, 'error': 'Invalid email or password'}), 401
     return jsonify({"success": True}), 200
 
 
