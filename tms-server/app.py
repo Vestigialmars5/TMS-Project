@@ -1,10 +1,12 @@
 from flask import Flask, g
+from flask_cors import CORS
 from routing.admin import admin_blueprint
 from routing.auth import auth_blueprint
 
 
 app = Flask(__name__)
 
+CORS(app)
 
 # Close db connection after every request 
 @app.teardown_appcontext
