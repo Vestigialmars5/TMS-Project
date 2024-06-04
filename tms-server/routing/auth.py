@@ -18,8 +18,9 @@ auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 # TODO: check auth libraries
 
+
 # TODO: check this, copied from flask's official website
-@auth_blueprint.route("/register", methods=("GET", "POST"))
+@auth_blueprint.route("/Register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
         username = request.form["username"]
@@ -49,7 +50,7 @@ def register():
     return render_template("auth/register.html")
 
 
-@auth_blueprint.route("/login", methods=("GET", "POST"))
+@auth_blueprint.route("/Login", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
         username = request.form["username"]
@@ -73,6 +74,24 @@ def login():
         flash(error)
 
     return render_template("auth/login.html")
+
+
+@auth_blueprint.route("/CheckLoginCredentials", methods=("GET", "POST"))
+def checkLoginCredentials():
+    data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
+
+    # TODO: Remove after finishing up login testing
+    print("checkLoginCredentials {")
+    print("Email", email)
+    print("Password", password)
+    print("}")
+
+    # TODO: Validations between data being passed and from db
+    ############
+
+    return jsonify({"success": True}), 200
 
 
 @auth_blueprint.before_app_request
