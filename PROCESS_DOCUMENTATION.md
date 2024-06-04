@@ -265,3 +265,6 @@ The handle login should verify account, retrieve data for user and redirect to a
 
 June 3
 Changed some things that I had copied into what I understand better, I am working on setting up the API for loggin in.
+
+June 4
+I'm currently working on the logging in the user and saving the data in session. I need to clean up the handleLogin onSubmit for the Login.jsx and put all the api calls in it and get rid of unnecessary blocks.
