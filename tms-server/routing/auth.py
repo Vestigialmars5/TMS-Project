@@ -78,22 +78,23 @@ def login():
 
 @auth_blueprint.route("/CheckLoginCredentials", methods=("GET", "POST"))
 def checkLoginCredentials():
-    data = request.get_json()
-    email = data.get("email")
-    password = data.get("password")
+    if request.method == "POST":
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
 
-    # TODO: Remove after finishing up login testing
-    print("checkLoginCredentials {")
-    print("Email", email)
-    print("Password", password)
-    print("Sending", jsonify({"success":True}), "200")
-    print("}")
+        # TODO: Remove after finishing up login testing
+        print("checkLoginCredentials {")
+        print("Email", email)
+        print("Password", password)
+        print("Sending", jsonify({"success":True}), "200")
+        print("}")
 
-    # TODO: Validations between data being passed and from db
-    ############
+        # TODO: Validations between data being passed and from db
+        ############
 
-    # Example unsuccessful return jsonify({'success': False, 'error': 'Invalid email or password'}), 401
-    return jsonify({"success": True}), 200
+        # Example unsuccessful return jsonify({'success': False, 'error': 'Invalid email or password'}), 401
+        return jsonify({"success": True}), 200
 
 
 @auth_blueprint.before_app_request
@@ -112,13 +113,3 @@ def load_logged_in_user():
 def logout():
     session.clear()
     return redirect(url_for("index"))
-
-
-# Testing for db across files
-@auth_blueprint.route("/db_test")
-def db_test():
-    db = get_db()
-    res = db.execute("SELECT * FROM users")
-    row = res.fetchone()
-    users = dict(row) if row else {}
-    return users
