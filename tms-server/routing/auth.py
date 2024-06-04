@@ -86,6 +86,7 @@ def checkLoginCredentials():
     print("checkLoginCredentials {")
     print("Email", email)
     print("Password", password)
+    print("Sending", jsonify({"success":True}), "200")
     print("}")
 
     # TODO: Validations between data being passed and from db

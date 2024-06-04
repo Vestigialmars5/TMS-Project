@@ -1,44 +1,73 @@
-import React from "react";
+import React, { useState } from "react";
 
-// TODO: Real-time validation
-const LoginForm = ({
-  email,
-  setEmail,
-  password,
-  setPassword,
-  emailError,
-  passwordError,
-  handleLogin,
-}) => {
+const LoginForm = ({ onSubmit, errorMessage }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const validateEmail = (email) => {
+    if (!email) {
+      return "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      return "Email addres is invalid";
+    }
+    return "";
+  };
+
+  const validatePassword = (password) => {
+    if (!password) {
+      return "Password is required";
+    } else if (password.lenght < 8) {
+      return "Password must be at least 8 characters";
+    }
+    return "";
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    setEmailError(validateEmail(e.target.value));
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setPasswordError(validatePassword(e.target.value));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const emailErr = validateEmail(email);
+    const passwordErr = validatePassword(password);
+
+    if (emailErr || passwordErr) {
+      setEmailError(emailErr);
+      setPasswordError(passwordErr);
+    } else {
+      onSubmit({ email, password });
+    }
+  };
+
   return (
     <div className="mainContainer">
       <div className="titleContainer">Login</div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="inputContainer">
-          <input
-            value={email}
-            placeholder="Enter your email here"
-            onChange={(e) => setEmail(e.target.value)}
-            className="inputBox"
-          />
-          <label className="errorLabel">{emailError}</label>
+          <label>Email:</label>
+          <input type="email" value={email} onChange={handleEmailChange} />
+          {emailError && <p>{emailError}</p>}
         </div>
         <div className="inputContainer">
+          <label>Password:</label>
           <input
+            type="password"
             value={password}
-            placeholder="Enter your password here"
-            onChange={(e) => setPassword(e.target.value)}
-            className="inputBox"
+            onChange={handlePasswordChange}
           />
-          <label className="errorLabel">{passwordError}</label>
+          {passwordError && <p>{passwordError}</p>}
         </div>
         <div className="inputContainer">
-          <input
-            className="inputButton"
-            type="button"
-            onClick={handleLogin}
-            value="Log in"
-          />
+          {errorMessage && <p>{errorMessage}</p>}
+          <button type="submit">Login</button>
         </div>
       </form>
     </div>
