@@ -261,3 +261,7 @@ TODO for real-time validation, I don't think I should be spending too much time 
 June 2
 The login form component should have validations for that form, the login page file should have log in handling.
 The handle login should verify account, retrieve data for user and redirect to appropriate dashboard.
+
+
+June 3
+Changed some things that I had copied into what I understand better, I am working on setting up the API for loggin in.
