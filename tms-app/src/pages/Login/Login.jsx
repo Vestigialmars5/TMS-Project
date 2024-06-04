@@ -78,11 +78,14 @@ const Login = () => {
 
       if (res.ok) {
         return await res.json();
+      } else if (res.status == 400) {
+        const errorResponse = await res.json();
+        throw new Error(errorResponse.error);
       } else {
         throw new Error("Error Getting Data From API");
       }
     } catch (error) {
-      throw new Error(`ERROR: ${error.message}`);
+      throw new Error(error.message);
     }
   };
 
@@ -96,7 +99,7 @@ const Login = () => {
         setLoginError("Invalid Credentials");
       }
     } catch (error) {
-      setLoginError(`An error occurred ${error.message}`);
+      setLoginError(`An Error Occurred: ${error.message}`);
     }
   };
 
