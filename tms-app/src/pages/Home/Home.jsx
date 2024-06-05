@@ -7,7 +7,6 @@ const Home = (props) => {
   const navigate =  useNavigate();
 
   const onButtonClick = () => {
-    console.log("here");
     return navigate("/Login");
   };
 
