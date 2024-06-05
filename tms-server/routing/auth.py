@@ -53,28 +53,32 @@ def register():
 @auth_blueprint.route("/login", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
-        session["user_id"]
-
-
-@auth_blueprint.route("/check-login-credentials", methods=("GET", "POST"))
-def checkLoginCredentials():
-    if request.method == "POST":
         data = request.get_json()
         email = data.get("email")
         password = data.get("password")
 
-        # TODO: Remove after finishing up login testing
-        print("checkLoginCredentials {")
-        print("Email", email)
-        print("Password", password)
-        print("Sending", jsonify({"success":True}), "200")
-        print("}")
+        if not validate_login_credentials(email, password):
+            return (
+                jsonify({"success": False, "error": "Invalid Email Or Password"}),
+                401,
+            )
 
-        # TODO: Validations between data being passed and from db
-        ############
+        perform_login(email)
 
-        # Example unsuccessful return jsonify({'success': False, 'error': 'Invalid Email Or Password'}), 401
         return jsonify({"success": True}), 200
+
+
+def perform_login(email):
+    session.clear()
+
+    # TODO: Get user id
+    session["user_id"] = 1
+
+
+def validate_login_credentials(email, password):
+    # TODO: Validations between data being passed and from db
+    ############
+    return True
 
 
 @auth_blueprint.before_app_request
