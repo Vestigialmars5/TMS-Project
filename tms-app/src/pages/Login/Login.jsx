@@ -77,7 +77,7 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      if (res.ok) {
+      if (!res.ok) {
         const response = res.json();
         throw new Error(response.error);
       } else {
