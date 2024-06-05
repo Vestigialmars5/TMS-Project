@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home/Home";
-import Login from "./pages/Login/Login";
-import NoPage from "./pages/NoPage/NoPage";
+import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
+import NoPage from "./pages/no-page/NoPage";
 import "./App.css";
 import { useEffect, useState } from "react";
 
