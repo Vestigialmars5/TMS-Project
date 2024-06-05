@@ -4,7 +4,7 @@
 
 ## Detailed Description
 
-It helps with things like optimizing physical goods movement, plan, execute, both outgoing and incoming, documentation, etc.  
+It helps with things like optimizing physical goods movement, plan, execute, both outgoing and incoming, documentation, etc.
 
 #### Project idea
 
@@ -150,6 +150,98 @@ So the main ideas and functioning of this app are:
 - Back-End Development: Create the server-side logic, databases, and application functionality.
 - Testing: Rigorously test the web app for bugs, security vulnerabilities, and performance issues.
 
+# Naming Guidelines
+
+## Filenames
+
+- **Folders**: Use kebab-case.
+  - Example: `/example-folder`
+- **React Components**: Use PascalCase.
+  - Example: `ExampleFile.jsx`
+- **Python Files**: Use snake_case.
+  - Example: `example_file.py`
+
+## Components
+
+- **React Components**: Use PascalCase.
+  - Example: `ExampleComponent.jsx`
+
+## Variables and Functions
+
+- **JavaScript/React**:
+  - Variables and functions: camelCase
+    - Example: `exampleVariable`, `fetchData()`
+- **Python**:
+  - Variables and functions: snake_case
+    - Example: `example_variable`, `fetch_data()`
+
+## Constants
+
+- **JavaScript/React**: Use UPPER_SNAKE_CASE for constants.
+  - Example: `MAX_COUNT`
+- **Python**: Use UPPER_SNAKE_CASE for constants.
+  - Example: `MAX_COUNT`
+
+## Classes
+
+- **JavaScript/React**: Use PascalCase.
+  - Example: `ExampleClass`
+- **Python**: Use PascalCase.
+  - Example: `ExampleClass`
+
+## API Naming
+
+- **Endpoint Names**: Use kebab-case for URL paths.
+  - Example: `/api/login-user`
+- **HTTP Methods**: Use appropriate HTTP methods (GET, POST, PUT, DELETE) with clear and descriptive names.
+  - Example: `GET /api/get-user`, `POST /api/create-user`, `PUT /api/update-user`, `DELETE /api/delete-user`
+
+## Database Tables
+
+- **Table Names**: Use plural snake_case.
+  - Example: `users`, `order_items`
+
+## General Guidelines
+
+- **Descriptive and Consistent**: Ensure names are descriptive and consistent throughout the project.
+- **Avoid Abbreviations**: Avoid abbreviations unless they are widely accepted and understood.
+- **Keep it Simple**: Names should be as simple and concise as possible while still conveying the necessary information.
+
+## Example Structure
+
+Here's an example directory and file structure following these guidelines:
+
+- /my-project
+- /api
+- /v1
+- users.py
+- orders.py
+- /frontend
+- /src
+- /components
+- UserList.jsx
+- UserProfile.jsx
+- /pages
+- HomePage.jsx
+- LoginPage.jsx
+- /migrations
+- 001_initial_migration.py
+- /models
+- user.py
+- order.py
+- /services
+- user_service.py
+- order_service.py
+- /static
+- /css
+- styles.css
+- /templates
+- base.html
+- index.html
+- app.py
+- config.py
+- requirements.txt
+
 ## Project timeline
 
 ### Start Date (11/Jan/2024)
@@ -219,7 +311,7 @@ The map has been going well, I finally finished pre origin logic. Next thing to 
 
 There is currently an error happening when the closest node is not part of the closest edge. For example closest node is A which connects to D, and closest edge is B to C. In this case I'm thinking that the closest edge should take priority. If this is the case I would have to change the closest node to be the closest node from the edge to the coordinate.
 
-I'm redoing my logic, changing a lot of things. I might branch it just in case.  
+I'm redoing my logic, changing a lot of things. I might branch it just in case.
 
 I now need to take into account that the algorithm that will avoid and decide the route based on pricing or time needs to have a different approach when it comes to assigning starting and finishing nodes.
 
@@ -255,16 +347,18 @@ June 1
 I am finally free to start putting a lot of time to this project.
 What I'm going to do is do all rendering with react, since react is a spa, I have to do something when building to handle joining both servers or something.
 I am now going to start with the login page, as well as the register, but the register can only be accesed by the admin so I will have to work on the auth section.
-I'm finishing today with the login form from other places as to not spend too much time on it. What's next is to figure out form submition, add a 
+I'm finishing today with the login form from other places as to not spend too much time on it. What's next is to figure out form submition, add a
 TODO for real-time validation, I don't think I should be spending too much time in that either.
 
 June 2
 The login form component should have validations for that form, the login page file should have log in handling.
 The handle login should verify account, retrieve data for user and redirect to appropriate dashboard.
 
-
 June 3
 Changed some things that I had copied into what I understand better, I am working on setting up the API for loggin in.
 
 June 4
 I'm currently working on the logging in the user and saving the data in session. I need to clean up the handleLogin onSubmit for the Login.jsx and put all the api calls in it and get rid of unnecessary blocks.
+
+June 5
+I added a style guide to my project to avoid spending time trying to figure out how to name what.
