@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoginForm from "../../components/Login/LoginForm";
+import LoginForm from "../../components/login/LoginForm";
 
 /* 
 const Login1 = (props) => {
@@ -66,37 +66,22 @@ const Login1 = (props) => {
 const Login = () => {
   const [loginError, setLoginError] = useState("");
 
-  const checkLoginCredentials = async (email, password) => {
+  const handleLogin = async ({ email, password }) => {
     try {
-      const res = await fetch("http://localhost:5000/auth/CheckLoginCredentials", {
+      setLoginError("");
+      const res = await fetch("http://localhost:5000/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({email, password}),
+        body: JSON.stringify({ email, password }),
       });
 
       if (res.ok) {
-        return await res.json();
-      } else if (res.status == 400) {
-        const errorResponse = await res.json();
-        throw new Error(errorResponse.error);
+        const response = res.json();
+        throw new Error(response.error);
       } else {
-        throw new Error("Error Getting Data From API");
-      }
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  };
-
-  const handleLogin = async ({ email, password }) => {
-    try {
-      setLoginError("");
-      const response = await checkLoginCredentials(email, password);
-      if (response.success) {
         console.log("SUCCESS");
-      } else {
-        setLoginError("Invalid Credentials");
       }
     } catch (error) {
       setLoginError(`An Error Occurred: ${error.message}`);
