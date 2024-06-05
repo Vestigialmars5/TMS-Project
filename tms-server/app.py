@@ -1,14 +1,16 @@
 from flask import Flask, g
 from flask_cors import CORS
+import secrets
 from routing.admin import admin_blueprint
 from routing.auth import auth_blueprint
 
 
 app = Flask(__name__)
+app.secret_key = secrets.token_hex(32)
 
 CORS(app)
 
-# Close db connection after every request 
+# Close db connection after every request
 @app.teardown_appcontext
 def close_db(exception):
     db = g.pop("db", None)
