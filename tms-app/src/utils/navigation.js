@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom"
 
-const navigate = useNavigate();
 
 export const navigateBasedOnRole = (userRole) => {
+    const navigate = useNavigate();
     switch (userRole) {
         case "admin":
             navigate("/admin");
