@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
@@ -17,7 +17,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route path="/home"
+            <Route index element={<Navigate to="/home" />} />
+            <Route
+              path="/home"
               element={
                 <Home
                   email={email}
@@ -35,7 +37,8 @@ function App() {
               path="/admin"
               element={<PrivateRoute requiredRole="admin" />}
             >
-              <Route path="/admin" element={<AdminDashboard/>} />
+              <Route index element={<Navigate to="admin-dashboard" />} />
+              <Route path="admin-dashboard" element={<AdminDashboard />} />
             </Route>
             <Route path="*" element={<NoPage />} />
           </Route>
