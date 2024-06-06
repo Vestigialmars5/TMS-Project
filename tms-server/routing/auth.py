@@ -11,7 +11,8 @@ from flask import (
     session,
     url_for,
 )
-from werkzeug.security import check_password_hash, generate_password_hash
+from flask_jwt_extended import create_access_token, jwt_required, verify_jwt_in_request
+from werkzeug.security import check_password_hash
 from db import get_db
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
@@ -23,9 +24,18 @@ auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 @auth_blueprint.route("/login", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
-        data = request.get_json()
-        email = data.get("email")
-        password = data.get("password")
+        print("Headers: ", request.headers)
+        print("Payload: ", request.get_json())
+
+        # TODO: Revieve data from request
+        db = get_db()
+        res = db.execute("SELECT * FROM users WHERE id = ?", (1,))
+        row = res.fetchone()
+
+        user_id = row["id"]
+        email = row["email"]
+        password = row["password"]
+        role = row["role"]
 
         if not validate_login_credentials(email, password):
             return (
@@ -33,9 +43,16 @@ def login():
                 401,
             )
 
-        perform_login(email)
 
-        return jsonify({"success": True}), 200
+        access_token = create_access_token(
+            identity=user_id, additional_claims={"email": email, "role": role}
+        )
+
+        # Setup session
+        perform_login(user_id)
+
+        print("Login successful")
+        return jsonify({"success": True, "access_token": access_token}), 200
 
 
 def perform_login(user_id):
