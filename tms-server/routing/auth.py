@@ -63,7 +63,7 @@ def load_logged_in_user():
         )
 
 
-@auth_blueprint.route("/logout")
+@auth_blueprint.route("/logout", methods=("GET", "POST"))
 def logout():
     session.clear()
     return redirect(url_for("index"))
