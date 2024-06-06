@@ -3,10 +3,13 @@ from flask_cors import CORS
 import secrets
 from routing.admin import admin_blueprint
 from routing.auth import auth_blueprint
+from flask_jwt_extended import JWTManager
 
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
+
+jwt = JWTManager(app)
 
 CORS(app)
 
