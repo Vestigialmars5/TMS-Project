@@ -1,11 +1,29 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginForm from "../../components/login/LoginForm";
-import { authenticateUser, decodeToken } from "../../utils/auth";
+import {
+  isAuthenticated,
+  authenticateUser,
+  decodeToken,
+  getToken,
+  getUserRole,
+} from "../../utils/auth";
+import { navigateBasedOnRole } from "../../utils/navigation";
 
 const Login = () => {
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
+
+  if (isAuthenticated()) {
+    const token = getToken();
+    const userRole = getUserRole(token);
+    if (userRole !== null) {
+      navigateBasedOnRole(userRole);
+    } else {
+      console.error("No user role found");
+      return navigate("/");
+    }
+  }
 
   const handleLogin = async ({ email, password }) => {
     try {
@@ -19,14 +37,14 @@ const Login = () => {
       });
 
       const response = await res.json();
-
+      
       if (!res.ok) {
         throw new Error(response.error);
       } else {
         const token = response.access_token;
         authenticateUser(token);
         console.log(decodeToken(token));
-        // TODO: redirect navigate("/");
+        navigate("/admin/admin-dashboard");
       }
     } catch (error) {
       setLoginError(`An Error Occurred: ${error.message}`);
