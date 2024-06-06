@@ -1,17 +1,25 @@
 import React from "react";
-import { Route, Navigate } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
+import { isAuthenticated, isAuthorized } from "../../utils/auth";
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  const isAuthenticated = localStorage.getItem("access_token");
+const PrivateRoute = ({ requiredRole }) => {
+  const authenticated = isAuthenticated();
+  const authorized = isAuthorized(requiredRole);
 
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        isAuthenticated ? <Component {...props} /> : <Navigate to="/login" />
-      }
-    />
-  );
+  if (!authenticated) {
+    console.log("unauthenticated");
+    return <Navigate to="/login" replace />
+  }
+
+  
+
+  if (!authorized) {
+    console.log("unauthorized");
+    console.log("required", requiredRole);
+    return <Navigate to="/home" replace />
+  }
+
+  return <Outlet />
 };
 
 export default PrivateRoute;
