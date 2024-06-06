@@ -38,11 +38,12 @@ def login():
         return jsonify({"success": True}), 200
 
 
-def perform_login(email):
+def perform_login(user_id):
     session.clear()
 
     # TODO: Get user id
-    session["user_id"] = 1
+    session["user_id"] = user_id
+    print("User id in session")
 
 
 def validate_login_credentials(email, password):
