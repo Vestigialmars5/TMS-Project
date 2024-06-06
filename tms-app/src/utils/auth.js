@@ -28,7 +28,7 @@ export const decodeToken = (token) => {
 // Function to check if user is authenticated
 export const isAuthenticated = () => {
     const token = getToken();
-    return token !== null && token != undefined;
+  return token !== null;
 };
 
 // Function to authenticate user
