@@ -67,5 +67,14 @@ def load_logged_in_user():
 
 @auth_blueprint.route("/logout", methods=("GET", "POST"))
 def logout():
-    session.clear()
-    return redirect(url_for("index"))
+    if request.method == "POST":
+        try:
+            verify_jwt_in_request()
+
+            # TODO: Add jti and blacklist for tokens
+            session.clear()
+            print("Logout successful")
+            return jsonify({"success": True}), 200
+        except Exception as e:
+            print("During logout error:", e)
+            return jsonify({"success": False, "error": str(e)}), 400
