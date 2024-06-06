@@ -1,3 +1,5 @@
+import { jwtDecode } from "jwt-decode";
+
 // Function to store JWT token in local storage
 export const storeToken = (token) => {
     localStorage.setItem("token", token);
@@ -16,14 +18,14 @@ export const removeToken = (token) => {
 // Function to decode JWT token and get user info
 export const decodeToken = (token) => {
     try {
-        const decoded = jwt_decode(token);
+        const decoded = jwtDecode(token);
         return decoded;
     } catch (error) {
         return null;
     }
 };
 
-// function to check if user is authenticated
+// Function to check if user is authenticated
 export const isAuthenticated = () => {
     const token = getToken();
     return token !== null && token != undefined;
@@ -34,4 +36,10 @@ export const authenticateUser = (token) => {
     if (token) {
         storeToken(token);
     }
+};
+
+export const isAuthorized = (requiredRole) => {
+    const token = getToken();
+    const role = token.role;
+    return role === requiredRole;
 };
