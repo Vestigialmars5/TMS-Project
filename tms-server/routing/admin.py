@@ -11,6 +11,7 @@ def index():
 
 
 # TODO: Complete this
+# TODO: Make sure to give unique username
 @admin_blueprint.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
