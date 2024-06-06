@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginForm from "../../components/login/LoginForm";
+import { authenticateUser, decodeToken } from "../../utils/auth";
 
 const Login = () => {
   const [loginError, setLoginError] = useState("");
@@ -17,11 +18,15 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
+      const response = await res.json();
+
       if (!res.ok) {
-        const response = res.json();
         throw new Error(response.error);
       } else {
-        navigate("/");
+        const token = response.access_token;
+        authenticateUser(token);
+        console.log(decodeToken(token));
+        // TODO: redirect navigate("/");
       }
     } catch (error) {
       setLoginError(`An Error Occurred: ${error.message}`);
