@@ -363,3 +363,6 @@ I'm currently working on the logging in the user and saving the data in session.
 June 5
 I added a style guide to my project to avoid spending time trying to figure out how to name what. 
 I'm working on authorization, I'm taking a look at authorization tokens. As far as I understand this is how it will look. App.jsx handles routing, include PrivateRouting for things that require authorization, PrivateRouting will take care of the logic behind what to render.
+
+June 6
+I was able to implement the use of tokens in a very basic way to handle authentication and authorization. I was also able to figure out how to implement the PrivateRouting, by making it as a wall in order to access the nested Routes. I sill need to test if it works by redirecting to the AdminDashboard after login.
