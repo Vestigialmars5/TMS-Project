@@ -276,11 +276,11 @@ Development and Testing
 
 - **Dashboard**:
   Overview of system performance, key metrics, and notifications.
-- **User** Management:
+- **User Management**:
   Add, edit, and remove users. Assign roles and permissions.
-  System Settings:
+- **System Settings**:
   Configure system-wide settings and preferences.
-- **Audit** Log:
+- **Audit Log**:
   View system activity logs for security and compliance.
 - **Reports**:
   Generate and view various system reports.
