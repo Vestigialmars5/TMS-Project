@@ -361,7 +361,7 @@ June 4
 I'm currently working on the logging in the user and saving the data in session. I need to clean up the handleLogin onSubmit for the Login.jsx and put all the api calls in it and get rid of unnecessary blocks.
 
 June 5
-I added a style guide to my project to avoid spending time trying to figure out how to name what. 
+I added a style guide to my project to avoid spending time trying to figure out how to name what.
 I'm working on authorization, I'm taking a look at authorization tokens. As far as I understand this is how it will look. App.jsx handles routing, include PrivateRouting for things that require authorization, PrivateRouting will take care of the logic behind what to render.
 
 June 6
