@@ -18,16 +18,16 @@ from db import get_db
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 # TODO: check auth libraries
-# TODO: Implement jwt
 
 
+# TODO: Complete login
 @auth_blueprint.route("/login", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
         print("Headers: ", request.headers)
         print("Payload: ", request.get_json())
 
-        # TODO: Revieve data from request
+        # TODO: Recieve data from request
         db = get_db()
         res = db.execute("SELECT * FROM users WHERE id = ?", (1,))
         row = res.fetchone()
@@ -57,12 +57,11 @@ def login():
 
 def perform_login(user_id):
     session.clear()
-
-    # TODO: Get user id
     session["user_id"] = user_id
     print("User id in session")
 
 
+# TODO: Complete this
 def validate_login_credentials(email, password):
     # TODO: Validations between data being passed and from db
     ############

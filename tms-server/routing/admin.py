@@ -11,16 +11,18 @@ def index():
 
 
 # TODO: Complete this
-# TODO: Make sure to give unique username
 @admin_blueprint.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
 
+        # TODO: Get data from request
         email = "asdf@asdf.com"
         username = email.split("@")[0]
         password = "asdfasdf"
         role = "admin"
         
+        # TODO: Validations for registering
+
         db = get_db()
         try:
             db.execute(
