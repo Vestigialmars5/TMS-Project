@@ -246,29 +246,160 @@ Here's an example directory and file structure following these guidelines:
 
 ### Start Date (11/Jan/2024)
 
-### Approximate End Date (21/Mar/2024)
+Research
 
-Research (2 days)
-
-Design and Prototyping (5 days)
+Design and Prototyping
 
 - Investigate about wireframes
 - Build a wire-frame
 
-Development and Testing (9 weeks)
+Development and Testing
 
-- Front-End (2 weeks)
-  - Design user interface (FIGMA or other tool) (2-4 days)
-  - Code the front end (2-4 days)
-- Back-End (3-5 weeks)
-  - Define databases needed (1 day)
-  - Server side logic (2 weeks)
-  - App functionality (2 weeks)
-- Testing (1-2 weeks)
+- Front-End
+  - Design user interface (FIGMA or other tool)
+  - Code the front end
+- Back-End
+  - Define databases needed
+  - Server side logic
+  - App functionality
+- Testing
   - Security vulnerabilities
   - Performance issues
   - Bugs
   - Design optimizations
+
+# Structure
+
+## Admin
+
+#### Oversees the entire system, manages user roles and permissions, and ensures smooth operation of the app.
+
+- **Dashboard**:
+  Overview of system performance, key metrics, and notifications.
+- **User** Management:
+  Add, edit, and remove users. Assign roles and permissions.
+  System Settings:
+  Configure system-wide settings and preferences.
+- **Audit** Log:
+  View system activity logs for security and compliance.
+- **Reports**:
+  Generate and view various system reports.
+- **Simulation and Testing Environment**:
+  Scenario Simulator for testing system resilience and performance.
+- **Training and Support Resources**:
+  Training Center with video tutorials, user manuals, FAQs, and helpdesk feature.
+
+## Transportation Manager
+
+#### Manages transportation operations, including planning and scheduling routes, selecting carriers, tracking shipments, and optimizing transportation costs.
+
+- **Dashboard**:
+  Overview of transportation operations, key metrics, and notifications.
+- **Route Planning**:
+  Plan and schedule transportation routes.
+- **Carrier Management**:
+  Select carriers, manage contracts, and evaluate performance.
+- **Shipment Tracking**:
+  Track all shipments in real-time.
+- **Cost Optimization**:
+  Analyze and optimize transportation costs.
+- **Reports**:
+  Generate reports on transportation performance and costs.
+- **Dashboard Analytics**:
+  Real-time analytics, KPI updates, trend analysis, and actionable recommendations.
+
+## Carrier
+
+#### Handles carrier-specific tasks such as accepting or rejecting shipments, updating shipment statuses, and providing freight quotes. Manages assigned shipments and communicates with the transportation manager.
+
+- **Dashboard**:
+  Overview of assigned shipments and key metrics.
+- **Shipment Management**:
+  Accept or reject shipments, update shipment statuses.
+- **Freight Quotes**:
+  Provide and manage freight quotes for new shipments.
+- **Communication**:
+  Interface for messaging with the transportation manager.
+- **Reports**:
+  View performance reports and shipment history.
+
+## Customer/Shipper
+
+#### Creates and tracks shipments, views shipment history, generates reports, manages billing and invoicing, initiates shipments, and tracks delivery progress.
+
+- **Dashboard**:
+  Overview of shipment status, key metrics, and notifications.
+- **Create Shipment**:
+  Initiate new shipments with necessary details.
+- **Shipment Tracking**:
+  Track the status of ongoing shipments.
+- **Shipment History**:
+  View history and details of past shipments.
+- **Reports**:
+  Generate various reports on shipments and billing.
+- **Billing & Invoicing**:
+  Manage billing information, view invoices, and make payments.
+- **Messaging Hub**:
+  Collaborative communication platform for seamless collaboration.
+
+## Driver
+
+#### Views assigned shipments, updates delivery statuses, and communicates with the transportation manager. Provides real-time location updates and confirms delivery completion.
+
+- **Dashboard**:
+  Overview of assigned shipments and key metrics.
+- **Assigned Shipments**:
+  View details of assigned shipments.
+- **Update Status**:
+  Update the status of shipments in transit.
+- **Location Updates**:
+  Provide real-time location updates.
+- **Delivery Confirmation**:
+  Confirm delivery completion with necessary details.
+- **Messaging Hub**:
+  Collaborative communication platform for coordination.
+
+## Finance/Accounting
+
+#### Manages billing, invoicing, payment processing, and financial reporting. Handles customer billing, carrier payments, invoice reconciliation, and financial compliance.
+
+- **Dashboard**:
+  Overview of financial performance, key metrics, and notifications.
+- **Billing Management**:
+  Handle customer billing processes.
+- **Invoicing**:
+  Generate and manage invoices for customers and carriers.
+- **Payment Processing**:
+  Process payments and manage payment records.
+- **Financial Reports**:
+  Generate financial reports and perform reconciliation.
+- **Compliance**:
+  Ensure financial operations comply with regulations.
+- **Audit Trail & Compliance Center**:
+  Track system activities and ensure compliance.
+
+## Warehouse/Inventory Manager
+
+#### Manages inventory within the TMS, including tracking inventory levels, stock replenishment, warehouse allocation, and order fulfillment. Coordinates with transportation for inbound and outbound shipments and ensures accurate stockkeeping.
+
+- **Dashboard**:
+  Overview of inventory levels and warehouse operations.
+- **Inventory Management**:
+  Track and manage inventory levels, perform stock replenishment.
+- **Warehouse Allocation**:
+  Allocate warehouse space for inbound and outbound shipments.
+- **Order Fulfillment**:
+  Manage order picking, packing, and shipping processes.
+- **Shipment Coordination**:
+  Coordinate with transportation for timely shipments.
+- **Reports**:
+  Generate inventory and warehouse performance reports.
+- **Enterprise Integration Hub**:
+  Integrate with ERP, CRM, or BI tools for seamless data flow.
+
+### Performance Monitoring Suite (Check further along):
+
+System-wide performance monitoring, caching mechanisms, load balancing, and scalability features.
 
 ## Research
 
