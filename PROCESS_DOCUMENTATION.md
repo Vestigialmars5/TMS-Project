@@ -368,3 +368,5 @@ June 6
 I was able to implement the use of tokens in a very basic way to handle authentication and authorization. I was also able to figure out how to implement the PrivateRouting, by making it as a wall in order to access the nested Routes. I sill need to test if it works by redirecting to the AdminDashboard after login.
 
 I think I finished checking for the access for admin, this should be the same for any other role. I also want to create a file for my TODO list so I keep track of what I leave for later.
+
+Just finished adding TODOs into my TODO app, instead of keeping it as an .md file, I decided on using microsoft's TODO app and I now have them organized by priorities.
