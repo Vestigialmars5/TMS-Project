@@ -46,11 +46,12 @@ export const AuthProvider = ({ children }) => {
         console.log("Login success:");
         storeToken(token);
         console.log("stored");
-        return null;
+        const role = decoded.role;
+        return {role};
       }
     } catch (error) {
       console.error("Login error:", error.message);
-      throw new Error("login failed");
+      return {error};
     }
   };
 
