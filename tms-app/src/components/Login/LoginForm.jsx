@@ -18,7 +18,7 @@ const LoginForm = ({ onSubmit, errorMessage }) => {
   const validatePassword = (password) => {
     if (!password) {
       return "Password is required";
-    } else if (password.lenght < 8) {
+    } else if (password.length < 8) {
       return "Password must be at least 8 characters";
     }
     return "";
