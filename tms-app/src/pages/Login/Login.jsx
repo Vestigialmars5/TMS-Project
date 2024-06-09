@@ -1,52 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginForm from "../../components/login/LoginForm";
-import {
-  isAuthenticated,
-  authenticateUser,
-  decodeToken,
-  getToken,
-  getUserRole,
-} from "../../utils/auth";
+import { useAuth } from "../../utils/auth";
 import { navigateBasedOnRole } from "../../utils/navigation";
 
 const Login = () => {
+  const { login, isLoggedIn, user } = useAuth();
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
 
-  if (isAuthenticated()) {
-    const token = getToken();
-    const userRole = getUserRole(token);
-    if (userRole !== null) {
-      navigateBasedOnRole(userRole);
-    } else {
-      console.error("No user role found");
-      return navigate("/");
+  useEffect(() => {
+    if (isLoggedIn) {
+      if (user && user.role !== null) {
+        navigateBasedOnRole(user.role, navigate);
+      } else {
+        console.error("No user role found");
+        navigate("/");
+      }
     }
-  }
+  }, [isLoggedIn, user, navigate]);
 
   const handleLogin = async ({ email, password }) => {
+    setLoginError("");
     try {
-      setLoginError("");
-      const res = await fetch("http://localhost:5000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const response = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(response.error);
+      const error = await login({ email, password });
+      console.log("Gor response from login", error);
+      if (error) {
+        setLoginError(`An Error Occurred: ${error}`);
       } else {
-        const token = response.access_token;
-        authenticateUser(token);
-        console.log(decodeToken(token));
-        navigate("/admin/admin-dashboard");
+        console.log("No errors Returned from response")
+        if (user && user.email) {
+          // Check if user is properly initialized
+          console.log("Login successful");
+        } else {
+          console.error("User object not properly initialized");
+          setLoginError("User object not properly initialized");
+        }
       }
     } catch (error) {
+      console.error("Login error:", error.message);
       setLoginError(`An Error Occurred: ${error.message}`);
     }
   };
