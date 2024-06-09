@@ -22,24 +22,14 @@ const Login = () => {
 
   const handleLogin = async ({ email, password }) => {
     setLoginError("");
-    try {
-      const error = await login({ email, password });
-      console.log("Gor response from login", error);
-      if (error) {
-        setLoginError(`An Error Occurred: ${error}`);
-      } else {
-        console.log("No errors Returned from response")
-        if (user && user.email) {
-          // Check if user is properly initialized
-          console.log("Login successful");
-        } else {
-          console.error("User object not properly initialized");
-          setLoginError("User object not properly initialized");
-        }
-      }
-    } catch (error) {
-      console.error("Login error:", error.message);
-      setLoginError(`An Error Occurred: ${error.message}`);
+    const res = await login({ email, password });
+    console.log("Gor response from login", res);
+    if (res.error) {
+      setLoginError(`An Error Occurred: ${res.error}`);
+    } else {
+      console.log("No errors Returned from response")
+      console.log("Login successful");
+      navigateBasedOnRole(res.role, navigate);
     }
   };
 
