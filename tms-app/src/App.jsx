@@ -4,10 +4,9 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import NoPage from "./pages/no-page/NoPage";
 import AdminDashboard from "./pages/admin-pages/AdminDashboard";
-import PrivateRoute from "./components/custom-routes/PrivateRoute";
-import "./App.css";
+import CustomRoute from "./components/custom-route/CustomRoute";
 import { AuthProvider } from "./utils/auth";
-import RestrictedRoute from "./components/custom-routes/RestrictedRoute";
+import "./App.css";
 
 function App() {
   return (
@@ -19,19 +18,19 @@ function App() {
               <Route index element={<Navigate to="/home" />} />
               <Route path="/home" element={<Home />} />
 
-              {/* Start logged out only */}
+              {/* Logged out only */}
               <Route
                 path="/login"
-                element={<RestrictedRoute requiredRestriction={"loggedOut"} />}
+                element={<CustomRoute requiredRestriction="loggedOut" />}
               >
                 <Route index element={<Login />} />
               </Route>
               {/* End logged out only */}
 
-              {/* Start private routes for admin */}
+              {/* Private routes for admin */}
               <Route
                 path="/admin"
-                element={<PrivateRoute requiredRole="admin" />}
+                element={<CustomRoute requiredRole="admin" />}
               >
                 <Route index element={<AdminDashboard />} />
               </Route>
