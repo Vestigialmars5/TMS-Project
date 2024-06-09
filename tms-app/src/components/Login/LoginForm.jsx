@@ -49,7 +49,6 @@ const LoginForm = ({ onSubmit, errorMessage }) => {
 
   return (
     <div className="mainContainer">
-      <div className="titleContainer">Login</div>
       <form onSubmit={handleSubmit}>
         <div className="inputContainer">
           <label>Email:</label>
