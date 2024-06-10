@@ -500,6 +500,7 @@ I was able to implement the use of tokens in a very basic way to handle authenti
 
 I think I finished checking for the access for admin, this should be the same for any other role. I also want to create a file for my TODO list so I keep track of what I leave for later.
 
+June 8
 Just finished adding TODOs into my TODO app, instead of keeping it as an .md file, I decided on using microsoft's TODO app and I now have them organized by priorities.
 
 I'm thinking about how to set a layout for the different roles. Each layout needs to have the links to the respective pages. I could have 1 layout, and have the logic made in there. That sounds like the best choice. Another choice would be to have a layout for each role and make the app render each layout based on the role. I'm going to write some pros and cons.
@@ -507,3 +508,6 @@ I'm thinking about how to set a layout for the different roles. Each layout need
 I decided to have just one layout file, because of reusability of code and readibility in the rendering. It is also not that big of a file so there shouldn't be a need to separate them.
 
 Okay so in order to improve how I handle all of this I'm going to modify auth.js into an context provider which will wrap my app.
+
+Jun 9
+I was able to both fix the auth.js with the context provider and to restrict access with a single component. Next steps are to go page by page creating a basic design and coding the important parts. I'm starting with the UserManagement page.
