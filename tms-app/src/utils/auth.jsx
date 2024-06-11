@@ -8,15 +8,23 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // On mount check for token, this is if still logged in
   useEffect(() => {
     const token = getToken();
     if (token) {
+      console.log("found token");
       const decoded = decodeToken(token);
       setUser({ email: decoded.email, role: decoded.role });
       setIsLoggedIn(true);
     }
+
+    const delayTimeout = setTimeout(() => {
+      setLoading(false);
+    }, 700);
+
+    return () => clearTimeout(delayTimeout);
   }, []);
 
   // Move login logic here
@@ -89,7 +97,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, user, login, logout, isAuthorized }}
+      value={{ isLoggedIn, user, loading, login, logout, isAuthorized }}
     >
       {children}
     </AuthContext.Provider>

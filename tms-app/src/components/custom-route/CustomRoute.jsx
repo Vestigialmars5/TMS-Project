@@ -4,13 +4,22 @@ import { useAuth } from "../../utils/auth";
 import { navigateBasedOnRole } from "../../utils/navigation";
 
 const CustomRoute = ({ requiredRole, requiredRestriction }) => {
-  const { isLoggedIn, isAuthorized } = useAuth();
+  const { loading, isLoggedIn, isAuthorized } = useAuth();
   const navigate = useNavigate();
+
+  console.log("Accessing a custom route", isLoggedIn.toString());
+  
+  if (loading) {
+    return <h1>Loading...</h1>
+  }
+
 
   // Based on a required role
   if (requiredRole) {
+    console.log("A role is required");
+    console.log(isLoggedIn.toString());
     if (!isLoggedIn) {
-      console.log("not logged in");
+      console.log("not logged in", isLoggedIn);
       return <Navigate to="/login" replace />;
     }
 
@@ -23,6 +32,7 @@ const CustomRoute = ({ requiredRole, requiredRestriction }) => {
 
   // Based on a restriction
   if (requiredRestriction) {
+    console.log("restriction");
     switch (requiredRestriction) {
       case "loggedIn":
         if (!isLoggedIn) {
