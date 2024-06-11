@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
 
     const delayTimeout = setTimeout(() => {
       setLoading(false);
-    }, 700);
+    }, 0); // Modify timeout for smoothness
 
     return () => clearTimeout(delayTimeout);
   }, []);
@@ -31,11 +31,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const userData = await loginApi(credentials.email, credentials.password);
-      console.log("Retrieved user data attempting login");
       setUser(userData);
       setIsLoggedIn(true);
       const role = userData.role;
-      console.log("Login success1");
       return { role };
     } catch (error) {
       console.error("Login error", error.message);

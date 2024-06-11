@@ -23,11 +23,9 @@ const Login = () => {
   const handleLogin = async ({ email, password }) => {
     setLoginError("");
     const res = await login({ email, password });
-    console.log("Gor response from login", res);
     if (res.error) {
       setLoginError(`An Error Occurred: ${res.error}`);
     } else {
-      console.log("No errors Returned from response")
       console.log("Login successful");
       navigateBasedOnRole(res.role, navigate);
     }

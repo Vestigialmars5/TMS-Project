@@ -13,13 +13,10 @@ export const login = async ({ email, password }) => {
     });
 
     const response = await res.json();
-    console.log("got response,", response);
 
     if (!res.ok) {
-      console.error("response bad");
       throw new Error(response.error);
     } else {
-      console.log("response good");
       const token = response.access_token;
       storeToken(token);
       return decodeToken(token);
