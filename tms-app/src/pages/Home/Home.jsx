@@ -1,6 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../utils/auth";
+import { useAuth } from "../../utils/AuthProvider";
 
 const Home = () => {
   const { isLoggedIn, user } = useAuth();

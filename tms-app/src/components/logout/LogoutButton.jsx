@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../../utils/auth";
+import { useAuth } from "../../utils/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 const LogoutButton = () => {
@@ -7,11 +7,11 @@ const LogoutButton = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const error = await logout();
-    if (error) {
-      console.log(error);
-    } else {
+    try {
+      await logout();
       navigate("/");
+    } catch (error) {
+      console.error("failed to logout", error.message);
     }
   };
 

@@ -5,7 +5,8 @@ import Login from "./pages/login/Login";
 import NoPage from "./pages/no-page/NoPage";
 import AdminDashboard from "./pages/admin-pages/AdminDashboard";
 import CustomRoute from "./components/custom-route/CustomRoute";
-import { AuthProvider } from "./utils/auth";
+import UserManagement from "./pages/admin-pages/UserManagement";
+import { AuthProvider } from "./utils/AuthProvider";
 import "./App.css";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
                 element={<CustomRoute requiredRole="admin" />}
               >
                 <Route index element={<AdminDashboard />} />
+                <Route path="user-management" element={<UserManagement />} />
               </Route>
               {/* End private routes for admin */}
 
