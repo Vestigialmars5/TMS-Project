@@ -511,3 +511,6 @@ Okay so in order to improve how I handle all of this I'm going to modify auth.js
 
 Jun 9
 I was able to both fix the auth.js with the context provider and to restrict access with a single component. Next steps are to go page by page creating a basic design and coding the important parts. I'm starting with the UserManagement page.
+
+Jun 10 
+There was an issue with the timing of the auth.jsx states when refreshing due to the useEffect and how it works. The solution was adding a Loading state that would give time for the useEffect to set the states before attempting to use them. I also added a delay so the tranistions look smoother.
