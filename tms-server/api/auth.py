@@ -11,23 +11,27 @@ from flask import (
     session,
     url_for,
 )
-from flask_jwt_extended import create_access_token, jwt_required, verify_jwt_in_request
+from flask_jwt_extended import jwt_required, verify_jwt_in_request
 from werkzeug.security import check_password_hash
 from db import get_db
+from services.auth_service import AuthService
 
-auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
+auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 # TODO: check auth libraries
 
 
 # TODO: Complete login
-@auth_blueprint.route("/login", methods=("GET", "POST"))
+@auth_blueprint.route("/login", methods=("POST",))
 def login():
     if request.method == "POST":
         print("Headers: ", request.headers)
         print("Payload: ", request.get_json())
 
-        # TODO: Recieve data from request
+        # Recieve data from request
+        data = request.get_json()
+
+        # TODO: Get rid of this, for testing admin
         db = get_db()
         res = db.execute("SELECT * FROM users WHERE id = ?", (1,))
         row = res.fetchone()
@@ -37,34 +41,13 @@ def login():
         password = row["password"]
         role = row["role"]
 
-        if not validate_login_credentials(email, password):
-            return (
-                jsonify({"success": False, "error": "Invalid Email Or Password"}),
-                401,
-            )
-
-        access_token = create_access_token(
-            identity=user_id, additional_claims={"email": email, "role": role}
-        )
-
-        # Setup session
-        perform_login(user_id)
+        # TODO: Pass actual data
+        response, status = AuthService.login({user_id, email, password, role})
 
         print("Login successful")
-        return jsonify({"success": True, "access_token": access_token}), 200
+        return jsonify(response), status
 
 
-def perform_login(user_id):
-    session.clear()
-    session["user_id"] = user_id
-    print("User id in session")
-
-
-# TODO: Complete this
-def validate_login_credentials(email, password):
-    # TODO: Validations between data being passed and from db
-    ############
-    return True
 
 
 # TODO: Check if this function is really needed
