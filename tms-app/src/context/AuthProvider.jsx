@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { login as loginApi, logout as logoutApi } from "./auth";
-import { decodeToken, getToken } from "./tokenFunctions";
+import { login as loginApi, logout as logoutApi } from "../utils/auth";
+import { decodeToken, getToken } from "../utils/tokenFunctions";
 
 const AuthContext = createContext();
 
