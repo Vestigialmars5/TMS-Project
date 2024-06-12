@@ -3,6 +3,7 @@ from functools import wraps
 
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
+
 # Decorator for roles required
 def roles_required(*roles):
     def decorator(f):
@@ -16,5 +17,7 @@ def roles_required(*roles):
                 return f(*args, **kwargs)
             except:
                 return jsonify({"error": "Missing or invalid JWT"}), 401
+
         return decorated_function
+
     return decorator
