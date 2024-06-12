@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../../utils/AuthProvider";
+import { useAuth } from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 const LogoutButton = () => {

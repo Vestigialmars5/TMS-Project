@@ -1,6 +1,6 @@
 // Overview of system performance, key metrics, and notifications.
 import React from "react";
-import { useAuth } from "../../utils/AuthProvider";
+import { useAuth } from "../../context/AuthProvider";
 
 const AdminDashboard = () => {
   const { isLoggedIn } = useAuth();

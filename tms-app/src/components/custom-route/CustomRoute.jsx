@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Navigate, useNavigate } from "react-router-dom";
-import { useAuth } from "../../utils/AuthProvider";
+import { useAuth } from "../../context/AuthProvider";
 import { navigateBasedOnRole } from "../../utils/navigation";
 
 const CustomRoute = ({ requiredRole, requiredRestriction }) => {

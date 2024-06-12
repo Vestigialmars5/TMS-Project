@@ -6,7 +6,8 @@ import NoPage from "./pages/no-page/NoPage";
 import AdminDashboard from "./pages/admin-pages/AdminDashboard";
 import CustomRoute from "./components/custom-route/CustomRoute";
 import UserManagement from "./pages/admin-pages/UserManagement";
-import { AuthProvider } from "./utils/AuthProvider";
+import { AuthProvider } from "./context/AuthProvider";
+import { UserManagementProvider } from "./context/UserManagementProvider";
 import "./App.css";
 
 function App() {
@@ -33,8 +34,22 @@ function App() {
                 path="/admin"
                 element={<CustomRoute requiredRole="admin" />}
               >
-                <Route index element={<AdminDashboard />} />
-                <Route path="user-management" element={<UserManagement />} />
+                <Route
+                  index
+                  element={
+                    <UserManagementProvider>
+                      <AdminDashboard />
+                    </UserManagementProvider>
+                  }
+                />
+                <Route
+                  path="user-management"
+                  element={
+                    <UserManagementProvider>
+                      <UserManagement />
+                    </UserManagementProvider>
+                  }
+                />
               </Route>
               {/* End private routes for admin */}
 

@@ -1,11 +1,11 @@
 // Add, edit, and remove users. Assign roles and permissions.
 import React from "react";
-import AddNewUser from "../../components/admin/user-management/AddNewUser";
+import CreateUser from "../../components/admin/user-management/CreateUser";
 
 const UserManagement = () => {
   return (
     <>
-      <AddNewUser />
+      <CreateUser />
     </>
   );
 };
