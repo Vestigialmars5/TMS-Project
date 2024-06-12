@@ -11,20 +11,24 @@ def index():
 
 
 # TODO: Complete this
-@admin_blueprint.route("/register", methods=("GET", "POST"))
-def register():
+@admin_blueprint.route("/create-user", methods=("GET", "POST"))
+def create_user():
     if request.method == "POST":
 
         # TODO: Get data from request
-        email = "asdf@asdf.com"
-        username = email.split("@")[0]
-        password = "asdfasdf"
-        role = "admin"
-        
-        # TODO: Validations for registering
+        data = request.get_json()
 
-        db = get_db()
+        email = data.get("email")
+        username = email.split("@")[0]  # TODO: Make this different for uniqueness
+        password = data.get("password")
+        role = data.get("role")
+
         try:
+            # TODO: Validations for registering
+            if not email or not username or not password or not role:
+                raise Exception("something missing")
+
+            db = get_db()
             db.execute(
                 "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
                 (username, email, generate_password_hash(password), role),
@@ -32,7 +36,7 @@ def register():
             db.commit()
         except Exception as e:
             return jsonify({"success": False, "error": str(e)}), 400
-        
+
     return jsonify({"success": True}), 200
 
 
