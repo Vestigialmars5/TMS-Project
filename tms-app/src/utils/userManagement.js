@@ -1,21 +1,23 @@
-export const createUser = async ({email, password, role}) => {
-    try {
-      const res = await fetch("http://localhost:5000/admin/create-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, role }),
-      });
+const SERVER_URL = "http://localhost:5000";
 
-      const response = await res.json();
+export const createUser = async ({ email, password, role }) => {
+  try {
+    const res = await fetch(`${SERVER_URL}/api/admin/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password, role }),
+    });
 
-      if (!res.ok) {
-        throw new Error(response.error);
-      } else {
-        console.log("User Created");
-      }
-    } catch (error) {
-      throw new Error(`Login failed ${response.error}`);
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.error);
+    } else {
+      console.log("User Created");
     }
-}
+  } catch (error) {
+    throw new Error(`Login failed ${response.error}`);
+  }
+};
