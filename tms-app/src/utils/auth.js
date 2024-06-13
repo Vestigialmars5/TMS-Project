@@ -1,10 +1,11 @@
 import { decodeToken, getToken, removeToken, storeToken } from "./tokenFunctions";
+const SERVER_URL = "http://localhost:5000";
 
 // Move login logic here
 export const login = async ({ email, password }) => {
   console.log("inside the login async");
   try {
-    const res = await fetch("http://localhost:5000/auth/login", {
+    const res = await fetch(`${SERVER_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +31,7 @@ export const login = async ({ email, password }) => {
 export const logout = async () => {
   const token = getToken();
   try {
-    const res = await fetch("http://localhost:5000/auth/logout", {
+    const res = await fetch(`${SERVER_URL}/api/auth/logout`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
