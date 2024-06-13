@@ -514,3 +514,6 @@ I was able to both fix the auth.js with the context provider and to restrict acc
 
 Jun 10 
 There was an issue with the timing of the auth.jsx states when refreshing due to the useEffect and how it works. The solution was adding a Loading state that would give time for the useEffect to set the states before attempting to use them. I also added a delay so the tranistions look smoother.
+
+Jun 12
+I have been working on making the app even more modular, thinking it was going to be pretty easy. But I stumbled accross an error with my JWT when trying to logout. The issue was resolved by setting up a secret key for JWT and an algorithm.
