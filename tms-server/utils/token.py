@@ -18,7 +18,7 @@ def create_tokens(identity, additional_claims):
     )
     # TODO: Implement refresh token
 
-    return {"access_token": access_token}
+    return access_token
 
 
 def decode_jwt(token):
