@@ -517,3 +517,4 @@ There was an issue with the timing of the auth.jsx states when refreshing due to
 
 Jun 12
 I have been working on making the app even more modular, thinking it was going to be pretty easy. But I stumbled accross an error with my JWT when trying to logout. The issue was resolved by setting up a secret key for JWT and an algorithm.
+I think what I need to do next is learn how to do testing files, for cases so I dont have to manually do everything.
