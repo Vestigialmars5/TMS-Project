@@ -21,3 +21,20 @@ export const createUser = async ({ email, password, role }) => {
     throw new Error(`Login failed ${response.error}`);
   }
 };
+
+export const getUsers = async ({searchField, sort, page, limit}) => {
+  try {
+    const res = await fetch(
+      `${SERVER_URL}/api/admin/users?search=${searchField}&sort=${sort}&page=${page}&limit=${limit}`
+    );
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.error);
+    } else {
+      return response.users;
+    }
+  } catch (error) {
+    throw new Error(`Fetch Users failed ${response.error}`);
+  }
+};
