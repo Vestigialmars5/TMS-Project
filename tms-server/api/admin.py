@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, render_template, request, url_for
 from db import get_db
 from werkzeug.security import generate_password_hash
+from services.user_service import UserService
 
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
 
@@ -40,8 +41,20 @@ def create_user():
     return jsonify({"success": True}), 200
 
 
-# ADMIN (permision to everything, managing accounts, system config, performance)
-# EDIT DATABSE
-# ADD USERS
-# DELETE ACCOUNTS
-# ACCESS TO LOGS
+@admin_blueprint.route("/users", methods=("GET",))
+def get_users():
+    if request.method == "GET":
+        try:
+            search = request.args.get("search", "")
+            sort = request.args.get("sort", "asc")
+            page = request.args.get("page", 1, type=int)
+            limit = request.args.get("limit", 25, type=int)
+
+        except:
+            print("Error handlining request parameters")
+            return jsonify({"success": False, "error": "error setting variables"}), 200
+
+        response, status = UserService.get_users(search, sort, page, limit)
+
+        return jsonify(response), status
+        
