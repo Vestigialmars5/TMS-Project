@@ -25,7 +25,7 @@ def create_user():
 
         response, status = UserService.create_user(email, password, role)
 
-        return response, status
+        return jsonify(response), status
 
 
 @admin_blueprint.route("/users", methods=("GET",))
