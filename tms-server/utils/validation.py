@@ -1,5 +1,5 @@
 # Use validator class to validate data
-from validator import Validator
+from utils.validator import Validator
 
 # TODO: Complete this
 def validate_login_credentials(email, password):
