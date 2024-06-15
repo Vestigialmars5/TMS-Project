@@ -40,3 +40,12 @@ def get_users():
         response, status = UserService.get_users(search, sort, page, limit)
 
         return jsonify(response), status
+
+
+@admin_blueprint.route("/users/<int:id>", methods=("DELETE",))
+def delete_user(id):
+    if request.method == "DELETE":
+
+        response, status = UserService.delete_user(id)
+
+        return jsonify(response), status
