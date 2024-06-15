@@ -7,7 +7,7 @@ const AdminDashboard = () => {
   return (
     <>
       <h1>Welcome to AdminDashboard</h1>
-      {isLoggedIn ? (<p>logged in {isLoggedIn.toString()}</p>): <p />}
+      {isLoggedIn ? <p>logged in {isLoggedIn.toString()}</p> : <p />}
     </>
   );
 };
