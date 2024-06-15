@@ -38,3 +38,21 @@ export const getUsers = async ({searchField, sort, page, limit}) => {
     throw new Error(`Fetch Users failed ${response.error}`);
   }
 };
+
+export const deleteUser = async (userId) => {
+  try {
+    const res = await fetch(`${SERVER_URL}/api/admin/users/${userId}`, {
+      method: "DELETE",
+    });
+
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.error);
+    } else {
+      console.log("User Deleted");
+    }
+  } catch (error) {
+    throw new Error(`Delete failed ${response.error}`);
+  }
+}
