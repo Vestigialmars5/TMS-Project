@@ -9,6 +9,7 @@ import UserManagement from "./pages/admin-pages/UserManagement";
 import { AuthProvider } from "./context/AuthProvider";
 import { UserManagementProvider } from "./context/UserManagementProvider";
 import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
