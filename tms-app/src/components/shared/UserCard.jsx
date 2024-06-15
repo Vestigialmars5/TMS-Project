@@ -1,8 +1,23 @@
 import React from "react";
-import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
+import ListGroup from "react-bootstrap/ListGroup";
+import { useUserManagement } from "../../context/UserManagementProvider";
 
 const UserCard = ({ user }) => {
+  const { deleteUser } = useUserManagement();
+
+  const handleUserDelete = async () => {
+    console.log("Delete user by id", user.id);
+    try {
+      await deleteUser(user.id);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const handleUserEdit = () => {
+    console.log("Edit user");
+  };
+
   return (
     <>
       {user ? (
