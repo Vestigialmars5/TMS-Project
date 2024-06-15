@@ -12,7 +12,6 @@ import Table from "react-bootstrap/Table"
 
 const UserManagement = () => {
   const { users, getUsers, loading } = useUserManagement();
-  const [userList, setUserList] = useState([]);
   const [searchField, setSearchField] = useState("");
   const [sort, setSort] = useState("asc");
   const [page, setPage] = useState(1);
@@ -40,18 +39,18 @@ const UserManagement = () => {
     setPage(newPage);
   };
 
-  const UserInfo = () => {
+  const UsersTable = () => {
     if (loading) {
       return <h1>Loading...</h1>;
     } else if (!loading && !users) {
       return <></>;
     }
     return (
-      <Row>
+      <>
         {users.map((user, index) => (
           <UserCard key={index} user={user} />
         ))}
-      </Row>
+      </>
     );
   };
 
@@ -59,22 +58,8 @@ const UserManagement = () => {
     <Container>
       <CreateUser />
       <SearchBox search={searchField} handleSearchChange={handleSearchChange} />
-      <Card style={{justifyContent:"center"}}>
-        <Card.Body>
-          <Table hover>
-            <thead>
-              <tr>
-                <th className="border-bottom">Name</th>
-                <th className="border-bottom">Email</th>
-                <th className="border-bottom">Position</th>
-                <th className="border-bottom">User Created at</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </Table>
-        </Card.Body>
-      </Card>
-      <UserInfo />
+      <UserCard />
+      <UsersTable />
       <PaginationComponent
         total={10}
         perPage={limit}
