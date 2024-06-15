@@ -1,5 +1,6 @@
 import logging
 from db import get_db
+from werkzeug.security import generate_password_hash
 
 
 class UserService:
@@ -9,10 +10,7 @@ class UserService:
             db = get_db()
             query, params = UserService._construct_query(search, sort, page, limit)
 
-            try:
-                res = db.execute(query, tuple(params))
-            except:
-                logging.exception("")
+            res = db.execute(query, tuple(params))
             rows = res.fetchall()
             users = []
             for row in rows:
@@ -29,6 +27,26 @@ class UserService:
         except:
             print("Error handling db")
             return {"success": False, "users": [], "error": "Error handling db"}, 400
+
+    @staticmethod
+    def create_user(email, password, role):
+
+        username = email.split("@")[0]  # TODO: Make this different for uniqueness
+
+        # TODO: Validations for registering
+
+        try:
+            db = get_db()
+            db.execute(
+                "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
+                (username, email, generate_password_hash(password), role),
+            )
+            db.commit()
+        except:
+            print("Error handling db")
+            return {"success": False, "error": "Error handling db"}, 400
+
+        return {"success": True}, 200
 
     @staticmethod
     def _construct_query(search, sort, page, limit):
