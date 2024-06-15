@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { createUser as createUserApi } from "../utils/userManagement";
 import { getUsers as getUsersApi } from "../utils/userManagement";
+import { deleteUser as deleteUserApi } from "../utils/userManagement";
 
 const UserManagementContext = createContext();
 
@@ -14,14 +15,6 @@ export const UserManagementProvider = ({ children }) => {
     const delayTimeout = setTimeout(() => {
       setLoading(false);
     }, 500); // Modify timeout for smoothness
-
-    return () => clearTimeout(delayTimeout);
-  }, []);
-
-  useEffect(() => {
-    const delayTimeout = setTimeout(() => {
-      setLoading(false);
-    }, 0); // Modify timeout for smoothness
 
     return () => clearTimeout(delayTimeout);
   }, []);
@@ -45,8 +38,19 @@ export const UserManagementProvider = ({ children }) => {
     }
   };
 
+  const deleteUser = async (userId) => {
+    console.log("Delete user by id", userId);
+    try {
+      await deleteUserApi(userId);
+    } catch (error) {
+      console.error("Error with the api", error.message);
+    }
+  };
+
   return (
-    <UserManagementContext.Provider value={{ createUser, getUsers, users, loading }}>
+    <UserManagementContext.Provider
+      value={{ createUser, getUsers, deleteUser, users, loading }}
+    >
       {children}
     </UserManagementContext.Provider>
   );
