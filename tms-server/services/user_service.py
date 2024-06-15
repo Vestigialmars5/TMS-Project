@@ -47,6 +47,19 @@ class UserService:
             return {"success": False, "error": "Error handling db"}, 400
 
         return {"success": True}, 200
+    
+    @staticmethod
+    def delete_user(id):
+        # TODO: Validations for deleting
+
+        try:
+            db = get_db()
+            db.execute("DELETE FROM users WHERE id = ?", (id,))
+            db.commit()
+        except:
+            print("Error handling db")
+            return {"success": False, "error": "Error handling db"}, 400
+        return {"success": True}, 200
 
     @staticmethod
     def _construct_query(search, sort, page, limit):
