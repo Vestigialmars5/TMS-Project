@@ -55,4 +55,26 @@ export const deleteUserApi = async (userId) => {
   } catch (error) {
     throw new Error(`Delete failed ${response.error}`);
   }
-}
+};
+
+export const updateUserApi = async ({ userId, username, email, role }) => {
+  try {
+    const res = await fetch(`${SERVER_URL}/api/admin/users/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(username, email, role),
+    });
+
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.error);
+    } else {
+      console.log("User Updated");
+    }
+  } catch (error) {
+    throw new Error(`Update failed ${response.error}`);
+  }
+};
