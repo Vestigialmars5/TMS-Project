@@ -1,17 +1,14 @@
 // Add, edit, and remove users. Assign roles and permissions.
 import React, { useEffect, useState } from "react";
-import CreateUser from "../../components/admin/user-management/CreateUser";
-import UserCard from "../../components/shared/UserCard";
-import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import PaginationComponent from "../../components/shared/PaginationComponent";
 import SearchBox from "../../components/shared/SearchBox";
 import { useUserManagement } from "../../context/UserManagementProvider";
-import Card from "react-bootstrap/Card"
-import Table from "react-bootstrap/Table"
+import UsersTable from "../../components/shared/UsersTable";
+import CreateUser from "../../components/admin/user-management/CreateUser";
 
 const UserManagement = () => {
-  const { users, getUsers, loading } = useUserManagement();
+  const { getUsers, refresh } = useUserManagement();
   const [searchField, setSearchField] = useState("");
   const [sort, setSort] = useState("asc");
   const [page, setPage] = useState(1);
@@ -20,7 +17,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [searchField, page]);
+  }, [searchField, page, refresh]);
 
   const fetchUsers = async () => {
     try {
@@ -39,26 +36,14 @@ const UserManagement = () => {
     setPage(newPage);
   };
 
-  const UsersTable = () => {
-    if (loading) {
-      return <h1>Loading...</h1>;
-    } else if (!loading && !users) {
-      return <></>;
-    }
-    return (
-      <>
-        {users.map((user, index) => (
-          <UserCard key={index} user={user} />
-        ))}
-      </>
-    );
-  };
-
   return (
     <Container>
-      <CreateUser />
-      <SearchBox search={searchField} handleSearchChange={handleSearchChange} />
-      <UserCard />
+      <div className="main-title-container">
+        <h1>User Management</h1>
+        <SearchBox searchChange={handleSearchChange} />
+        {/* TODO: Create Add user component for toggling form */}
+        <CreateUser />
+      </div>
       <UsersTable />
       <PaginationComponent
         total={10}
