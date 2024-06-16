@@ -47,7 +47,7 @@ class UserService:
             return {"success": False, "error": "Error handling db"}, 400
 
         return {"success": True}, 200
-    
+
     @staticmethod
     def delete_user(id):
         # TODO: Validations for deleting
@@ -55,6 +55,26 @@ class UserService:
         try:
             db = get_db()
             db.execute("DELETE FROM users WHERE id = ?", (id,))
+            db.commit()
+        except:
+            print("Error handling db")
+            return {"success": False, "error": "Error handling db"}, 400
+        return {"success": True}, 200
+
+    @staticmethod
+    def update_user(id, username, email, role):
+        # TODO: Validations for updating
+        try:
+            db = get_db()
+            db.execute(
+                "UPDATE users SET username = ?, email = ?, role = ? WHERE id = ?",
+                (
+                    username,
+                    email,
+                    role,
+                    id,
+                ),
+            )
             db.commit()
         except:
             print("Error handling db")
