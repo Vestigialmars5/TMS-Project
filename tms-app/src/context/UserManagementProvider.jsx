@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { createUser as createUserApi } from "../utils/userManagement";
-import { getUsers as getUsersApi } from "../utils/userManagement";
-import { deleteUser as deleteUserApi } from "../utils/userManagement";
+import { createUserApi } from "../utils/userManagement";
+import { getUsersApi } from "../utils/userManagement";
+import { deleteUserApi } from "../utils/userManagement";
+import { updateUserApi } from "../utils/userManagement";
 
 const UserManagementContext = createContext();
 
@@ -10,6 +11,7 @@ export const useUserManagement = () => useContext(UserManagementContext);
 export const UserManagementProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     const delayTimeout = setTimeout(() => {
@@ -47,9 +49,21 @@ export const UserManagementProvider = ({ children }) => {
     }
   };
 
+  const updateUser = async (userData) => {
+    try {
+      await updateUserApi(userData);
+    } catch (error) {
+      console.error("Error with the api", error.message);
+    }
+  };
+
+  const refreshUsers = () => {
+    setRefresh(!refresh);
+  };
+
   return (
     <UserManagementContext.Provider
-      value={{ createUser, getUsers, deleteUser, users, loading }}
+      value={{ createUser, getUsers, deleteUser, updateUser, refreshUsers, users, loading, refresh }}
     >
       {children}
     </UserManagementContext.Provider>
