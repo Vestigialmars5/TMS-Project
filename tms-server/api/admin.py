@@ -49,3 +49,20 @@ def delete_user(id):
         response, status = UserService.delete_user(id)
 
         return jsonify(response), status
+
+
+@admin_blueprint.route("/users/<int:id>", methods=("PUT",))
+def update_user(id):
+    if request.method == "PUT":
+
+        data = request.get_json()
+
+        username = data.get("username")
+        email = data.get("email")
+        role = data.get("role")
+
+        print(username, email, role)
+
+        response, status = UserService.update_user(id, username, email, role)
+
+        return jsonify(response), status
