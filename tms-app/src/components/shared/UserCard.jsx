@@ -14,11 +14,11 @@ const UserCard = ({ user }) => {
       "Are you sure you want to delete this user?"
     );
     if (confirmDelete) {
-    try {
-      await deleteUser(user.id);
+      try {
+        await deleteUser(user.id);
         await refreshUsers();
-    } catch (error) {
-      console.error(error.message);
+      } catch (error) {
+        console.error(error.message);
       }
     }
   };
@@ -36,16 +36,16 @@ const UserCard = ({ user }) => {
   return (
     <>
       {isEditing && <EditUser user={user} cancelEdit={cancelEdit} />}
-        <ListGroup horizontal>
-          <ListGroup.Item>{user.username}</ListGroup.Item>
-          <ListGroup.Item>{user.id}</ListGroup.Item>
-          <ListGroup.Item>{user.email}</ListGroup.Item>
-          <ListGroup.Item>{user.role}</ListGroup.Item>
-          <ListGroup.Item>
+      <ListGroup horizontal>
+        <ListGroup.Item>{user.username}</ListGroup.Item>
+        <ListGroup.Item>{user.id}</ListGroup.Item>
+        <ListGroup.Item>{user.email}</ListGroup.Item>
+        <ListGroup.Item>{user.role}</ListGroup.Item>
+        <ListGroup.Item>
           <button onClick={handleEdit}>Edit</button>
           <button onClick={handleDeleteUser}>Delete</button>
-          </ListGroup.Item>
-        </ListGroup>
+        </ListGroup.Item>
+      </ListGroup>
     </>
   );
 };
