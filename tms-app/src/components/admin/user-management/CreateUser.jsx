@@ -4,12 +4,13 @@ import { useUserManagement } from "../../../context/UserManagementProvider";
 
 const CreateUser = () => {
   const [createUserError, setCreateUserError] = useState("");
-  const {createUser} = useUserManagement();
+  const { createUser, refreshUsers } = useUserManagement();
 
   const hanldeCreateUser = async (userData) => {
     try {
       console.log("trying creating");
       await createUser(userData);
+      await refreshUsers();
     } catch (error) {
       setCreateUserError(error.message);
     }
@@ -17,7 +18,10 @@ const CreateUser = () => {
 
   return (
     <>
-      <CreateUserForm onSubmit={hanldeCreateUser} errorMessage={createUserError}/>
+      <CreateUserForm
+        onSubmit={hanldeCreateUser}
+        errorMessage={createUserError}
+      />
     </>
   );
 };
