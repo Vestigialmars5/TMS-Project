@@ -1,6 +1,6 @@
 const SERVER_URL = "http://localhost:5000";
 
-export const createUser = async ({ email, password, role }) => {
+export const createUserApi = async ({ email, password, role }) => {
   try {
     const res = await fetch(`${SERVER_URL}/api/admin/users`, {
       method: "POST",
@@ -22,7 +22,7 @@ export const createUser = async ({ email, password, role }) => {
   }
 };
 
-export const getUsers = async ({searchField, sort, page, limit}) => {
+export const getUsersApi = async ({ searchField, sort, page, limit }) => {
   try {
     const res = await fetch(
       `${SERVER_URL}/api/admin/users?search=${searchField}&sort=${sort}&page=${page}&limit=${limit}`
@@ -39,7 +39,7 @@ export const getUsers = async ({searchField, sort, page, limit}) => {
   }
 };
 
-export const deleteUser = async (userId) => {
+export const deleteUserApi = async (userId) => {
   try {
     const res = await fetch(`${SERVER_URL}/api/admin/users/${userId}`, {
       method: "DELETE",
