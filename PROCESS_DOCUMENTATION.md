@@ -242,6 +242,115 @@ Here's an example directory and file structure following these guidelines:
 - config.py
 - requirements.txt
 
+## Commits
+
+- **INITIAL**: Commits that involve the initial project setup, including creating the project structure, adding essential configuration files, and initial dependencies.
+
+  ```
+  INITIAL: Set up initial project structure with basic configuration files
+
+  - Created the initial folder structure
+  - Added .gitignore, README.md, and LICENSE
+  - Installed basic dependencies (React, Webpack, Babel)
+  ```
+
+- **ADD**: Commits that add new features, components, or substantial pieces of code to the project.
+
+  ```
+  ADD: Implemented user login functionality
+
+  - Added Login component
+  - Integrated authentication API
+  - Included form validation logic
+  ```
+
+- **UPDATE**: Commits for small, incremental changes or improvements to existing code without introducing new features.
+
+  ```
+  UPDATE: Enhanced error handling in user profile component
+
+  - Improved error messages for failed data fetches
+  - Added additional checks for null values
+  ```
+
+- **REFACTOR**: Commits that involve restructuring existing code without changing its external behavior, typically for improving code readability, maintainability, or performance.
+
+  ```
+  REFACTOR: Simplified user service logic and improved readability
+
+  - Extracted common functions into utils.js
+  - Reorganized file structure for services
+  - Removed redundant code
+  ```
+
+- **FIX**: Commits that fix bugs, typos, broken links, linter warnings, or other minor issues.
+
+  ```
+  FIX: Corrected typo in the registration form validation error message
+
+  - Fixed typo in the validation message for email field
+  - Updated unit tests to reflect the corrected message
+  ```
+
+- **TESTS**: Commits that add, update, or improve tests, including unit tests, integration tests, and end-to-end tests.
+
+  ```
+  TESTS: Added unit tests for the authentication service
+
+  - Implemented tests for login and logout functions
+  - Achieved 90% test coverage for the authentication module
+  ```
+
+- **STYLES**: Commits that involve changes to the styles, including CSS, SCSS, styled-components, or any other styling mechanisms.
+
+  ```
+  STYLES: Updated button styles to match the new design guidelines
+
+  - Changed button colors and padding
+  - Updated hover and active states
+  - Ensured consistent styling across all button components
+  ```
+
+- **BUILD**: Commits related to the build process, including configuration files for build tools, scripts, and optimizations for the build process.
+
+  ```
+  BUILD: Optimized webpack configuration for production
+
+  - Enabled code splitting
+  - Configured tree shaking
+  - Minified CSS and JS files
+  ```
+
+- **PRODUCTION**: Commits that are specific to deploying or preparing the application for production, including environment configurations and deployment scripts.
+
+  ```
+  PRODUCTION: Updated environment variables for production deployment
+
+  - Added production API endpoint
+  - Configured production-specific environment variables
+  - Updated deployment scripts for the production environment
+  ```
+
+- **WIP**: Commits that represent work in progress, not yet ready for merging, but need to be committed to save progress.
+
+  ```
+  WIP: Started implementing the user dashboard component
+
+  - Initial layout for the user dashboard
+  - Placeholder data and basic structure in place
+  - To be continued with data integration and styling
+  ```
+
+- **REMOVE**: Commits that remove unused files, obsolete code, or dependencies that are no longer needed.
+
+  ```
+  REMOVE: Deleted deprecated authentication module
+
+  - Removed old authentication module no longer in use
+  - Cleaned up related imports and dependencies
+  - Updated documentation to reflect changes
+  ```
+
 ## Project timeline
 
 ### Start Date (11/Jan/2024)
@@ -512,9 +621,11 @@ Okay so in order to improve how I handle all of this I'm going to modify auth.js
 Jun 9
 I was able to both fix the auth.js with the context provider and to restrict access with a single component. Next steps are to go page by page creating a basic design and coding the important parts. I'm starting with the UserManagement page.
 
-Jun 10 
+Jun 10
 There was an issue with the timing of the auth.jsx states when refreshing due to the useEffect and how it works. The solution was adding a Loading state that would give time for the useEffect to set the states before attempting to use them. I also added a delay so the tranistions look smoother.
 
 Jun 12
 I have been working on making the app even more modular, thinking it was going to be pretty easy. But I stumbled accross an error with my JWT when trying to logout. The issue was resolved by setting up a secret key for JWT and an algorithm.
 I think what I need to do next is learn how to do testing files, for cases so I dont have to manually do everything.
+
+Jun 15
