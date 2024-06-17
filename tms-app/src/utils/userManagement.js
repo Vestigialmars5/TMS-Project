@@ -64,7 +64,7 @@ export const updateUserApi = async ({ userId, username, email, role }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(username, email, role),
+      body: JSON.stringify({username, email, role}),
     });
 
     const response = await res.json();
