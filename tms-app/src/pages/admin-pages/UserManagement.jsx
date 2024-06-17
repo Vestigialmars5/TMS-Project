@@ -1,11 +1,12 @@
 // Add, edit, and remove users. Assign roles and permissions.
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import PaginationComponent from "../../components/shared/PaginationComponent";
 import SearchBox from "../../components/shared/SearchBox";
 import { useUserManagement } from "../../context/UserManagementProvider";
 import UsersTable from "../../components/shared/UsersTable";
 import CreateUser from "../../components/admin/user-management/CreateUser";
+import { debounce } from "../../utils/utils";
 
 const UserManagement = () => {
   const { getUsers, refresh } = useUserManagement();
@@ -27,10 +28,13 @@ const UserManagement = () => {
     }
   };
 
-  const handleSearchChange = (e) => {
-    setSearchField(e.target.value);
-    setPage(1);
-  };
+  const handleSearchChange = useCallback(
+    debounce((e) => {
+      setSearchField(e.target.value);
+      setPage(1);
+    }, 300),
+    []
+  );
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
