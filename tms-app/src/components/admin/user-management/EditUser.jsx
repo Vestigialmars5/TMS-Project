@@ -18,10 +18,10 @@ const EditUser = ({ user, cancelEdit }) => {
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [role, setRole] = useState(user.role);
+  const [userId, setUserId] = useState(user.id);
   const [emailError, setEmailError] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [roleError, setRoleError] = useState("");
-  const [userId, setUserId] = useState(user.id);
 
   const validateUsername = (username) => {
     if (!username) {
@@ -47,20 +47,23 @@ const EditUser = ({ user, cancelEdit }) => {
     return "";
   };
 
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+    setUsernameError(validateUsername(e.target.value));
+    console.log("username", e.target.value);
+  };
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setEmailError(validateEmail(e.target.value));
   };
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
-
   const handleRoleChange = (e) => {
     setRole(e.target.value);
+    setRoleError(validateRole(e.target.value));
   };
 
-  const handleUpdateUser = async (e) => {
+  const handleEditUser = async (e) => {
     e.preventDefault();
     const emailErr = validateEmail(email);
     const usernameErr = validateUsername(username);
@@ -73,9 +76,9 @@ const EditUser = ({ user, cancelEdit }) => {
       setRoleError(roleErr);
     } else {
       try {
-        console.log("trying updating");
-        await updateUser(userId, username, email, role);
+        await updateUser({userId, username, email, role});
         await refreshUsers();
+        cancelEdit();
       } catch (error) {
         console.error(error.message);
       }
@@ -85,39 +88,42 @@ const EditUser = ({ user, cancelEdit }) => {
   return (
     <div>
       <h1>Edit User</h1>
-      <Form>
+      <Form onSubmit={handleEditUser}>
         <Form.Group controlId="username">
           <Form.Label>Username</Form.Label>
           <Form.Control
             type="text"
-            defaultValue={user.username}
+            defaultValue={username}
             onChange={handleUsernameChange}
           />
+          {usernameError && <p>{usernameError}</p>}
         </Form.Group>
 
         <Form.Group controlId="email">
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="email"
-            defaultValue={user.email}
+            defaultValue={email}
             onChange={handleEmailChange}
           />
+          {emailError && <p>{emailError}</p>}
         </Form.Group>
 
         <Form.Group controlId="role">
           <Form.Label>Role</Form.Label>
           <Form.Control
             as="select"
-            defaultValue={user.role}
+            defaultValue={role}
             onChange={handleRoleChange}
           >
             {ROLES.map((role, index) => (
               <option key={index}>{role}</option>
             ))}
           </Form.Control>
+          {roleError && <p>{roleError}</p>}
         </Form.Group>
 
-        <Button variant="primary" type="submit" onSubmit={handleUpdateUser}>
+        <Button variant="primary" type="submit">
           Save
         </Button>
         <Button variant="secondary" type="button" onClick={cancelEdit}>
