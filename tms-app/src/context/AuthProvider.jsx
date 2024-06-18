@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = getToken();
     if (token) {
-      console.log("found token");
       const decoded = decodeToken(token);
       setUser({ email: decoded.email, role: decoded.role });
       setIsLoggedIn(true);
