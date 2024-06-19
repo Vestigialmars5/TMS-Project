@@ -10,7 +10,7 @@ class AuthService:
         password = data.get("password")
 
         # TODO: Get rid of these, retrieve from db
-        role = data.get("role")
+        role = "Admin"
         user_id = data.get("user_id")
 
         if validate_login_credentials(email, password):
