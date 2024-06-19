@@ -1,13 +1,22 @@
 const SERVER_URL = "http://localhost:5000";
 
-export const createUserApi = async ({ email, password, role }) => {
+export const createUserApi = async ({ email, password, roleId }) => {
+  /**
+   * Creates a new user
+   * @param {Object} userData - The user's data
+   * @param {string} userData.email - The user's email
+   * @param {string} userData.password - The user's password
+   * @param {int} userData.roleId - The user's role id
+   * @returns {void}
+   **/
+
   try {
     const res = await fetch(`${SERVER_URL}/api/admin/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password, role }),
+      body: JSON.stringify({ email, password, roleId }),
     });
 
     const response = await res.json();
@@ -22,7 +31,18 @@ export const createUserApi = async ({ email, password, role }) => {
   }
 };
 
+// TODO: Probably remove limit
 export const getUsersApi = async ({ searchField, sort, page, limit }) => {
+  /**
+   * Gets all users
+   * @param {Object} args - The fetch filter
+   * @param {string} args.searchField - The search value
+   * @param {string} args.sort - The sort wanted
+   * @param {int} args.page - The page number
+   * @param {int} args.limit - The limit
+   * @returns {Array} - The users
+   **/
+
   try {
     const res = await fetch(
       `${SERVER_URL}/api/admin/users?search=${searchField}&sort=${sort}&page=${page}&limit=${limit}`
@@ -40,6 +60,12 @@ export const getUsersApi = async ({ searchField, sort, page, limit }) => {
 };
 
 export const deleteUserApi = async (userId) => {
+  /**
+   * Deletes a user
+   * @param {int} userId - The user's id
+   * @returns {void}
+   **/
+
   try {
     const res = await fetch(`${SERVER_URL}/api/admin/users/${userId}`, {
       method: "DELETE",
@@ -57,14 +83,24 @@ export const deleteUserApi = async (userId) => {
   }
 };
 
-export const updateUserApi = async ({ userId, username, email, role }) => {
+export const updateUserApi = async ({ userId, username, email, roleId }) => {
+  /**
+   * Updates a user
+   * @param {Object} userData - The user's new data
+   * @param {int} userData.userId - The user's id
+   * @param {string} userData.username - The user's username
+   * @param {string} userData.email - The user's email
+   * @param {int} userData.roleId - The user's role id
+   * @returns {void}
+   **/
+
   try {
     const res = await fetch(`${SERVER_URL}/api/admin/users/${userId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({username, email, role}),
+      body: JSON.stringify({ username, email, roleId }),
     });
 
     const response = await res.json();
