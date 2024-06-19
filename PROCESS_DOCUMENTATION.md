@@ -628,4 +628,5 @@ Jun 12
 I have been working on making the app even more modular, thinking it was going to be pretty easy. But I stumbled accross an error with my JWT when trying to logout. The issue was resolved by setting up a secret key for JWT and an algorithm.
 I think what I need to do next is learn how to do testing files, for cases so I dont have to manually do everything.
 
-Jun 15
+Jun 19
+I modified the database and added a lot more stuff. So now I need to refactor my code to fix the new schema. Lesson for later -> **Set up the schema before developing the code, cannot use a test database with real code, but can use test code with real database**.
