@@ -20,7 +20,7 @@ class Validator:
 
     @staticmethod
     def is_valid_role(role):
-        # TODO: implementation here
+        # TODO: implementation here, return role id
         pass
 
     @staticmethod

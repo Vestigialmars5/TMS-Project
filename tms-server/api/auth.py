@@ -6,6 +6,7 @@ from services.auth_service import AuthService
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 # TODO: check auth libraries
+# TODO: Add role based access control
 
 
 # TODO: Complete login
@@ -17,12 +18,12 @@ def login():
 
         # TODO: Get rid of this, for testing admin
         db = get_db()
-        res = db.execute("SELECT * FROM users WHERE id = ?", (1,))
+        res = db.execute("SELECT * FROM users WHERE user_id = ?", (1,))
         row = res.fetchone()
-        user_id = row["id"]
+        user_id = row["user_id"]
         email = row["email"]
         password = row["password"]
-        role = row["role"]
+        role = row["role_id"]
         temp_data = {
             "user_id": user_id,
             "email": email,

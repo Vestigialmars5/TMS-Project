@@ -9,7 +9,7 @@ class AuthService:
         email = data.get("email")
         password = data.get("password")
 
-        # TODO: Get rid of these
+        # TODO: Get rid of these, retrieve from db
         role = data.get("role")
         user_id = data.get("user_id")
 
