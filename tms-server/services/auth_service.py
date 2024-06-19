@@ -1,10 +1,18 @@
 from utils.validation import validate_login_credentials
 from utils.token import create_tokens
+from db import get_db
 
 
 class AuthService:
     @staticmethod
     def login(data):
+        """
+        Login user with email and password.
+
+        @param data (dict): The data containing email and password.
+        @return (dict, int): The response and status code.
+        """
+
         print(data)
         email = data.get("email")
         password = data.get("password")
@@ -22,6 +30,13 @@ class AuthService:
     # TODO: Finish this
     @staticmethod
     def logout(data):
+        """
+        Logout user.
+
+        @param data (dict): The data containing the token.
+        @return (dict, int): The response and status code.
+        """
+
         try:
             # TODO: Add jti and blacklist for tokens
             print("Logout successful")
@@ -29,3 +44,27 @@ class AuthService:
         except Exception as e:
             print("During logout error:", e)
             return {"success": False, "error": str(e)}, 400
+
+    @staticmethod
+    def get_roles():
+        """
+        Get all roles.
+
+        @return (dict, int): The response and status code.
+        """
+        try:
+            db = get_db()
+            res = db.execute("SELECT * FROM roles")
+            rows = res.fetchall()
+            roles = []
+            for row in rows:
+                roles.append(
+                    {
+                        "role_id": row["role_id"],
+                        "role_name": row["name"],
+                    }
+                )
+            return {"success": True, "roles": roles}, 200
+        except:
+            print("Error handling db")
+            return {"success": False, "roles": [], "error": "Error handling db"}, 400

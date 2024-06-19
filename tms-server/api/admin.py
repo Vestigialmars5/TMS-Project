@@ -14,6 +14,13 @@ def index():
 # TODO: Complete this
 @admin_blueprint.route("/users", methods=("POST",))
 def create_user():
+    """
+    Create a user.
+    Expected data: (str) email, (str) password, (int) role.
+
+    @return (dict, int): The response and status code.
+    """
+
     if request.method == "POST":
 
         # TODO: Get data from request
@@ -21,15 +28,22 @@ def create_user():
 
         email = data.get("email")
         password = data.get("password")
-        role = data.get("role")
+        role_id = data.get("role")
 
-        response, status = UserService.create_user(email, password, role)
+        response, status = UserService.create_user(email, password, role_id)
 
         return jsonify(response), status
 
 
 @admin_blueprint.route("/users", methods=("GET",))
 def get_users():
+    """
+    Get all users.
+    Expected data: (str) search, (str) sort, (int) page, (int) limit.
+
+    @return (dict, int): The response and status code.
+    """
+
     if request.method == "GET":
 
         search = request.args.get("search", "")
@@ -43,26 +57,41 @@ def get_users():
 
 
 @admin_blueprint.route("/users/<int:id>", methods=("DELETE",))
-def delete_user(id):
+def delete_user(user_id):
+    """
+    Delete a user.
+
+    @param id (int): The user id.
+    @return (dict, int): The response and status code.
+    """
+
     if request.method == "DELETE":
 
-        response, status = UserService.delete_user(id)
+        response, status = UserService.delete_user(user_id)
 
         return jsonify(response), status
 
 
 @admin_blueprint.route("/users/<int:id>", methods=("PUT",))
-def update_user(id):
+def update_user(user_id):
+    """ 
+    Update a user.
+    Expected data: (str) username, (str) email, (int) role.
+
+    @param id (int): The user id.
+    @return (dict, int): The response and status code.
+    """
+
     if request.method == "PUT":
 
         data = request.get_json()
 
         username = data.get("username")
         email = data.get("email")
-        role = data.get("role")
+        role_id = data.get("role")
 
-        print(username, email, role)
+        print(username, email, role_id)
 
-        response, status = UserService.update_user(id, username, email, role)
+        response, status = UserService.update_user(user_id, username, email, role_id)
 
         return jsonify(response), status

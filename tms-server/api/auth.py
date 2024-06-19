@@ -12,6 +12,12 @@ auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 # TODO: Complete login
 @auth_blueprint.route("/login", methods=("POST",))
 def login():
+    """
+    Login user
+    Expected data: email, password
+
+    @return (dict, int): The response and status code
+    """
     if request.method == "POST":
         # Recieve data from request
         data = request.get_json()
@@ -39,11 +45,32 @@ def login():
         return jsonify(response), status
 
 
+# TODO: Specify what data is, if it is token make it token
 @auth_blueprint.route("/logout", methods=["POST"])
 @jwt_required()
 def logout():
+    """
+    Logout user.
+    Expected data: token.
+
+    @return (dict, int): The response and status code.
+    """
     if request.method == "POST":
         data = request.get_json()
         response, status = AuthService.logout(data)
+
+        return jsonify(response), status
+
+
+@auth_blueprint.route("/roles", methods=("GET",))
+@jwt_required()
+def get_roles():
+    """
+    Get all roles.
+
+    @return (dict, int): The response and status code.
+    """
+    if request.method == "GET":
+        response, status = AuthService.get_roles()
 
         return jsonify(response), status
