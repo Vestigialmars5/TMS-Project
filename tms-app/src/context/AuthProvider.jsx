@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { login as loginApi, logout as logoutApi } from "../utils/auth";
+import { loginApi, logoutApi } from "../utils/auth";
 import { decodeToken, getToken } from "../utils/tokenFunctions";
 
 const AuthContext = createContext();
@@ -50,13 +50,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getRoles = async () => {
+    try {
+      const roles = await getRolesApi();
+      return { roles };
+    } catch (error) {
+      console.error("Error retrieving roles", error.message);
+      return { error };
+    }
+  }
+
   const isAuthorized = (requiredRole) => {
     return user && user.role === requiredRole;
   };
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, user, loading, login, logout, isAuthorized }}
+      value={{ isLoggedIn, user, loading, login, logout, isAuthorized, getRoles }}
     >
       {children}
     </AuthContext.Provider>
