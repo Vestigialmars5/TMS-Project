@@ -1,9 +1,20 @@
-import { decodeToken, getToken, removeToken, storeToken } from "./tokenFunctions";
+import {
+  decodeToken,
+  getToken,
+  removeToken,
+  storeToken,
+} from "./tokenFunctions";
 const SERVER_URL = "http://localhost:5000";
 
-// Move login logic here
-export const login = async ({ email, password }) => {
-  console.log("inside the login async");
+export const loginApi = async ({ email, password }) => {
+  /**
+   * Logs in the user
+   * @param {Object} credentials - The user's credentials
+   * @param {string} credentials.email - The user's email
+   * @param {string} credentials.password - The user's password
+   * @returns {Object} - The user's data
+   **/
+
   try {
     const res = await fetch(`${SERVER_URL}/api/auth/login`, {
       method: "POST",
@@ -27,8 +38,12 @@ export const login = async ({ email, password }) => {
   }
 };
 
-// TODO: Move logout logic here
-export const logout = async () => {
+export const logoutApi = async () => {
+  /**
+   * Logs out the user
+   * @returns {void}
+   **/
+
   const token = getToken();
   try {
     const res = await fetch(`${SERVER_URL}/api/auth/logout`, {
@@ -46,8 +61,35 @@ export const logout = async () => {
     }
 
     removeToken();
-
   } catch (error) {
     throw new Error("Error Logging out:", error);
+  }
+};
+
+export const getRolesApi = async () => {
+  /**
+   * Retrieves the roles
+   * @returns {Array} - The roles, an array of dics with role_id and role_name
+   **/
+
+  const token = getToken();
+  try {
+    const res = await fetch(`${SERVER_URL}/api/auth/roles`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.error);
+    }
+
+    return response.roles;
+  } catch (error) {
+    throw new Error(`Error retrieving roles: ${error}`);
   }
 };
