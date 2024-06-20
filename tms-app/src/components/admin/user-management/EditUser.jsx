@@ -2,26 +2,26 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useUserManagement } from "../../../context/UserManagementProvider";
 import { useState } from "react";
+import { useEffect } from "react";
+import { useAuth } from "../../../context/AuthProvider";
 
-const ROLES = [
-  "admin",
-  "transportation manager",
-  "carrier",
-  "customer/shipper",
-  "driver",
-  "accounting",
-  "warehouse manager",
-];
 
 const EditUser = ({ user, cancelEdit }) => {
   const { updateUser, refreshUsers } = useUserManagement();
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
-  const [role, setRole] = useState(user.role);
+  const [roleId, setRoleId] = useState(user.role);
   const [userId, setUserId] = useState(user.id);
   const [emailError, setEmailError] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [roleError, setRoleError] = useState("");
+  const { getRoles, roles } = useAuth();
+
+  useEffect(() => {
+    if (roles.length === 0) {
+      getRoles();
+    }
+  }, []);
 
   const validateUsername = (username) => {
     if (!username) {
@@ -40,8 +40,9 @@ const EditUser = ({ user, cancelEdit }) => {
     return "";
   };
 
-  const validateRole = (role) => {
-    if (!ROLES.includes(role)) {
+  const validateRole = (roleId) => {
+    console.log("roles", roleId);
+    if (!roles.some((role) => role.id === roleId)) {
       return "Invalid role";
     }
     return "";
@@ -59,15 +60,17 @@ const EditUser = ({ user, cancelEdit }) => {
   };
 
   const handleRoleChange = (e) => {
-    setRole(e.target.value);
-    setRoleError(validateRole(e.target.value));
+    const idString = e.target.value;
+    const idInt = parseInt(idString);
+    setRoleId(idInt);
+    setRoleError(validateRole(idInt));
   };
 
   const handleEditUser = async (e) => {
     e.preventDefault();
     const emailErr = validateEmail(email);
     const usernameErr = validateUsername(username);
-    const roleErr = validateRole(role);
+    const roleErr = validateRole(roleId);
 
     // TODO: Validations
     if (emailError || usernameError || roleError) {
@@ -76,7 +79,7 @@ const EditUser = ({ user, cancelEdit }) => {
       setRoleError(roleErr);
     } else {
       try {
-        await updateUser({userId, username, email, role});
+        await updateUser({userId, username, email, roleId});
         await refreshUsers();
         cancelEdit();
       } catch (error) {
@@ -116,8 +119,8 @@ const EditUser = ({ user, cancelEdit }) => {
             defaultValue={role}
             onChange={handleRoleChange}
           >
-            {ROLES.map((role, index) => (
-              <option key={index}>{role}</option>
+            {roles.map((role, index) => (
+              <option key={index} value={role.id}>{role.name}</option>
             ))}
           </Form.Control>
           {roleError && <p>{roleError}</p>}

@@ -8,7 +8,9 @@ const UsersTable = () => {
   const { loading, users } = useUserManagement();
 
   useEffect(() => {}, [users]);
-
+  for (let i = 0; i < users.length; i++) {
+    console.log(users[i]);
+  };
   return (
     <>
       <ListGroup horizontal>

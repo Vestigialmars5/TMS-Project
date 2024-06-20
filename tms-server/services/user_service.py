@@ -1,4 +1,5 @@
 import logging
+import sqlite3
 from db import get_db
 from werkzeug.security import generate_password_hash
 
@@ -18,22 +19,30 @@ class UserService:
         try:
             db = get_db()
             query, params = UserService._construct_query(search, sort, page, limit)
+            print(query, params)
+            try:
+                res = db.execute(query, tuple(params))
+            except sqlite3.OperationalError as e:
+                logging.error(e)
 
-            res = db.execute(query, tuple(params))
-            rows = res.fetchall()
-            users = []
-            for row in rows:
-                users.append(
-                    {
-                        "id": row["user_id"],
-                        "username": row["username"],
-                        "email": row["email"],
-                        "role_id": row["role_id"],
-                    }
-                )
-
+            try:
+                rows = res.fetchall()
+                users = []
+                for row in rows:
+                    users.append(
+                        {
+                            "id": row["user_id"],
+                            "username": row["username"],
+                            "email": row["email"],
+                            "role_id": row["role_id"],
+                            "role_name": row["role_name"],
+                        }
+                    )
+            except Exception as e:
+                logging.error(e)
             return {"success": True, "users": users}, 200
-        except:
+        except Exception as e:
+            logging.error(e)
             print("Error handling db")
             return {"success": False, "users": [], "error": "Error handling db"}, 400
 
@@ -127,10 +136,23 @@ class UserService:
         """
 
         if search:
-            query = "SELECT * FROM users WHERE username LIKE ? "
+            query = (
+                "SELECT users.user_id",
+                "users.username",
+                "users.email",
+                "users.role_id",
+                "roles.role_name "
+                "FROM users WHERE username LIKE ? JOIN roles ON users.role_id = roles.role_id")
             params = ["%" + search + "%"]
         else:
-            query = "SELECT * FROM users "
+            query = """
+                SELECT users.user_id,
+                users.username,
+                users.email,
+                users.role_id,
+                roles.role_name 
+                FROM users JOIN roles ON users.role_id = roles.role_id)"""
+
             params = []
 
         if sort == "asc":
