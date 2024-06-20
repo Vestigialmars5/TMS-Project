@@ -1,6 +1,7 @@
+// TODO: Make this flexible
 export const navigateBasedOnRole = (userRole, navigate) => {
     switch (userRole) {
-        case "admin":
+        case "Admin":
             navigate("/admin");
             break;
         default:

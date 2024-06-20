@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 import { navigateBasedOnRole } from "../../utils/navigation";
+import Spinner from "react-bootstrap/esm/Spinner";
 
 const CustomRoute = ({ requiredRole, requiredRestriction }) => {
   const { loading, isLoggedIn, isAuthorized } = useAuth();
@@ -9,8 +10,9 @@ const CustomRoute = ({ requiredRole, requiredRestriction }) => {
 
   console.log("Accessing a custom route", isLoggedIn.toString());
   
+  
   if (loading) {
-    return <h1>Loading...</h1>
+    return <Spinner animation="border" />;
   }
 
 
