@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { loginApi, logoutApi } from "../utils/auth";
+import { loginApi, logoutApi, getRolesApi } from "../utils/auth";
 import { decodeToken, getToken } from "../utils/tokenFunctions";
 
 const AuthContext = createContext();
@@ -61,6 +61,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   const isAuthorized = (requiredRole) => {
+    console.log("User role", user.role);
     return user && user.role === requiredRole;
   };
 
