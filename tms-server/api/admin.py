@@ -28,7 +28,7 @@ def create_user():
 
         email = data.get("email")
         password = data.get("password")
-        role_id = data.get("role")
+        role_id = data.get("roleId")
 
         response, status = UserService.create_user(email, password, role_id)
 

@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [roles, setRoles] = useState([]);
 
   // On mount check for token, this is if still logged in
   useEffect(() => {
@@ -53,10 +54,9 @@ export const AuthProvider = ({ children }) => {
   const getRoles = async () => {
     try {
       const roles = await getRolesApi();
-      return { roles };
+      setRoles(roles);
     } catch (error) {
       console.error("Error retrieving roles", error.message);
-      return { error };
     }
   }
 
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, user, loading, login, logout, isAuthorized, getRoles }}
+      value={{ isLoggedIn, user, loading, roles, login, logout, isAuthorized, getRoles }}
     >
       {children}
     </AuthContext.Provider>

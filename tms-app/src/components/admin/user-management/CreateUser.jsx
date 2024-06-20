@@ -8,7 +8,6 @@ const CreateUser = () => {
 
   const hanldeCreateUser = async (userData) => {
     try {
-      console.log("trying creating");
       await createUser(userData);
       await refreshUsers();
     } catch (error) {

@@ -1,23 +1,21 @@
-import React, { useState } from "react";
-
-const ROLES = [
-  "admin",
-  "transportation manager",
-  "carrier",
-  "customer/shipper",
-  "driver",
-  "accounting",
-  "warehouse manager",
-];
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../../../context/AuthProvider";
 
 const CreateUserForm = ({ onSubmit, errorMessage }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+  const [roleId, setRoleId] = useState(0);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [roleError, setRoleError] = useState("");
   const [selected, setSelected] = useState("Select Role");
+  const { getRoles, roles } = useAuth();
+
+  useEffect(() => {
+    if (roles.length === 0) {
+      getRoles();
+    }
+  }, []);
 
   const validateEmail = (email) => {
     if (!email) {
@@ -38,8 +36,8 @@ const CreateUserForm = ({ onSubmit, errorMessage }) => {
   };
 
   // TODO: Validate role
-  const validateRole = (role) => {
-    if (!ROLES.includes(role)) {
+  const validateRole = (roleId) => {
+    if (!roles.some(role => role.id === roleId)) {
       return "Invalid role";
     }
     return "";
@@ -56,22 +54,24 @@ const CreateUserForm = ({ onSubmit, errorMessage }) => {
   };
 
   const handleRoleChange = (e) => {
-    setRole(e.target.value);
-    setRoleError(validateRole(e.target.value));
+    const idString = e.target.value;
+    const idInt = parseInt(idString);
+    setRoleId(idInt);
+    setRoleError(validateRole(idInt));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const emailErr = validateEmail(email);
     const passwordErr = validatePassword(password);
-    const roleErr = validateRole(role);
+    const roleErr = validateRole(roleId);
 
     if (emailErr || passwordErr || roleErr) {
       setEmailError(emailErr);
       setPasswordError(passwordErr);
       setRoleError(roleErr);
     } else {
-      onSubmit({ email, password, role });
+      onSubmit({ email, password, roleId });
     }
   };
 
@@ -103,9 +103,9 @@ const CreateUserForm = ({ onSubmit, errorMessage }) => {
             <option disabled value={"Select Role"}>
               Select Role
             </option>
-            {ROLES.map((role, index) => (
-              <option key={index} value={role}>
-                {role.charAt(0).toUpperCase() + role.slice(1)}
+            {roles.map((role, index) => (
+              <option key={index} value={role.id}>
+                {role.name.charAt(0).toUpperCase() + role.name.slice(1)}
               </option>
             ))}
           </select>

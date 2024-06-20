@@ -69,7 +69,7 @@ export const logoutApi = async () => {
 export const getRolesApi = async () => {
   /**
    * Retrieves the roles
-   * @returns {Array} - The roles, an array of dics with role_id and role_name
+   * @returns {Array} - The roles, an array of dics with id and name
    **/
 
   const token = getToken();
