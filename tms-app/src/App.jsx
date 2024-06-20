@@ -33,7 +33,7 @@ function App() {
               {/* Private routes for admin */}
               <Route
                 path="/admin"
-                element={<CustomRoute requiredRole="admin" />}
+                element={<CustomRoute requiredRole="Admin" />}
               >
                 <Route
                   index

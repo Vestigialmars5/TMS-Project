@@ -61,10 +61,11 @@ class AuthService:
                 roles.append(
                     {
                         "role_id": row["role_id"],
-                        "role_name": row["name"],
+                        "role_name": row["role_name"],
                     }
                 )
             return {"success": True, "roles": roles}, 200
-        except:
-            print("Error handling db")
-            return {"success": False, "roles": [], "error": "Error handling db"}, 400
+        except sqlite3.Error as e:
+                return {"success": False, "roles": [], "error": "Database error"}, 400
+        except Exception as e:
+            return {"success": False, "roles": [], "error": e}, 400
