@@ -1,8 +1,7 @@
 from utils.validation import validate_login_credentials
 from utils.token import create_tokens
 from db import get_db
-
-
+import sqlite3
 class AuthService:
     @staticmethod
     def login(data):
