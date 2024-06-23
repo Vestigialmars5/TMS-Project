@@ -27,7 +27,7 @@ const Login = () => {
       setLoginError(`An Error Occurred: ${res.error}`);
     } else {
       console.log("Login successful");
-      navigateBasedOnRole(res.role, navigate);
+      navigateBasedOnRole(res.roleName, navigate);
     }
   };
 

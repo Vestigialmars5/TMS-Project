@@ -33,8 +33,8 @@ export const AuthProvider = ({ children }) => {
       const userData = await loginApi(credentials.email, credentials.password);
       setUser(userData);
       setIsLoggedIn(true);
-      const role = userData.role;
-      return { role };
+      const roleName = userData.roleName;
+      return { roleName };
     } catch (error) {
       console.error("Login error", error.message);
       return { error };
