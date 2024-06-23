@@ -62,7 +62,8 @@ export const AuthProvider = ({ children }) => {
 
   const isAuthorized = (requiredRoleId) => {
     console.log("User role", user.roleId);
-    return user && user.roleID === requiredRoleId;
+    console.log("Required role", requiredRoleId);
+    return user && user.roleId === requiredRoleId;
   };
 
   return (

@@ -15,13 +15,15 @@ class AuthService:
         print(data)
         email = data.get("email")
         password = data.get("password")
+        role_id = data.get("role_id")
 
         # TODO: Get rid of these, retrieve from db
-        role = "Admin"
+        role_name = "Admin"
+
         user_id = data.get("user_id")
 
         if validate_login_credentials(email, password):
-            access_token = create_tokens(user_id, {"email": email, "roleName": role})
+            access_token = create_tokens(user_id, {"email": email, "roleName": role_name, "roleId": role_id})
             return {"success": True, "access_token": access_token}, 200
 
         return {"success": False, "error": "Invalid Email Or Password"}, 401

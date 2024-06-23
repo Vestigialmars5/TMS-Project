@@ -27,7 +27,7 @@ const CustomRoute = ({ requiredRoleId, requiredRestriction }) => {
 
     if (!isAuthorized(requiredRoleId)) {
       console.log("unauthorized");
-      console.log("required", requiredRole);
+      console.log("required", requiredRoleId);
       return <Navigate to="/home" replace />;
     }
   }

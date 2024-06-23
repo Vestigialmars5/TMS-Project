@@ -13,7 +13,7 @@ const Home = () => {
       <div>This is the home page.</div>
       <div className={"buttonContainer"}>
         {isLoggedIn ? <div>Your email address is {user.email}</div> : <div />}
-        {isLoggedIn ? <div>Your role is {user.role}</div> : <div />}
+        {isLoggedIn ? <div>Your role is {user.roleName}</div> : <div />}
       </div>
     </div>
   );
