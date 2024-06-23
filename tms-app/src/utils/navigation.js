@@ -1,4 +1,4 @@
-// TODO: Make this flexible
+// TODO: Make this flexible and probably incluede based on roleid
 export const navigateBasedOnRole = (userRole, navigate) => {
     switch (userRole) {
         case "Admin":

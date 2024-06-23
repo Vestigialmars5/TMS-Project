@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthProvider";
 import { navigateBasedOnRole } from "../../utils/navigation";
 import Spinner from "react-bootstrap/esm/Spinner";
 
-const CustomRoute = ({ requiredRole, requiredRestriction }) => {
+const CustomRoute = ({ requiredRoleId, requiredRestriction }) => {
   const { loading, isLoggedIn, isAuthorized } = useAuth();
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ const CustomRoute = ({ requiredRole, requiredRestriction }) => {
 
 
   // Based on a required role
-  if (requiredRole) {
+  if (requiredRoleId) {
     console.log("A role is required");
     console.log(isLoggedIn.toString());
     if (!isLoggedIn) {
@@ -25,7 +25,7 @@ const CustomRoute = ({ requiredRole, requiredRestriction }) => {
       return <Navigate to="/login" replace />;
     }
 
-    if (!isAuthorized(requiredRole)) {
+    if (!isAuthorized(requiredRoleId)) {
       console.log("unauthorized");
       console.log("required", requiredRole);
       return <Navigate to="/home" replace />;
