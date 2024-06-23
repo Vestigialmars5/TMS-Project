@@ -630,3 +630,6 @@ I think what I need to do next is learn how to do testing files, for cases so I 
 
 Jun 19
 I modified the database and added a lot more stuff. So now I need to refactor my code to fix the new schema. Lesson for later -> **Set up the schema before developing the code, cannot use a test database with real code, but can use test code with real database**.
+
+Jun 23
+I decided to declare how to pass data from and to the db. The rule will be to leave the data ready to use for the other. For example passing role_name: "Admin" to the frontend would be setting it as roleName in the backend.
