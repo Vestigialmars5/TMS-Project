@@ -59,8 +59,8 @@ class AuthService:
             for row in rows:
                 roles.append(
                     {
-                        "id": row["role_id"],
-                        "name": row["role_name"],
+                        "roleId": row["role_id"],
+                        "roleName": row["role_name"],
                     }
                 )
             return {"success": True, "roles": roles}, 200

@@ -8,14 +8,14 @@ const UserCard = ({ user }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleDeleteUser = async () => {
-    console.log("Delete user by id", user.id);
+    console.log("Delete user by id", user.userId);
     // TODO: Make it better Confirm dialog
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this user?"
     );
     if (confirmDelete) {
       try {
-        await deleteUser(user.id);
+        await deleteUser(user.userId);
         await refreshUsers();
       } catch (error) {
         console.error(error.message);
@@ -24,7 +24,7 @@ const UserCard = ({ user }) => {
   };
 
   const handleEdit = () => {
-    console.log("Edit user by id", user.id);
+    console.log("Edit user by id", user.userId);
     setIsEditing(true);
   };
 
@@ -38,9 +38,9 @@ const UserCard = ({ user }) => {
       {isEditing && <EditUser user={user} cancelEdit={cancelEdit} />}
       <ListGroup horizontal>
         <ListGroup.Item>{user.username}</ListGroup.Item>
-        <ListGroup.Item>{user.id}</ListGroup.Item>
+        <ListGroup.Item>{user.userId}</ListGroup.Item>
         <ListGroup.Item>{user.email}</ListGroup.Item>
-        <ListGroup.Item>{user.role}</ListGroup.Item>
+        <ListGroup.Item>{user.roleName}</ListGroup.Item>
         <ListGroup.Item>
           <button onClick={handleEdit}>Edit</button>
           <button onClick={handleDeleteUser}>Delete</button>

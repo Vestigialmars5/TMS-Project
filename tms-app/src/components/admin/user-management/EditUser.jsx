@@ -5,13 +5,13 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useAuth } from "../../../context/AuthProvider";
 
-
 const EditUser = ({ user, cancelEdit }) => {
   const { updateUser, refreshUsers } = useUserManagement();
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
-  const [roleId, setRoleId] = useState(user.role);
-  const [userId, setUserId] = useState(user.id);
+  const [roleId, setRoleId] = useState(user.roleId);
+  const [roleName, setRoleName] = useState(user.roleName);
+  const [userId, setUserId] = useState(user.userId);
   const [emailError, setEmailError] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [roleError, setRoleError] = useState("");
@@ -22,6 +22,11 @@ const EditUser = ({ user, cancelEdit }) => {
       getRoles();
     }
   }, []);
+
+  const getRoleName = (roleId) => {
+    const role = roles.find((role) => role.roleId === roleId);
+    return role ? role.roleName : "Invalid role";
+  };
 
   const validateUsername = (username) => {
     if (!username) {
@@ -42,9 +47,10 @@ const EditUser = ({ user, cancelEdit }) => {
 
   const validateRole = (roleId) => {
     console.log("roles", roleId);
-    if (!roles.some((role) => role.id === roleId)) {
+    if (!roles.some((role) => role.roleId === roleId)) {
       return "Invalid role";
     }
+    setRoleName(getRoleName(roleId));
     return "";
   };
 
@@ -79,7 +85,7 @@ const EditUser = ({ user, cancelEdit }) => {
       setRoleError(roleErr);
     } else {
       try {
-        await updateUser({userId, username, email, roleId});
+        await updateUser({ userId, username, email, roleId });
         await refreshUsers();
         cancelEdit();
       } catch (error) {
@@ -114,13 +120,11 @@ const EditUser = ({ user, cancelEdit }) => {
 
         <Form.Group controlId="role">
           <Form.Label>Role</Form.Label>
-          <Form.Control
-            as="select"
-            defaultValue={role}
-            onChange={handleRoleChange}
-          >
+          <Form.Control as="select" value={roleId} onChange={handleRoleChange}>
             {roles.map((role, index) => (
-              <option key={index} value={role.id}>{role.name}</option>
+              <option key={index} value={role.roleId}>
+                {role.roleName}
+              </option>
             ))}
           </Form.Control>
           {roleError && <p>{roleError}</p>}

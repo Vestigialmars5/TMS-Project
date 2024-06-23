@@ -37,7 +37,7 @@ const CreateUserForm = ({ onSubmit, errorMessage }) => {
 
   // TODO: Validate role
   const validateRole = (roleId) => {
-    if (!roles.some(role => role.id === roleId)) {
+    if (!roles.some(role => role.roleId === roleId)) {
       return "Invalid role";
     }
     return "";
@@ -104,8 +104,8 @@ const CreateUserForm = ({ onSubmit, errorMessage }) => {
               Select Role
             </option>
             {roles.map((role, index) => (
-              <option key={index} value={role.id}>
-                {role.name.charAt(0).toUpperCase() + role.name.slice(1)}
+              <option key={index} value={role.roleId}>
+                {role.roleName.charAt(0).toUpperCase() + role.roleName.slice(1)}
               </option>
             ))}
           </select>

@@ -31,11 +31,11 @@ class UserService:
                 for row in rows:
                     users.append(
                         {
-                            "id": row["user_id"],
+                            "userId": row["user_id"],
                             "username": row["username"],
                             "email": row["email"],
-                            "role_id": row["role_id"],
-                            "role_name": row["role_name"],
+                            "roleId": row["role_id"],
+                            "roleName": row["role_name"],
                         }
                     )
             except Exception as e:
@@ -135,33 +135,28 @@ class UserService:
         @return (str, list): The query and params.
         """
 
-        if search:
-            query = (
-                "SELECT users.user_id",
-                "users.username",
-                "users.email",
-                "users.role_id",
-                "roles.role_name "
-                "FROM users WHERE username LIKE ? JOIN roles ON users.role_id = roles.role_id")
-            params = ["%" + search + "%"]
-        else:
-            query = """
-                SELECT users.user_id,
+        base_query = """
+            SELECT users.user_id,
                 users.username,
                 users.email,
                 users.role_id,
-                roles.role_name 
-                FROM users JOIN roles ON users.role_id = roles.role_id)"""
+                roles.role_name
+            FROM users
+            JOIN roles ON users.role_id = roles.role_id
+        """
+        params = []
 
-            params = []
+        if search:
+            base_query += " WHERE username LIKE ?"
+            params.append("%" + search + "%")
 
         if sort == "asc":
-            query += "ORDER BY username ASC "
+            base_query += " ORDER BY users.username ASC"
         else:
-            query += "ORDER BY username DESC "
+            base_query += " ORDER BY users.username DESC"
 
         offset = (page - 1) * limit
-        query += "LIMIT ? OFFSET ?"
+        base_query += " LIMIT ? OFFSET ?"
         params.extend([limit, offset])
 
-        return query, params
+        return base_query, params
