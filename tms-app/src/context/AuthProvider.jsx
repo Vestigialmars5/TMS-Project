@@ -17,7 +17,11 @@ export const AuthProvider = ({ children }) => {
     const token = getToken();
     if (token) {
       const decoded = decodeToken(token);
-      setUser({ email: decoded.email, role: decoded.role });
+      setUser({
+        email: decoded.email,
+        roleName: decoded.roleName,
+        roleId: decoded.roleId,
+      });
       setIsLoggedIn(true);
     }
 
@@ -58,7 +62,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error retrieving roles", error.message);
     }
-  }
+  };
 
   const isAuthorized = (requiredRoleId) => {
     console.log("User role", user.roleId);
@@ -68,7 +72,16 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, user, loading, roles, login, logout, isAuthorized, getRoles }}
+      value={{
+        isLoggedIn,
+        user,
+        loading,
+        roles,
+        login,
+        logout,
+        isAuthorized,
+        getRoles,
+      }}
     >
       {children}
     </AuthContext.Provider>

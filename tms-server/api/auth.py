@@ -34,7 +34,7 @@ def login():
             "user_id": user_id,
             "email": email,
             "password": password,
-            "role": role,
+            "role_id": role,
         }
 
         # TODO: Pass actual data
