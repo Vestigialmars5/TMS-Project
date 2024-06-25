@@ -18,6 +18,7 @@ class AuthService:
         role_id = data.get("role_id")
 
         # TODO: Get rid of these, retrieve from db
+        # Maybe even from profile_service
         role_name = "Admin"
 
         user_id = data.get("user_id")
