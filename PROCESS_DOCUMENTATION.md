@@ -420,8 +420,6 @@ Here's an example directory and file structure following these guidelines:
 - **504 Gateway Timeout**
   - Example: The server, while acting as a gateway or proxy, did not receive a timely response from the upstream server.
 
-##
-
 ## Project timeline
 
 ### Start Date (11/Jan/2024)

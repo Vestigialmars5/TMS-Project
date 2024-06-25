@@ -1,4 +1,4 @@
-from flask import jsonify, redirect, session
+from flask import jsonify
 from functools import wraps
 
 from flask_jwt_extended import get_jwt_identity, jwt_required
