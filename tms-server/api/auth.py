@@ -11,7 +11,7 @@ auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 
 # TODO: Complete login
-@auth_blueprint.route("/login", methods=("POST",))
+@auth_blueprint.route("/login", methods=["POST"])
 def login():
     """
     Login user
@@ -63,7 +63,7 @@ def logout():
         return jsonify(response), status
 
 
-@auth_blueprint.route("/roles", methods=("GET",))
+@auth_blueprint.route("/roles", methods=["GET"])
 @jwt_required()
 def get_roles():
     """
