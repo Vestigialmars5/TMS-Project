@@ -3,14 +3,14 @@ from flask_cors import CORS
 import secrets
 from api.admin import admin_blueprint
 from api.auth import auth_blueprint
-from flask_jwt_extended import JWTManager
+from jwt_config import jwt
 
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
 app.config["JWT_SECRET_KEY"] = secrets.token_hex(32)
 app.config["JWT_ALGORITHM"] = "HS256"
-jwt = JWTManager(app)
+jwt.init_app(app)
 
 CORS(app)
 

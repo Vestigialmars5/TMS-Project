@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
+from jwt_config import jwt
 from db import get_db
 from services.auth_service import AuthService
 
@@ -74,3 +75,15 @@ def get_roles():
         response, status = AuthService.get_roles()
 
         return jsonify(response), status
+
+
+@jwt.unauthorized_loader
+def unauthorized_response(callback):
+    print("Unauthorized access")
+    return jsonify({"success": False, "error": "Unauthorized access, no JWT"}), 401
+
+
+@jwt.invalid_token_loader
+def invalid_token_response(callback):
+    print("Invalid token")
+    return jsonify({"success": False, "error": "Invalid token"}), 401
