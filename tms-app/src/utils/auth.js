@@ -84,7 +84,9 @@ export const getRolesApi = async () => {
 
     const response = await res.json();
 
-    if (!res.ok) {
+    if (res.status === 401) {
+      throw new Error("Unauthorized");
+    } else if (!res.ok) { // TODO: Add more error handling
       throw new Error(response.error);
     }
 
