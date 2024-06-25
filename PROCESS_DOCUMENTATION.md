@@ -351,6 +351,77 @@ Here's an example directory and file structure following these guidelines:
   - Updated documentation to reflect changes
   ```
 
+# Status Codes Cheat Sheet
+
+## Informational (1xx)
+
+### Descriptions of provisional responses. The server has received the request headers, and the client should proceed to send the request body (if any).
+
+- **100 Continue**
+  - Example: The client should continue with its request.
+- **101 Switching Protocols**
+  - Example: The client has requested the server to switch protocols, and the server has agreed to do so.
+
+## Successful (2xx)
+
+### Indicates that the client's request was successfully received, understood, and accepted.
+
+- **200 OK**
+  - Example: The request has succeeded. Response to a successful GET, PUT, or DELETE.
+- **201 Created**
+  - Example: The request has been fulfilled, resulting in the creation of a new resource.
+- **202 Accepted**
+  - Example: The request has been accepted for processing, but the processing has not been completed.
+- **204 No Content**
+  - Example: The server has successfully processed the request, but is not returning any content.
+
+## Redirection (3xx)
+
+### Further action needs to be taken by the user agent to fulfill the request.
+
+- **301 Moved Permanently**
+  - Example: The requested resource has been permanently moved to a new URL.
+- **302 Found**
+  - Example: The requested resource has been temporarily moved to a different URL.
+- **304 Not Modified**
+  - Example: The resource has not been modified since the last request.
+
+## Client Error (4xx)
+
+### The request contains bad syntax or cannot be fulfilled.
+
+- **400 Bad Request**
+  - Example: The server cannot process the request due to a client error (e.g., malformed request syntax).
+- **401 Unauthorized**
+  - Example: The request requires user authentication. Response for missing or invalid JWT.
+- **403 Forbidden**
+  - Example: The server understands the request but refuses to authorize it.
+- **404 Not Found**
+  - Example: The server cannot find the requested resource.
+- **405 Method Not Allowed**
+  - Example: The request method is not supported for the requested resource.
+- **409 Conflict**
+  - Example: The request could not be processed due to a conflict with the current state of the resource.
+- **429 Too Many Requests**
+  - Example: The user has sent too many requests in a given amount of time.
+
+## Server Error (5xx)
+
+### The server failed to fulfill a valid request.
+
+- **500 Internal Server Error**
+  - Example: The server encountered an unexpected condition that prevented it from fulfilling the request.
+- **501 Not Implemented**
+  - Example: The server does not support the functionality required to fulfill the request.
+- **502 Bad Gateway**
+  - Example: The server, while acting as a gateway or proxy, received an invalid response from the upstream server.
+- **503 Service Unavailable**
+  - Example: The server is currently unable to handle the request due to maintenance or overload.
+- **504 Gateway Timeout**
+  - Example: The server, while acting as a gateway or proxy, did not receive a timely response from the upstream server.
+
+##
+
 ## Project timeline
 
 ### Start Date (11/Jan/2024)
@@ -634,3 +705,7 @@ I modified the database and added a lot more stuff. So now I need to refactor my
 Jun 23
 I decided to declare how to pass data from and to the db. The rule will be to leave the data ready to use for the other. For example passing role_name: "Admin" to the frontend would be setting it as roleName in the backend.
 I'm having trouble validating token, I'm researching and it turns out that the OPTIONS request in the preflight is having trouble with the jwt_required decorator. I think the solution is very simple since I've had this issue before but I just can't fix it.
+
+Jun 24
+Turns out the error was so simple, I had a typo in the endpoint. At the end I didn't even need that API. But the way I was able to find the error was through the devtools. I don't know how it didn't cross my mind that the preflight was failing because it couldn't find the endpoint. I was too focused, thinking the error was with how jwt_required was working. Anyways, I don't need that because of protected endpoints. What I do need to do is handle the unauthorized access status code and force logout when a jwt is invalid.
+I also need to make a status code cheatsheet.
