@@ -10,6 +10,7 @@ import { AuthProvider } from "./context/AuthProvider";
 import { UserManagementProvider } from "./context/UserManagementProvider";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Onboarding from "./pages/onboarding/Onboarding";
 
 function App() {
   return (
@@ -29,6 +30,15 @@ function App() {
                 <Route index element={<Login />} />
               </Route>
               {/* End logged out only */}
+
+              {/* Logged in only, any user */}
+              <Route
+                path="/onboarding"
+                element={<CustomRoute requiredRestriction="loggedIn" />}
+              >
+                <Route index element={<Onboarding />} />
+              </Route>
+              {/* End logged in only, any user */}
 
               {/* Private routes for admin */}
               <Route
