@@ -49,32 +49,26 @@ class ProfileService:
             print(e)
             return {"success": False, "error": "Error handling db"}, 400
 
-
     @staticmethod
-    def update_profile(user_id, data):
-        """
-        Update the user profile.
-
-        @param user_id (int): The user id.
-        @param data (dict): The data containing the user details.
-        @return (dict, int): The response and status code.
-        """
-        
-        username = data.get("username")
-        email = data.get("email")
-        password = data.get("password")
-        first_name = data.get("first_name")
-        last_name = data.get("last_name")
-        phone_number = data.get("phone_number")
-        address = data.get("address")
+    def update_profile(
+        user_id,
+        email,
+        password,
+        confirmation,
+        first_name,
+        last_name,
+        phone_number,
+        address,
+    ):
+        print(user_id, email, password, confirmation, first_name, last_name, phone_number, address)
 
         # TODO: Validation
 
         try:
             db = get_db()
             db.execute(
-                "UPDATE users SET username = ?, email = ?, password = ? WHERE user_id = ?",
-                (username, email, generate_password_hash(password), user_id),
+                "UPDATE users SET email = ?, password = ? WHERE user_id = ?",
+                (email, generate_password_hash(password), user_id),
             )
 
             db.execute(
