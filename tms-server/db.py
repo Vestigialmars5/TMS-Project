@@ -12,3 +12,7 @@ def get_db(row=True):
             # Set queries to return Row objects
             g.db.row_factory = sql.Row
     return g.db
+
+
+# TODO: Make functions for specific common queries
+# Like get contact info, get user credentials info, get role info, etc.
