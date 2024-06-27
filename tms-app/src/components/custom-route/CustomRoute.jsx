@@ -5,10 +5,10 @@ import { navigateBasedOnRole } from "../../utils/navigation";
 import Spinner from "react-bootstrap/esm/Spinner";
 
 const CustomRoute = ({ requiredRoleId, requiredRestriction }) => {
-  const { loading, isLoggedIn, isAuthorized } = useAuth();
+  const { loading, isLoggedIn, isOnboarded, isAuthorized } = useAuth();
   const navigate = useNavigate();
 
-  console.log("Accessing a custom route", isLoggedIn.toString());
+  console.log("Accessing a custom route");
   
   
   if (loading) {
@@ -34,7 +34,7 @@ const CustomRoute = ({ requiredRoleId, requiredRestriction }) => {
 
   // Based on a restriction
   if (requiredRestriction) {
-    console.log("restriction");
+    console.log("restriction", requiredRestriction);
     switch (requiredRestriction) {
       case "loggedIn":
         if (!isLoggedIn) {
@@ -44,6 +44,11 @@ const CustomRoute = ({ requiredRoleId, requiredRestriction }) => {
       case "loggedOut":
         if (isLoggedIn) {
           return <Navigate to="/" />;
+        }
+        break;
+      case "isOnboarded":
+        if (!isOnboarded) {
+          return <Navigate to="/login" />;
         }
         break;
       default:

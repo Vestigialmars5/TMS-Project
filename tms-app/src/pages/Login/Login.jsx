@@ -5,20 +5,9 @@ import { useAuth } from "../../context/AuthProvider";
 import { navigateBasedOnRole } from "../../utils/navigation";
 
 const Login = () => {
-  const { login, isLoggedIn, user } = useAuth();
+  const { login, isOnboarded, user } = useAuth();
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      if (user && user.role !== null) {
-        navigateBasedOnRole(user.role, navigate);
-      } else {
-        console.error("No user role found");
-        navigate("/");
-      }
-    }
-  }, [isLoggedIn, user, navigate]);
 
   const handleLogin = async ({ email, password }) => {
     setLoginError("");
@@ -27,9 +16,21 @@ const Login = () => {
       setLoginError(`An Error Occurred: ${res.error}`);
     } else {
       console.log("Login successful");
-      navigateBasedOnRole(res.roleName, navigate);
     }
   };
+
+
+  useEffect(() => {
+    if (isOnboarded) {
+      console.log("User logged in", user)
+      if (user.onboardingCompleted) {
+        navigateBasedOnRole(user.roleName, navigate);
+      } else {
+        console.log("User not onboarded, redirecting to onboarding");
+        navigate("/onboarding");
+      }
+    }
+  }, [isOnboarded, navigate]);
 
   return (
     <div>

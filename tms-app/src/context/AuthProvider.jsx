@@ -8,12 +8,15 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isOnboarded, setIsOnboarded] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState([]);
 
   // On mount check for token, this is if still logged in
   useEffect(() => {
+    /*     
+    TODO: Implement this 
     const token = getToken();
     if (token) {
       const decoded = decodeToken(token);
@@ -23,7 +26,7 @@ export const AuthProvider = ({ children }) => {
         roleId: decoded.roleId,
       });
       setIsLoggedIn(true);
-    }
+    } */
 
     const delayTimeout = setTimeout(() => {
       setLoading(false);
@@ -32,13 +35,27 @@ export const AuthProvider = ({ children }) => {
     return () => clearTimeout(delayTimeout);
   }, []);
 
+  const updateUser = (userData) => {
+    setUser(userData);
+  };
+
+  const updateLoginStatus = (status) => {
+    console.log("Updating login status", status);
+    setIsLoggedIn(status);
+  };
+
   const login = async (credentials) => {
     try {
       const userData = await loginApi(credentials.email, credentials.password);
       setUser(userData);
-      setIsLoggedIn(true);
-      const roleName = userData.roleName;
-      return { roleName };
+      if (userData.onboardingCompleted === true) {
+        const roleName = userData.roleName;
+        setIsLoggedIn(true);
+        return { onboarded: true, roleName };
+      } else {
+        setIsOnboarded(true);
+        return { onboarded: false };
+      }
     } catch (error) {
       console.error("Login error", error.message);
       return { error };
@@ -74,9 +91,12 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         isLoggedIn,
+        isOnboarded,
         user,
         loading,
         roles,
+        updateUser,
+        updateLoginStatus,
         login,
         logout,
         isAuthorized,

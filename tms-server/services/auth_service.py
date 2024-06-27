@@ -2,6 +2,8 @@ from utils.validation import validate_login_credentials
 from utils.token import create_tokens
 from db import get_db
 import sqlite3
+
+
 class AuthService:
     @staticmethod
     def login(data):
@@ -24,7 +26,33 @@ class AuthService:
         user_id = data.get("user_id")
 
         if validate_login_credentials(email, password):
-            access_token = create_tokens(user_id, {"email": email, "roleName": role_name, "roleId": role_id})
+            db = get_db()
+            res = db.execute(
+                "SELECT first_name, last_name FROM user_details WHERE user_id = ?",
+                (user_id,),
+            )
+            row = res.fetchone()
+
+            if not row:
+                first_name = ""
+                last_name = ""
+                onboarding_completed = False
+            else:
+                first_name = row["first_name"]
+                last_name = row["last_name"]
+                onboarding_completed = True
+
+            access_token = create_tokens(
+                user_id,
+                {
+                    "onboardingCompleted": onboarding_completed,
+                    "email": email,
+                    "firstName": first_name,
+                    "lastName": last_name,
+                    "roleName": role_name,
+                    "roleId": role_id,
+                },
+            )
             return {"success": True, "access_token": access_token}, 200
 
         return {"success": False, "error": "Invalid Email Or Password"}, 401
@@ -68,6 +96,6 @@ class AuthService:
                 )
             return {"success": True, "roles": roles}, 200
         except sqlite3.Error as e:
-                return {"success": False, "roles": [], "error": "Database error"}, 400
+            return {"success": False, "roles": [], "error": "Database error"}, 400
         except Exception as e:
             return {"success": False, "roles": [], "error": e}, 400

@@ -31,14 +31,14 @@ function App() {
               </Route>
               {/* End logged out only */}
 
-              {/* Logged in only, any user */}
+              {/* Authenticated not logged in only, any user */}
               <Route
                 path="/onboarding"
-                element={<CustomRoute requiredRestriction="loggedIn" />}
+                element={<CustomRoute requiredRestriction="isOnboarded" />}
               >
                 <Route index element={<Onboarding />} />
               </Route>
-              {/* End logged in only, any user */}
+              {/* End authenticated not logged in only, any user */}
 
               {/* Private routes for admin */}
               <Route

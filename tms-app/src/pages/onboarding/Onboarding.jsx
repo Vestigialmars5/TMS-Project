@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useAuth } from "../../context/AuthProvider";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Spinner } from "react-bootstrap";
+import { onboardUserApi } from "../../utils/onboarding";
+import { navigateBasedOnRole } from "../../utils/navigation";
+import { useNavigate } from "react-router-dom";
 
 const Onboarding = () => {
-  const { user } = useAuth();
-  const [userInfo, setUserInfo] = useState({
-    username: user.username,
+  const { user, updateUser, updateLoginStatus } = useAuth();
+  const navigate = useNavigate();
+  const [userData, setUserInfo] = useState({
     email: user.email,
     password: "********",
     confirmation: "",
@@ -16,49 +19,49 @@ const Onboarding = () => {
     address: "",
   });
 
+  useEffect(() => {
+    updateLoginStatus(true);
+  }, []);
   // TODO: Validations
 
   const handleChange = (e) => {
-    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+    setUserInfo({ ...userData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // TODO: Validations
-
-    updateProfile()
+    try {
+      console.log(userData)
+      const updatedUserData = await onboardUserApi({ userData });
+      updateUser(updatedUserData);
+      console.log("Onboarding successful")
+      navigateBasedOnRole(user.roleName, navigate); // Doesn't modify role so safe to use original
+    } catch {
+      console.error("Onboarding failed");
+      // TODO: Logout
+    }
   };
 
   return (
     <>
       <Form onSubmit={handleSubmit}>
-
-        <Form.Group controlId="username">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            name="username"
-            value={userInfo.username}
-            onChange={handleChange}
-          />
-        </Form.Group>
-    
         <Form.Group controlId="email">
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="email"
             name="email"
-            value={userInfo.email}
+            value={userData.email}
             onChange={handleChange}
           />
         </Form.Group>
-    
+
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
             name="password"
-            value={userInfo.password}
+            value={userData.password}
             onChange={handleChange}
           />
         </Form.Group>
@@ -68,7 +71,7 @@ const Onboarding = () => {
           <Form.Control
             type="password"
             name="confirmation"
-            value={userInfo.confirmation}
+            value={userData.confirmation}
             onChange={handleChange}
           />
         </Form.Group>
@@ -77,7 +80,7 @@ const Onboarding = () => {
           <Form.Control
             type="text"
             name="firstName"
-            value={userInfo.firstName}
+            value={userData.firstName}
             onChange={handleChange}
           />
         </Form.Group>
@@ -87,7 +90,7 @@ const Onboarding = () => {
           <Form.Control
             type="text"
             name="lastName"
-            value={userInfo.lastName}
+            value={userData.lastName}
             onChange={handleChange}
           />
         </Form.Group>
@@ -97,7 +100,7 @@ const Onboarding = () => {
           <Form.Control
             type="tel"
             name="phoneNumber"
-            value={userInfo.phoneNumber}
+            value={userData.phoneNumber}
             onChange={handleChange}
           />
         </Form.Group>
@@ -107,7 +110,7 @@ const Onboarding = () => {
           <Form.Control
             type="text"
             name="address"
-            value={userInfo.address}
+            value={userData.address}
             onChange={handleChange}
           />
         </Form.Group>

@@ -2,7 +2,7 @@ from flask import Flask, g
 from flask_cors import CORS
 import secrets
 from api.auth import auth_blueprint
-from api.profile import profile_blueprint
+from api.onboarding import onboarding_blueprint
 from api.admin import admin_blueprint
 from jwt_config import jwt
 
@@ -26,7 +26,7 @@ def close_db(exception):
 
 # Register blueprints
 app.register_blueprint(auth_blueprint)
-app.register_blueprint(profile_blueprint)
+app.register_blueprint(onboarding_blueprint)
 app.register_blueprint(admin_blueprint)
 
 
