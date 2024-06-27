@@ -707,3 +707,6 @@ I'm having trouble validating token, I'm researching and it turns out that the O
 Jun 24
 Turns out the error was so simple, I had a typo in the endpoint. At the end I didn't even need that API. But the way I was able to find the error was through the devtools. I don't know how it didn't cross my mind that the preflight was failing because it couldn't find the endpoint. I was too focused, thinking the error was with how jwt_required was working. Anyways, I don't need that because of protected endpoints. What I do need to do is handle the unauthorized access status code and force logout when a jwt is invalid.
 I also need to make a status code cheatsheet.
+
+Jun 26
+I'm thinking of how I should handle onboarding. I think I should include it in the response code.
