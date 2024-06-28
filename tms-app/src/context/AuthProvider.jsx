@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { loginApi, logoutApi, getRolesApi } from "../utils/auth";
 import { decodeToken, getToken } from "../utils/tokenFunctions";
 import { useNavigate } from "react-router-dom";
+import { navigateBasedOnRole } from "../utils/navigation";
 
 const AuthContext = createContext();
 
@@ -29,6 +30,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setIsOnboarded(true);
       }
+
     }
 
     const delayTimeout = setTimeout(() => {
@@ -51,16 +53,13 @@ export const AuthProvider = ({ children }) => {
     try {
       const userData = await loginApi(credentials.email, credentials.password);
       const roleName = userData.roleName;
-      const isOnboardingNeeded = userData.onboardingCompleted;
-      console.log("onboarding", isOnboardingNeeded);
+      const isOnboardingCompleted = userData.isOnboardingCompleted;
       setUser(userData);
       setIsLoggedIn(true);
-      setIsOnboarded(isOnboardingNeeded);
-      if (!isOnboardingNeeded) {
-        console.log("Onboarding needed");
+      setIsOnboarded(isOnboardingCompleted);
+      if (!isOnboardingCompleted) {
         navigate("/onboarding");
       } else {
-        console.log("Onboarding not needed");
         navigateBasedOnRole(roleName, navigate);
       }
     } catch (error) {
