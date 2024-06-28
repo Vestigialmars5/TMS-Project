@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { loginApi, logoutApi, getRolesApi } from "../utils/auth";
 import { decodeToken, getToken } from "../utils/tokenFunctions";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -13,20 +14,22 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState([]);
 
+  const navigate = useNavigate();
+
   // On mount check for token, this is if still logged in
   useEffect(() => {
-    /*     
-    TODO: Implement this 
     const token = getToken();
     if (token) {
       const decoded = decodeToken(token);
-      setUser({
-        email: decoded.email,
-        roleName: decoded.roleName,
-        roleId: decoded.roleId,
-      });
+      setUser(decoded);
       setIsLoggedIn(true);
-    } */
+      if (!decoded.isOnboardingCompleted) {
+        setIsOnboarded(false);
+        navigate("/onboarding");
+      } else {
+        setIsOnboarded(true);
+      }
+    }
 
     const delayTimeout = setTimeout(() => {
       setLoading(false);
@@ -47,14 +50,18 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const userData = await loginApi(credentials.email, credentials.password);
+      const roleName = userData.roleName;
+      const isOnboardingNeeded = userData.onboardingCompleted;
+      console.log("onboarding", isOnboardingNeeded);
       setUser(userData);
-      if (userData.onboardingCompleted === true) {
-        const roleName = userData.roleName;
-        setIsLoggedIn(true);
-        return { onboarded: true, roleName };
+      setIsLoggedIn(true);
+      setIsOnboarded(isOnboardingNeeded);
+      if (!isOnboardingNeeded) {
+        console.log("Onboarding needed");
+        navigate("/onboarding");
       } else {
-        setIsOnboarded(true);
-        return { onboarded: false };
+        console.log("Onboarding not needed");
+        navigateBasedOnRole(roleName, navigate);
       }
     } catch (error) {
       console.error("Login error", error.message);

@@ -12,25 +12,12 @@ const Login = () => {
   const handleLogin = async ({ email, password }) => {
     setLoginError("");
     const res = await login({ email, password });
-    if (res.error) {
+    if (res?.error) {
       setLoginError(`An Error Occurred: ${res.error}`);
     } else {
       console.log("Login successful");
     }
   };
-
-
-  useEffect(() => {
-    if (isOnboarded) {
-      console.log("User logged in", user)
-      if (user.onboardingCompleted) {
-        navigateBasedOnRole(user.roleName, navigate);
-      } else {
-        console.log("User not onboarded, redirecting to onboarding");
-        navigate("/onboarding");
-      }
-    }
-  }, [isOnboarded, navigate]);
 
   return (
     <div>

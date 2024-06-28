@@ -36,16 +36,16 @@ class AuthService:
             if not row:
                 first_name = ""
                 last_name = ""
-                onboarding_completed = False
+                isOnboarding_completed = False
             else:
                 first_name = row["first_name"]
                 last_name = row["last_name"]
-                onboarding_completed = True
+                isOnboarding_completed = True
 
             access_token = create_tokens(
                 user_id,
                 {
-                    "onboardingCompleted": onboarding_completed,
+                    "isOnboardingCompleted": isOnboarding_completed,
                     "email": email,
                     "firstName": first_name,
                     "lastName": last_name,
@@ -53,6 +53,7 @@ class AuthService:
                     "roleId": role_id,
                 },
             )
+            print(isOnboarding_completed, first_name, last_name, role_name, role_id)
             return {"success": True, "access_token": access_token}, 200
 
         return {"success": False, "error": "Invalid Email Or Password"}, 401

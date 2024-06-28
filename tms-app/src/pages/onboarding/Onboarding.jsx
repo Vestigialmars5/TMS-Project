@@ -19,9 +19,6 @@ const Onboarding = () => {
     address: "",
   });
 
-  useEffect(() => {
-    updateLoginStatus(true);
-  }, []);
   // TODO: Validations
 
   const handleChange = (e) => {
@@ -32,10 +29,10 @@ const Onboarding = () => {
     e.preventDefault();
     // TODO: Validations
     try {
-      console.log(userData)
+      console.log(userData);
       const updatedUserData = await onboardUserApi({ userData });
       updateUser(updatedUserData);
-      console.log("Onboarding successful")
+      console.log("Onboarding successful");
       navigateBasedOnRole(user.roleName, navigate); // Doesn't modify role so safe to use original
     } catch {
       console.error("Onboarding failed");
