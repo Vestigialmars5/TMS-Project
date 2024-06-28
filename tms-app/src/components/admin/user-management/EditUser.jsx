@@ -1,8 +1,7 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useUserManagement } from "../../../context/UserManagementProvider";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthProvider";
 
 const EditUser = ({ user, cancelEdit }) => {

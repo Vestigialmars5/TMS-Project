@@ -1,7 +1,7 @@
-import { useUserManagement } from "../../context/UserManagementProvider";
+import { useUserManagement } from "../../../context/UserManagementProvider";
 import ListGroup from "react-bootstrap/ListGroup";
 import Spinner from "react-bootstrap/Spinner";
-import UserCard from "../../components/shared/UserCard";
+import UserCard from "./UserCard";
 import { useEffect } from "react";
 
 const UsersTable = () => {

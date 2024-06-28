@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import PaginationComponent from "../../components/shared/PaginationComponent";
 import SearchBox from "../../components/shared/SearchBox";
 import { useUserManagement } from "../../context/UserManagementProvider";
-import UsersTable from "../../components/shared/UsersTable";
+import UsersTable from "../../components/admin/user-management/UsersTable";
 import CreateUser from "../../components/admin/user-management/CreateUser";
 import { debounce } from "../../utils/utils";
 

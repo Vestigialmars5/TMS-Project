@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
-import EditUser from "../admin/user-management/EditUser";
-import { useUserManagement } from "../../context/UserManagementProvider";
+import EditUser from "./EditUser";
+import { useUserManagement } from "../../../context/UserManagementProvider";
 
 const UserCard = ({ user }) => {
   const { deleteUser, refreshUsers } = useUserManagement();

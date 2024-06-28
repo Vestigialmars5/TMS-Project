@@ -8,8 +8,6 @@ const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
   const { user, loading, isLoggedIn, isOnboarded, isAuthorized } = useAuth();
   const navigate = useNavigate();
 
-  console.log("Accessing a custom route");
-
   if (loading) {
     return <Spinner animation="border" />;
   }
@@ -32,7 +30,6 @@ const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
 
   // Based on a restriction
   for (let restriction of requiredRestrictions) {
-    console.log("restriction", restriction);
     switch (restriction) {
       case "loggedIn":
         if (!isLoggedIn) {
@@ -40,7 +37,6 @@ const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
         }
         break;
       case "loggedOut":
-        console.log("need logged out", isLoggedIn, isOnboarded);
         if (isLoggedIn) {
           return <Navigate to="/" />;
         }
@@ -51,7 +47,6 @@ const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
         }
         break;
       default:
-        console.log("Unknown restriction");
         return navigateBasedOnRole(user?.role, navigate);
     }
   }
