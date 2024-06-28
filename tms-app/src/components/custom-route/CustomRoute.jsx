@@ -4,17 +4,15 @@ import { useAuth } from "../../context/AuthProvider";
 import { navigateBasedOnRole } from "../../utils/navigation";
 import Spinner from "react-bootstrap/esm/Spinner";
 
-const CustomRoute = ({ requiredRoleId, requiredRestriction }) => {
-  const { loading, isLoggedIn, isOnboarded, isAuthorized } = useAuth();
+const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
+  const { user, loading, isLoggedIn, isOnboarded, isAuthorized } = useAuth();
   const navigate = useNavigate();
 
   console.log("Accessing a custom route");
-  
-  
+
   if (loading) {
     return <Spinner animation="border" />;
   }
-
 
   // Based on a required role
   if (requiredRoleId) {
@@ -33,26 +31,27 @@ const CustomRoute = ({ requiredRoleId, requiredRestriction }) => {
   }
 
   // Based on a restriction
-  if (requiredRestriction) {
-    console.log("restriction", requiredRestriction);
-    switch (requiredRestriction) {
+  for (let restriction of requiredRestrictions) {
+    console.log("restriction", restriction);
+    switch (restriction) {
       case "loggedIn":
         if (!isLoggedIn) {
           return <Navigate to="/login" />;
         }
         break;
       case "loggedOut":
+        console.log("need logged out", isLoggedIn, isOnboarded);
         if (isLoggedIn) {
           return <Navigate to="/" />;
         }
         break;
-      case "isOnboarded":
-        if (!isOnboarded) {
-          return <Navigate to="/login" />;
+      case "notOnboarded":
+        if (isOnboarded) {
+          return <Navigate to="/home" />;
         }
         break;
       default:
-        console.log("Restricted");
+        console.log("Unknown restriction");
         return navigateBasedOnRole(user?.role, navigate);
     }
   }

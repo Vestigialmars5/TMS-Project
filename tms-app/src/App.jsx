@@ -15,8 +15,8 @@ import Onboarding from "./pages/onboarding/Onboarding";
 function App() {
   return (
     <div className="App">
-      <AuthProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Navigate to="/home" />} />
@@ -25,7 +25,7 @@ function App() {
               {/* Logged out only */}
               <Route
                 path="/login"
-                element={<CustomRoute requiredRestriction="loggedOut" />}
+                element={<CustomRoute requiredRestrictions={["loggedOut"]} />}
               >
                 <Route index element={<Login />} />
               </Route>
@@ -34,17 +34,18 @@ function App() {
               {/* Authenticated not logged in only, any user */}
               <Route
                 path="/onboarding"
-                element={<CustomRoute requiredRestriction="isOnboarded" />}
+                element={
+                  <CustomRoute
+                    requiredRestrictions={["loggedIn", "notOnboarded"]}
+                  />
+                }
               >
                 <Route index element={<Onboarding />} />
               </Route>
               {/* End authenticated not logged in only, any user */}
 
               {/* Private routes for admin */}
-              <Route
-                path="/admin"
-                element={<CustomRoute requiredRoleId={1} />}
-              >
+              <Route path="/admin" element={<CustomRoute requiredRoleId={1} />}>
                 <Route
                   index
                   element={
@@ -67,8 +68,8 @@ function App() {
               <Route path="*" element={<NoPage />} />
             </Route>
           </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </div>
   );
 }
