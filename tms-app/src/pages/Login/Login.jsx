@@ -15,7 +15,7 @@ const Login = () => {
     if (res?.error) {
       setLoginError(`An Error Occurred: ${res.error}`);
     } else {
-      console.log("Login successful");
+      // TODO: Display success
     }
   };
 

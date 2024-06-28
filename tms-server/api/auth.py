@@ -40,9 +40,6 @@ def login():
 
         # TODO: Pass actual data
         response, status = AuthService.login(temp_data)
-        print(response, status)
-
-        print("Login successful")
         return jsonify(response), status
 
 

@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
       } else {
         setIsOnboarded(true);
       }
-
     }
 
     const delayTimeout = setTimeout(() => {
@@ -42,11 +41,6 @@ export const AuthProvider = ({ children }) => {
 
   const updateUser = (userData) => {
     setUser(userData);
-  };
-
-  const updateLoginStatus = (status) => {
-    console.log("Updating login status", status);
-    setIsLoggedIn(status);
   };
 
   const login = async (credentials) => {
@@ -88,8 +82,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAuthorized = (requiredRoleId) => {
-    console.log("User role", user.roleId);
-    console.log("Required role", requiredRoleId);
     return user && user.roleId === requiredRoleId;
   };
 
@@ -102,7 +94,6 @@ export const AuthProvider = ({ children }) => {
         loading,
         roles,
         updateUser,
-        updateLoginStatus,
         login,
         logout,
         isAuthorized,

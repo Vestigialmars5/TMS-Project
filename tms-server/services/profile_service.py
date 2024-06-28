@@ -60,7 +60,6 @@ class ProfileService:
         phone_number,
         address,
     ):
-        print(user_id, email, password, confirmation, first_name, last_name, phone_number, address)
 
         # TODO: Validation
 

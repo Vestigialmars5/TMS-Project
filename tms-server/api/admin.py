@@ -64,7 +64,6 @@ def delete_user(user_id):
     @param id (int): The user id.
     @return (dict, int): The response and status code.
     """
-    print(user_id)
     if request.method == "DELETE":
 
         response, status = UserService.delete_user(user_id)
@@ -89,8 +88,6 @@ def update_user(user_id):
         username = data.get("username")
         email = data.get("email")
         role_id = data.get("roleId")
-
-        print(username, email, role_id)
 
         response, status = UserService.update_user(user_id, username, email, role_id)
 
