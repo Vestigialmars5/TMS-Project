@@ -14,16 +14,12 @@ const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
 
   // Based on a required role
   if (requiredRoleId) {
-    console.log("A role is required");
     console.log(isLoggedIn.toString());
     if (!isLoggedIn) {
-      console.log("not logged in", isLoggedIn);
       return <Navigate to="/login" replace />;
     }
 
     if (!isAuthorized(requiredRoleId)) {
-      console.log("unauthorized");
-      console.log("required", requiredRoleId);
       return <Navigate to="/home" replace />;
     }
   }

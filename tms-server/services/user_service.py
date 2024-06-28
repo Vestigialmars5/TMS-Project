@@ -19,7 +19,7 @@ class UserService:
         try:
             db = get_db()
             query, params = UserService._construct_query(search, sort, page, limit)
-            print(query, params)
+
             try:
                 res = db.execute(query, tuple(params))
             except sqlite3.OperationalError as e:

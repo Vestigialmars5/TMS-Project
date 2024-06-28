@@ -32,7 +32,6 @@ const Onboarding = () => {
       console.log(userData);
       const updatedUserData = await onboardUserApi({ userData });
       updateUser(updatedUserData);
-      console.log("Onboarding successful");
       navigateBasedOnRole(user.roleName, navigate); // Doesn't modify role so safe to use original
     } catch {
       console.error("Onboarding failed");

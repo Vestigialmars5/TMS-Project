@@ -41,7 +41,6 @@ export const UserManagementProvider = ({ children }) => {
   };
 
   const deleteUser = async (userId) => {
-    console.log("Delete user by id", userId);
     try {
       await deleteUserApi(userId);
     } catch (error) {

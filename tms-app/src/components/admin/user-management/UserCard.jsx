@@ -8,7 +8,6 @@ const UserCard = ({ user }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleDeleteUser = async () => {
-    console.log("Delete user by id", user.userId);
     // TODO: Make it better Confirm dialog
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this user?"
@@ -24,12 +23,10 @@ const UserCard = ({ user }) => {
   };
 
   const handleEdit = () => {
-    console.log("Edit user by id", user.userId);
     setIsEditing(true);
   };
 
   const cancelEdit = () => {
-    console.log("Canceled edit");
     setIsEditing(false);
   };
 

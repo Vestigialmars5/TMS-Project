@@ -14,7 +14,6 @@ class AuthService:
         @return (dict, int): The response and status code.
         """
 
-        print(data)
         email = data.get("email")
         password = data.get("password")
         role_id = data.get("role_id")
@@ -53,7 +52,6 @@ class AuthService:
                     "roleId": role_id,
                 },
             )
-            print(isOnboarding_completed, first_name, last_name, role_name, role_id)
             return {"success": True, "access_token": access_token}, 200
 
         return {"success": False, "error": "Invalid Email Or Password"}, 401
@@ -70,7 +68,6 @@ class AuthService:
 
         try:
             # TODO: Add jti and blacklist for tokens
-            print("Logout successful")
             return {"success": True}, 200
         except Exception as e:
             print("During logout error:", e)
