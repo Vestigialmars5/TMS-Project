@@ -8,6 +8,7 @@ import CustomRoute from "./components/custom-route/CustomRoute";
 import UserManagement from "./pages/admin-pages/UserManagement";
 import { AuthProvider } from "./context/AuthProvider";
 import { UserManagementProvider } from "./context/UserManagementProvider";
+import { AlertProvider } from "./context/AlertProvider";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Onboarding from "./pages/onboarding/Onboarding";
@@ -17,57 +18,62 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Navigate to="/home" />} />
-              <Route path="/home" element={<Home />} />
+          <AlertProvider>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Navigate to="/home" />} />
+                <Route path="/home" element={<Home />} />
 
-              {/* Logged out only */}
-              <Route
-                path="/login"
-                element={<CustomRoute requiredRestrictions={["loggedOut"]} />}
-              >
-                <Route index element={<Login />} />
-              </Route>
-              {/* End logged out only */}
+                {/* Logged out only */}
+                <Route
+                  path="/login"
+                  element={<CustomRoute requiredRestrictions={["loggedOut"]} />}
+                >
+                  <Route index element={<Login />} />
+                </Route>
+                {/* End logged out only */}
 
-              {/* Authenticated not logged in only, any user */}
-              <Route
-                path="/onboarding"
-                element={
-                  <CustomRoute
-                    requiredRestrictions={["loggedIn", "notOnboarded"]}
+                {/* Authenticated not logged in only, any user */}
+                <Route
+                  path="/onboarding"
+                  element={
+                    <CustomRoute
+                      requiredRestrictions={["loggedIn", "notOnboarded"]}
+                    />
+                  }
+                >
+                  <Route index element={<Onboarding />} />
+                </Route>
+                {/* End authenticated not logged in only, any user */}
+
+                {/* Private routes for admin */}
+                <Route
+                  path="/admin"
+                  element={<CustomRoute requiredRoleId={1} />}
+                >
+                  <Route
+                    index
+                    element={
+                      <UserManagementProvider>
+                        <AdminDashboard />
+                      </UserManagementProvider>
+                    }
                   />
-                }
-              >
-                <Route index element={<Onboarding />} />
-              </Route>
-              {/* End authenticated not logged in only, any user */}
+                  <Route
+                    path="user-management"
+                    element={
+                      <UserManagementProvider>
+                        <UserManagement />
+                      </UserManagementProvider>
+                    }
+                  />
+                </Route>
+                {/* End private routes for admin */}
 
-              {/* Private routes for admin */}
-              <Route path="/admin" element={<CustomRoute requiredRoleId={1} />}>
-                <Route
-                  index
-                  element={
-                    <UserManagementProvider>
-                      <AdminDashboard />
-                    </UserManagementProvider>
-                  }
-                />
-                <Route
-                  path="user-management"
-                  element={
-                    <UserManagementProvider>
-                      <UserManagement />
-                    </UserManagementProvider>
-                  }
-                />
+                <Route path="*" element={<NoPage />} />
               </Route>
-              {/* End private routes for admin */}
-
-              <Route path="*" element={<NoPage />} />
-            </Route>
-          </Routes>
+            </Routes>
+          </AlertProvider>
         </AuthProvider>
       </BrowserRouter>
     </div>

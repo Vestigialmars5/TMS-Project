@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
+import { useAuth } from "../../context/AuthProvider";
 import LoginButton from "../login/LoginButton";
 import LogoutButton from "../logout/LogoutButton";
-import { useAuth } from "../../context/AuthProvider";
+import AlertComponent from "../shared/AlertComponent";
 
 const Layout = () => {
   // TODO: Finish this
@@ -27,6 +28,7 @@ const Layout = () => {
             )}
           </ul>
         </nav>
+        <AlertComponent />
       </header>
       <main>
         <Outlet />
