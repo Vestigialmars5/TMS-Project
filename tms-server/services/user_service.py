@@ -2,6 +2,7 @@ import logging
 import sqlite3
 from db import get_db
 from werkzeug.security import generate_password_hash
+from flask import abort
 
 
 class UserService:
@@ -20,31 +21,26 @@ class UserService:
             db = get_db()
             query, params = UserService._construct_query(search, sort, page, limit)
 
-            try:
-                res = db.execute(query, tuple(params))
-            except sqlite3.OperationalError as e:
-                logging.error(e)
+            res = db.execute(query, tuple(params))        
+            rows = res.fetchall()
+            users = []
 
-            try:
-                rows = res.fetchall()
-                users = []
-                for row in rows:
-                    users.append(
-                        {
-                            "userId": row["user_id"],
-                            "username": row["username"],
-                            "email": row["email"],
-                            "roleId": row["role_id"],
-                            "roleName": row["role_name"],
-                        }
-                    )
-            except Exception as e:
-                logging.error(e)
+            for row in rows:
+                users.append(
+                    {
+                        "userId": row["user_id"],
+                        "username": row["username"],
+                        "email": row["email"],
+                        "roleId": row["role_id"],
+                        "roleName": row["role_name"],
+                    }
+                )
             return {"success": True, "users": users}, 200
+
+        except sqlite3.OperationalError as e:
+            return {"success": False, "users": [], "error": "Error handling db", "description": str(e)}, 500
         except Exception as e:
-            logging.error(e)
-            print("Error handling db")
-            return {"success": False, "users": [], "error": "Error handling db"}, 400
+            return {"success": False, "users": [], "error": "Exception", "description": str(e)}, 500
 
     @staticmethod
     def create_user(email, password, role_id):
@@ -69,8 +65,7 @@ class UserService:
             )
             db.commit()
         except:
-            print("Error handling db")
-            return {"success": False, "error": "Error handling db"}, 400
+            abort(500, description="Error handling db")
 
         return {"success": True}, 200
 
@@ -89,8 +84,7 @@ class UserService:
             db.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
             db.commit()
         except:
-            print("Error handling db")
-            return {"success": False, "error": "Error handling db"}, 400
+            abort(500, description="Error handling db")
         return {"success": True}, 200
 
     @staticmethod
@@ -119,8 +113,7 @@ class UserService:
             )
             db.commit()
         except:
-            print("Error handling db")
-            return {"success": False, "error": "Error handling db"}, 400
+            abort(500, description="Error handling db")
         return {"success": True}, 200
 
     @staticmethod

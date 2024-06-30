@@ -57,8 +57,7 @@ export const AuthProvider = ({ children }) => {
         navigateBasedOnRole(roleName, navigate);
       }
     } catch (error) {
-      console.error("Login error", error.message);
-      return { error };
+      return { error: error.message };
     }
   };
 

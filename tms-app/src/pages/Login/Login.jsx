@@ -13,7 +13,7 @@ const Login = () => {
     setLoginError("");
     const res = await login({ email, password });
     if (res?.error) {
-      setLoginError(`An Error Occurred: ${res.error}`);
+      setLoginError(res.error);
     } else {
       // TODO: Display success
     }

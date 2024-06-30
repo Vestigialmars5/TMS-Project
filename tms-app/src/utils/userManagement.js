@@ -22,12 +22,12 @@ export const createUserApi = async ({ email, password, roleId }) => {
     const response = await res.json();
 
     if (!res.ok) {
-      throw new Error(response.error);
+      throw new Error(response.error, response.description);
     } else {
       console.log("User Created");
     }
   } catch (error) {
-    throw new Error(`Login failed ${response.error}`);
+    throw new Error(`Login failed ${error.message}`);
   }
 };
 
@@ -50,12 +50,12 @@ export const getUsersApi = async ({ searchField, sort, page, limit }) => {
     const response = await res.json();
 
     if (!res.ok) {
-      throw new Error(response.error);
+      throw new Error(response.error, response.description);
     } else {
       return response.users;
     }
   } catch (error) {
-    throw new Error(`Fetch Users failed ${response.error}`);
+    throw new Error(`Fetch Users failed ${error.message}`);
   }
 };
 
@@ -74,12 +74,12 @@ export const deleteUserApi = async (userId) => {
     const response = await res.json();
 
     if (!res.ok) {
-      throw new Error(response.error);
+      throw new Error(response.error, response.description);
     } else {
       console.log("User Deleted");
     }
   } catch (error) {
-    throw new Error(`Delete failed ${response.error}`);
+    throw new Error(`Delete failed ${error.message}`);
   }
 };
 
@@ -106,11 +106,11 @@ export const updateUserApi = async ({ userId, username, email, roleId }) => {
     const response = await res.json();
 
     if (!res.ok) {
-      throw new Error(response.error);
+      throw new Error(response.error, response.description);
     } else {
       console.log("User Updated");
     }
   } catch (error) {
-    throw new Error(`Update failed ${response.error}`);
+    throw new Error(`Update failed ${error.message}`);
   }
 };

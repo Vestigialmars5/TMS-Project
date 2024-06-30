@@ -25,7 +25,7 @@ export const UserManagementProvider = ({ children }) => {
     try {
       await createUserApi(userData);
     } catch (error) {
-      console.error("Creation failed", error.message);
+      console.error(error.message);
     }
   };
 
@@ -35,7 +35,7 @@ export const UserManagementProvider = ({ children }) => {
       setUsers(data);
       return data;
     } catch (error) {
-      console.error("Error with the api", error.message);
+      console.error(error.message);
       return {};
     }
   };
@@ -44,7 +44,7 @@ export const UserManagementProvider = ({ children }) => {
     try {
       await deleteUserApi(userId);
     } catch (error) {
-      console.error("Error with the api", error.message);
+      console.error(error.message);
     }
   };
 
@@ -52,7 +52,7 @@ export const UserManagementProvider = ({ children }) => {
     try {
       await updateUserApi(userData);
     } catch (error) {
-      console.error("Error with the api", error.message);
+      console.error(error.message);
     }
   };
 

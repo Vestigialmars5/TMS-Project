@@ -1,6 +1,7 @@
 from db import get_db
 from werkzeug.security import generate_password_hash
 from utils.token import create_tokens
+from flask import abort
 
 
 class OnboardingService:
@@ -48,5 +49,4 @@ class OnboardingService:
 
             return {"success": True, "access_token": access_token}, 200
         except Exception as e:
-            print(e)
-            return {"success": False, "error": "Error handling db"}, 400
+            abort(400, description=str(e))

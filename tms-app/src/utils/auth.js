@@ -26,15 +26,17 @@ export const loginApi = async ({ email, password }) => {
 
     const response = await res.json();
 
-    if (!res.ok) {
-      throw new Error(response.error);
+    if (res.status === 401) {
+      throw new Error(response.description);
+    } else if (!res.ok) {
+      throw new Error(response.error, response.description);
     } else {
       const token = response.access_token;
       storeToken(token);
       return decodeToken(token);
     }
   } catch (error) {
-    throw new Error(`Login failed ${response.error}`);
+    throw new Error(`Login Failed ${error.message}`);
   }
 };
 
@@ -86,7 +88,8 @@ export const getRolesApi = async () => {
 
     if (res.status === 401) {
       throw new Error("Unauthorized");
-    } else if (!res.ok) { // TODO: Add more error handling
+    } else if (!res.ok) {
+      // TODO: Add more error handling
       throw new Error(response.error);
     }
 

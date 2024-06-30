@@ -2,6 +2,7 @@ from utils.validation import validate_login_credentials
 from utils.token import create_tokens
 from db import get_db
 import sqlite3
+from flask import abort
 
 
 class AuthService:
@@ -54,7 +55,7 @@ class AuthService:
             )
             return {"success": True, "access_token": access_token}, 200
 
-        return {"success": False, "error": "Invalid Email Or Password"}, 401
+        abort(401, description="Email Or Password Is Incorrect")
 
     # TODO: Finish this
     @staticmethod
@@ -70,8 +71,7 @@ class AuthService:
             # TODO: Add jti and blacklist for tokens
             return {"success": True}, 200
         except Exception as e:
-            print("During logout error:", e)
-            return {"success": False, "error": str(e)}, 400
+            abort(400, description=str(e))
 
     @staticmethod
     def get_roles():
@@ -93,7 +93,7 @@ class AuthService:
                     }
                 )
             return {"success": True, "roles": roles}, 200
-        except sqlite3.Error as e:
-            return {"success": False, "roles": [], "error": "Database error"}, 400
+        except sqlite3.OperationalError as e:
+            return {"success": False, "roles": [], "error": str(e)}, 400
         except Exception as e:
-            return {"success": False, "roles": [], "error": e}, 400
+            return {"success": False, "roles": [], "error": str(e)}, 400

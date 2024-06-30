@@ -18,7 +18,7 @@ export const onboardUserApi = async ({userData}) => {
         const response = await res.json();
 
         if (!res.ok) {
-            throw new Error(response.error);
+            throw new Error(response.error, response.description);
         } else {
             removeToken();
             const token = response.access_token;
@@ -26,6 +26,6 @@ export const onboardUserApi = async ({userData}) => {
             return decodeToken(token);
         }
     } catch (error) {
-        console.error(`Onboarding failed ${error}`);
+        throw new Error(`Onboarding failed ${error.message}`);
     }
 };
