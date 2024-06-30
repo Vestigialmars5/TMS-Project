@@ -2,22 +2,25 @@ import React, { useState } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import EditUser from "./EditUser";
 import { useUserManagement } from "../../../context/UserManagementProvider";
+import { useAlert } from "../../../context/AlertProvider";
 
 const UserCard = ({ user }) => {
   const { deleteUser, refreshUsers } = useUserManagement();
   const [isEditing, setIsEditing] = useState(false);
+  const { addAlert } = useAlert();
 
   const handleDeleteUser = async () => {
-    // TODO: Make it better Confirm dialog
+    // TODO: Make it better Confirm dialog Modal Bootstrap
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this user?"
     );
     if (confirmDelete) {
       try {
         await deleteUser(user.userId);
+        addAlert("User Deleted", "success");
         await refreshUsers();
       } catch (error) {
-        console.error(error.message);
+        addAlert(error.message, "danger");
       }
     }
   };

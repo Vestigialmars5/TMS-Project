@@ -29,14 +29,15 @@ export const loginApi = async ({ email, password }) => {
     if (res.status === 401) {
       throw new Error(response.description);
     } else if (!res.ok) {
-      throw new Error(response.error, response.description);
+      console.error(response.description);
+      throw new Error(response.error);
     } else {
       const token = response.access_token;
       storeToken(token);
       return decodeToken(token);
     }
   } catch (error) {
-    throw new Error(`Login Failed ${error.message}`);
+    throw new Error(`Login Failed: ${error.message}`);
   }
 };
 
@@ -57,14 +58,16 @@ export const logoutApi = async () => {
       body: JSON.stringify({}),
     });
 
+    const response = await res.json();
+
     if (!res.ok) {
-      console.error("Logout failed:", res.status);
-      throw new Error("Logout failed");
+      console.error(response.description);
+      throw new Error(response.error);
     }
 
     removeToken();
   } catch (error) {
-    throw new Error("Error Logging out:", error);
+    throw new Error(`Logout Failed: ${error.message}`);
   }
 };
 
@@ -86,15 +89,13 @@ export const getRolesApi = async () => {
 
     const response = await res.json();
 
-    if (res.status === 401) {
-      throw new Error("Unauthorized");
-    } else if (!res.ok) {
-      // TODO: Add more error handling
+    if (!res.ok) {
+      console.error(response.description);
       throw new Error(response.error);
     }
 
     return response.roles;
   } catch (error) {
-    throw new Error(`Error retrieving roles: ${error}`);
+    throw new Error(`Failed To Retrieve Roles: ${error.message}`);
   }
 };

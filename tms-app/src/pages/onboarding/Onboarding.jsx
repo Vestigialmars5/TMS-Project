@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useAuth } from "../../context/AuthProvider";
+import { useAlert } from "../../context/AlertProvider";
 import { Form, Button, Spinner } from "react-bootstrap";
 import { onboardUserApi } from "../../utils/onboarding";
 import { navigateBasedOnRole } from "../../utils/navigation";
@@ -8,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const Onboarding = () => {
   const { user, updateUser, updateLoginStatus } = useAuth();
+  const { addAlert } = useAlert();
   const navigate = useNavigate();
   const [userData, setUserInfo] = useState({
     email: user.email,
@@ -32,9 +34,10 @@ const Onboarding = () => {
       console.log(userData);
       const updatedUserData = await onboardUserApi({ userData });
       updateUser(updatedUserData);
-      navigateBasedOnRole(user.roleName, navigate); // Doesn't modify role so safe to use original
+      addAlert("Onboarding successful", "success");
+      navigateBasedOnRole(user.roleName, navigate); // Onboarding does't modify role, safe to use from original user
     } catch (error) {
-      console.error(error.message);
+      addAlert(error.message, "danger");
       // TODO: Logout
     }
   };

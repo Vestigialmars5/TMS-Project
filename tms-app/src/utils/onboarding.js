@@ -4,7 +4,6 @@ const SERVER_URL = "http://localhost:5000";
 
 export const onboardUserApi = async ({userData}) => {
     const token = getToken();
-    console.log(userData);
     try {
         const res = await fetch(`${SERVER_URL}/api/onboarding/onboard`, {
             method: "POST",
@@ -18,7 +17,8 @@ export const onboardUserApi = async ({userData}) => {
         const response = await res.json();
 
         if (!res.ok) {
-            throw new Error(response.error, response.description);
+            console.log(response.description);
+            throw new Error(response.error);
         } else {
             removeToken();
             const token = response.access_token;
@@ -26,6 +26,6 @@ export const onboardUserApi = async ({userData}) => {
             return decodeToken(token);
         }
     } catch (error) {
-        throw new Error(`Onboarding failed ${error.message}`);
+        throw new Error(`Onboarding Failed: ${error.message}`);
     }
 };

@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import { useUserManagement } from "../../../context/UserManagementProvider";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthProvider";
+import { useAlert } from "../../../context/AlertProvider";
 
 const EditUser = ({ user, cancelEdit }) => {
   const { updateUser, refreshUsers } = useUserManagement();
@@ -15,12 +16,18 @@ const EditUser = ({ user, cancelEdit }) => {
   const [usernameError, setUsernameError] = useState("");
   const [roleError, setRoleError] = useState("");
   const { getRoles, roles } = useAuth();
+  const { addAlert } = useAlert();
 
   useEffect(() => {
     if (roles.length === 0) {
       getRoles();
     }
   }, []);
+
+  const handleCancelEdit = () => {
+    cancelEdit();
+    addAlert("Edit Cancelled", "info");
+  };
 
   const getRoleName = (roleId) => {
     const role = roles.find((role) => role.roleId === roleId);
@@ -86,9 +93,10 @@ const EditUser = ({ user, cancelEdit }) => {
       try {
         await updateUser({ userId, username, email, roleId });
         await refreshUsers();
+        addAlert("User Updated", "success");
         cancelEdit();
       } catch (error) {
-        console.error(error.message);
+        addAlert(error.message, "danger");
       }
     }
   };
@@ -132,7 +140,7 @@ const EditUser = ({ user, cancelEdit }) => {
         <Button variant="primary" type="submit">
           Save
         </Button>
-        <Button variant="secondary" type="button" onClick={cancelEdit}>
+        <Button variant="secondary" type="button" onClick={handleCancelEdit}>
           Cancel
         </Button>
       </Form>

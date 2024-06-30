@@ -25,7 +25,7 @@ export const UserManagementProvider = ({ children }) => {
     try {
       await createUserApi(userData);
     } catch (error) {
-      console.error(error.message);
+      throw new Error(error.message);
     }
   };
 
@@ -52,7 +52,7 @@ export const UserManagementProvider = ({ children }) => {
     try {
       await updateUserApi(userData);
     } catch (error) {
-      console.error(error.message);
+      throw new Error(error.message);
     }
   };
 

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import LoginForm from "../../components/login/LoginForm";
 import { useAuth } from "../../context/AuthProvider";
-import { navigateBasedOnRole } from "../../utils/navigation";
+import { useAlert } from "../../context/AlertProvider";
 
 const Login = () => {
-  const { login, isOnboarded, user } = useAuth();
+  const { login } = useAuth();
   const [loginError, setLoginError] = useState("");
-  const navigate = useNavigate();
+  const { addAlert } = useAlert();
 
   const handleLogin = async ({ email, password }) => {
     setLoginError("");
@@ -16,6 +15,7 @@ const Login = () => {
       setLoginError(res.error);
     } else {
       // TODO: Display success
+      addAlert("Login Successful", "success");
     }
   };
 
