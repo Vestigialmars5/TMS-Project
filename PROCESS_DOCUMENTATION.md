@@ -580,19 +580,63 @@ Development and Testing
 System-wide performance monitoring, caching mechanisms, load balancing, and scalability features.
 
 ## Simulation
+
 I'm going to be using Discrete Event Simulation (DES). This is a prototype flow of what I want the simulation to do.
 
 - **Start Simulation**
-1. **Initiation Sequences**
+- **Initiation Sequences**
   - **Populate Databases**
     - tms_database
       - Users (multiple drivers, multiple warehouse managers), fill details
       - Warehouses (Fill with same info as simulation_database)
       - Inventory (Fill with same info as simulation_database)
     - simulation_database
-      - Users
-  - **Clock = 0**
+      - Simulation control (clock?=0, speed_factor 1, status)
+      - Simulaiton events (set events)
+      - Probabilities (set probabilities)
+      - Warehouses (fill with same info as tms_database)
+      - Inventory (fill inventory, some warehouses ready to place orders)
+      - Drivers (same info as tms_database)
+      - Vehicles (set vehicle types)
+  - **Create Objects and Environment**
+    - Probably using simpy
 
+- **Flow**
+
+  1. Product needed, set up request for product (event)
+  2. Plan route/driver/schedule (user action)
+
+  - **Driver Events**
+
+  1. Driver goes to pickup (event) (risks)
+  2. Loading product (event)
+  3. Start delivery route (event)
+  4. End delivery route (event) (appointment time)
+  5. Unload (event)
+  6. Start return (event)
+  7. End Return (event)
+
+  - **Warehouses Events**
+
+  1. Gradually reduce inventory (event)
+  2. Request more product (event)
+
+- **Risks**
+  - **Road Blocks**
+    - Small detour -> reroute (event)
+    - Big detour -> action needed (event)
+  - **Accident**
+    - Small accident / low delay time (event)
+    - Medium accident / mid delay time (event)
+    - Big accident -> action needed (event)
+  - **Traffic**
+    - Small delay (event)
+    - Mid delay (event)
+    - Big delay -> action needed (event)
+  - **Stops**
+    - Sleep (event)
+    - Eat (event)
+    - Refuel (event)
 
 ## Research
 
@@ -728,4 +772,3 @@ I'm thinking of how I should handle onboarding. I think I should include it in t
 
 Jul 1
 I started designing how the simulation will interact with the app. I'm going to be developing it along side the remainding pages of the app so that the implementation is easier. As of right now I have the simulation folder on the same level as the server and client but I might move it inside the server folder because of how much it might use information from the users database.
-
