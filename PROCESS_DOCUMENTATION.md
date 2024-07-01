@@ -579,6 +579,21 @@ Development and Testing
 
 System-wide performance monitoring, caching mechanisms, load balancing, and scalability features.
 
+## Simulation
+I'm going to be using Discrete Event Simulation (DES). This is a prototype flow of what I want the simulation to do.
+
+- **Start Simulation**
+1. **Initiation Sequences**
+  - **Populate Databases**
+    - tms_database
+      - Users (multiple drivers, multiple warehouse managers), fill details
+      - Warehouses (Fill with same info as simulation_database)
+      - Inventory (Fill with same info as simulation_database)
+    - simulation_database
+      - Users
+  - **Clock = 0**
+
+
 ## Research
 
 I found a repository or another way to make the map. Using graph nodes instead of a grid. I might use OSMNX to import to python a real location graph. I'm hoping I can edit the exported graph as I want.
@@ -710,3 +725,7 @@ I also need to make a status code cheatsheet.
 
 Jun 26
 I'm thinking of how I should handle onboarding. I think I should include it in the response code.
+
+Jul 1
+I started designing how the simulation will interact with the app. I'm going to be developing it along side the remainding pages of the app so that the implementation is easier. As of right now I have the simulation folder on the same level as the server and client but I might move it inside the server folder because of how much it might use information from the users database.
+
