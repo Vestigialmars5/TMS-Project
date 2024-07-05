@@ -772,3 +772,6 @@ I'm thinking of how I should handle onboarding. I think I should include it in t
 
 Jul 1
 I started designing how the simulation will interact with the app. I'm going to be developing it along side the remainding pages of the app so that the implementation is easier. As of right now I have the simulation folder on the same level as the server and client but I might move it inside the server folder because of how much it might use information from the users database.
+
+Jul 4
+I was able to get a prototype of the simulation working. So now I'm going to have to figure out how to implement it with real time, and how to set it up for it to work with the app.
