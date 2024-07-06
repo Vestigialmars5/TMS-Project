@@ -775,3 +775,6 @@ I started designing how the simulation will interact with the app. I'm going to 
 
 Jul 4
 I was able to get a prototype of the simulation working. So now I'm going to have to figure out how to implement it with real time, and how to set it up for it to work with the app.
+
+Jul 5
+Having some trouble implementing handling async functions inside the running simulation. I will use it to send the request but still lower the inventory and other stuff. I'm using asyncio but I cant seem to implement it correctly.
