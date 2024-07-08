@@ -778,3 +778,5 @@ I was able to get a prototype of the simulation working. So now I'm going to hav
 
 Jul 5
 Having some trouble implementing handling async functions inside the running simulation. I will use it to send the request but still lower the inventory and other stuff. I'm using asyncio but I cant seem to implement it correctly.
+
+Jul 8The warehouse manager needts to recieve the info from the simulation. Then he places the information into the app.
