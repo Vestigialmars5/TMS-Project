@@ -779,4 +779,9 @@ I was able to get a prototype of the simulation working. So now I'm going to hav
 Jul 5
 Having some trouble implementing handling async functions inside the running simulation. I will use it to send the request but still lower the inventory and other stuff. I'm using asyncio but I cant seem to implement it correctly.
 
-Jul 8The warehouse manager needts to recieve the info from the simulation. Then he places the information into the app.
+Jul 8
+The warehouse manager needts to recieve the info from the simulation. Then he places the information into the app.
+
+Jul 9
+The simulation with simpy might not be the best approach, simpy doesn't seem to work with async functions or threading. I was hoping on using it to trigger events outside the simulation but that doesn't seem to be possible. I'm going to take a look at other things like APS scheduler, or just try to create my own simulation engine.
+I managed to make some progress using only threading, it doesn't seem like a good idea because of all the complexity of managing thread security and other things that come with threading. I'm trying to mix async and threading but it still feels off.
