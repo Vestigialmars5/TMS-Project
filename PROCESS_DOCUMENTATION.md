@@ -785,3 +785,7 @@ The warehouse manager needts to recieve the info from the simulation. Then he pl
 Jul 9
 The simulation with simpy might not be the best approach, simpy doesn't seem to work with async functions or threading. I was hoping on using it to trigger events outside the simulation but that doesn't seem to be possible. I'm going to take a look at other things like APS scheduler, or just try to create my own simulation engine.
 I managed to make some progress using only threading, it doesn't seem like a good idea because of all the complexity of managing thread security and other things that come with threading. I'm trying to mix async and threading but it still feels off.
+
+Jul 12
+I think I have it sort of figured out, I'm going to have a simple WMS to handle **inventory management, reorder logic and request handling**. I'm going to probably use an event driven architecture.
+I'm going to have it all inside the same flask app, but I need to make sure it is completely separate, this is because I want to implement a more robust WMS later on and I need it to be able to work independently from each other.
