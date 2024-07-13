@@ -662,7 +662,7 @@ I'm going to start working on making something out of the OSMNX (Jan 17 2024), s
 
 I also started wireframimg using Figma, I will clean it up later.
 
-So I startes playing with the graph and osmnx, from what I figured out is that im going to need to follow something along this
+So I started playing with the graph and osmnx, from what I figured out is that im going to need to follow something along this
 
 ```
 Deside place in map -> get graph from osmnx -> save file ->
@@ -673,7 +673,7 @@ I was able to get a LineString of an edge, that linestring contains the coordina
 
 So, today is Jan/23/2024 I was working with D3 but I found that Leaflet has everything I need, as of right now I was able to drag a marker to origin and one to destination, make my api call and draw with a polyline on top of the map (a real world map).
 
-I think what comes next is being able to get the closest edge and coordinate to the destination so it doesnt stop drawing at the edge, then comes making the moving icon.
+I think what comes next is being able to get the closest edge and coordinate to the destination so it doesn't stop drawing at the edge, then comes making the moving icon.
 
 The map has been going well, I finally finished pre origin logic. Next thing to do is do the same with the destination.
 
@@ -683,19 +683,19 @@ I'm redoing my logic, changing a lot of things. I might branch it just in case.
 
 I now need to take into account that the algorithm that will avoid and decide the route based on pricing or time needs to have a different approach when it comes to assigning starting and finishing nodes.
 
-I'm asking in stack overflow, now I need to extarct only the necessary code to explain my situation.
+I'm asking in stack overflow, now I need to extract only the necessary code to explain my situation.
 I think I'm going to create a file in my repository to help with it.
 
 From asking online I came up with the idea that maybe I can create a node and edge for each coordinate in the interpolated edge. This could potentially solve the issue when deciding a starting edge considering the thing I'm going to base the route on. For example I wouldn't have to worry about changing directions or starting and finishing nodes. I would have to calculate estimated times and ignore the found edge. It could work.
 
-I will have to calculate the speed, distance and other things about the road, I'm going to have to come up with a specific measurment for the interpolation, since im going to have to divide the street evenly within a certain distance.
+I will have to calculate the speed, distance and other things about the road, I'm going to have to come up with a specific measurements for the interpolation, since im going to have to divide the street evenly within a certain distance.
 
 I looked into OSRM but I want to be able to choose between shortest distance, fastest distance.
 
 Okay, new approach. I'm going to divide everything into smaller sections. Clearing up the files into different tasks.
 I'm also going to start with the logic of the database and after some parts are done, continue with the routing algorithms.
 
-For routing algorithms node --> Dijktra, A search algorithm, euclian distance, graphHopper
+For routing algorithms node --> Dijktra, A search algorithm, euclidean distance, graphHopper
 
 Apr 17
 I'm going to start marking dates for easier reference to my progress. Right now I'm going very slow and changing a lot of things, but learning for future projects.
@@ -714,8 +714,8 @@ I have been concentrated on another thing, which has left this project stuck, so
 June 1
 I am finally free to start putting a lot of time to this project.
 What I'm going to do is do all rendering with react, since react is a spa, I have to do something when building to handle joining both servers or something.
-I am now going to start with the login page, as well as the register, but the register can only be accesed by the admin so I will have to work on the auth section.
-I'm finishing today with the login form from other places as to not spend too much time on it. What's next is to figure out form submition, add a
+I am now going to start with the login page, as well as the register, but the register can only be accessed by the admin so I will have to work on the auth section.
+I'm finishing today with the login form from other places as to not spend too much time on it. What's next is to figure out form submission, add a
 TODO for real-time validation, I don't think I should be spending too much time in that either.
 
 June 2
@@ -723,7 +723,7 @@ The login form component should have validations for that form, the login page f
 The handle login should verify account, retrieve data for user and redirect to appropriate dashboard.
 
 June 3
-Changed some things that I had copied into what I understand better, I am working on setting up the API for loggin in.
+Changed some things that I had copied into what I understand better, I am working on setting up the API for logging in.
 
 June 4
 I'm currently working on the logging in the user and saving the data in session. I need to clean up the handleLogin onSubmit for the Login.jsx and put all the api calls in it and get rid of unnecessary blocks.
@@ -742,7 +742,7 @@ Just finished adding TODOs into my TODO app, instead of keeping it as an .md fil
 
 I'm thinking about how to set a layout for the different roles. Each layout needs to have the links to the respective pages. I could have 1 layout, and have the logic made in there. That sounds like the best choice. Another choice would be to have a layout for each role and make the app render each layout based on the role. I'm going to write some pros and cons.
 
-I decided to have just one layout file, because of reusability of code and readibility in the rendering. It is also not that big of a file so there shouldn't be a need to separate them.
+I decided to have just one layout file, because of reusability of code and readability in the rendering. It is also not that big of a file so there shouldn't be a need to separate them.
 
 Okay so in order to improve how I handle all of this I'm going to modify auth.js into an context provider which will wrap my app.
 
@@ -750,11 +750,11 @@ Jun 9
 I was able to both fix the auth.js with the context provider and to restrict access with a single component. Next steps are to go page by page creating a basic design and coding the important parts. I'm starting with the UserManagement page.
 
 Jun 10
-There was an issue with the timing of the auth.jsx states when refreshing due to the useEffect and how it works. The solution was adding a Loading state that would give time for the useEffect to set the states before attempting to use them. I also added a delay so the tranistions look smoother.
+There was an issue with the timing of the auth.jsx states when refreshing due to the useEffect and how it works. The solution was adding a Loading state that would give time for the useEffect to set the states before attempting to use them. I also added a delay so the transitions look smoother.
 
 Jun 12
-I have been working on making the app even more modular, thinking it was going to be pretty easy. But I stumbled accross an error with my JWT when trying to logout. The issue was resolved by setting up a secret key for JWT and an algorithm.
-I think what I need to do next is learn how to do testing files, for cases so I dont have to manually do everything.
+I have been working on making the app even more modular, thinking it was going to be pretty easy. But I stumbled across an error with my JWT when trying to logout. The issue was resolved by setting up a secret key for JWT and an algorithm.
+I think what I need to do next is learn how to do testing files, for cases so I don't have to manually do everything.
 
 Jun 19
 I modified the database and added a lot more stuff. So now I need to refactor my code to fix the new schema. Lesson for later -> **Set up the schema before developing the code, cannot use a test database with real code, but can use test code with real database**.
@@ -780,7 +780,7 @@ Jul 5
 Having some trouble implementing handling async functions inside the running simulation. I will use it to send the request but still lower the inventory and other stuff. I'm using asyncio but I cant seem to implement it correctly.
 
 Jul 8
-The warehouse manager needts to recieve the info from the simulation. Then he places the information into the app.
+The warehouse manager needs to receive the info from the simulation. Then he places the information into the app.
 
 Jul 9
 The simulation with simpy might not be the best approach, simpy doesn't seem to work with async functions or threading. I was hoping on using it to trigger events outside the simulation but that doesn't seem to be possible. I'm going to take a look at other things like APS scheduler, or just try to create my own simulation engine.
