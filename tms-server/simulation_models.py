@@ -43,8 +43,8 @@ CREATE TABLE IF NOT EXISTS warehouses (
 create_table_inventory = """
 CREATE TABLE IF NOT EXISTS inventory (
     inventory_id INTEGER PRIMARY KEY,
-    item_id INTEGER,
-    item_name TEXT NOT NULL,
+    product_id INTEGER,
+    product_name TEXT NOT NULL,
     quantity_available INTEGER NOT NULL,
     max_quantity INTEGER NOT NULL,
     reorder_point INTEGER NOT NULL,
@@ -74,7 +74,9 @@ create_table_vehicles = """
 CREATE TABLE IF NOT EXISTS vehicles (
     vehicle_id INTEGER PRIMARY KEY,
     vehicle_type TEXT NOT NULL,
-    capacity INTEGER NOT NULL,
+    tonnage REAL NOT NULL,
+    volume REAL NOT NULL,
+    fuel_capacity REAL NOT NULL,
     status TEXT NOT NULL
 );
 """

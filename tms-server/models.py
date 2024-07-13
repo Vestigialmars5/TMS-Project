@@ -82,7 +82,7 @@ create_inventory_table = """
 CREATE TABLE IF NOT EXISTS inventory (
     inventory_id INTEGER PRIMARY KEY,
     warehouse_id INTEGER,
-    item_name TEXT NOT NULL,
+    product_name TEXT NOT NULL,
     quantity INTEGER NOT NULL CHECK (quantity >= 0),
     reorder_level INTEGER NOT NULL CHECK (reorder_level >= 0),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
