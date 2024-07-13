@@ -794,3 +794,6 @@ I'm going to have it all inside the same flask app, but I need to make sure it i
 I think I can handle the risks and events for the driver still with simpy. The way this could work is to simulate the drive and save what events were triggered, then share the steps of what happened to the TMS or some other middleware.
 I would need to add things like, original time, total time. Then I would also have to check if an action is needed, then I would also have to trigger the simulation maybe with an api. For example if a reschedule is needed send it to an api to run the simulation with the new data.
 So to recap: WMS not using simpy, Driver events using simpy.
+
+Jul 13
+Maybe I leave the logic of a WMS for later, I should create a basic function like, create order. And just have it sent to the TMS.
