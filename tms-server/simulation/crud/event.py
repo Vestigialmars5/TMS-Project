@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import datetime
-from simulation.db import get_db
+from Portfolio.tms.simulation.db_simulation import get_db
 
 def create_simulation_event(event_time, event_type, description=""):
     db = get_db()
