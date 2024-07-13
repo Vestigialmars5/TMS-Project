@@ -585,6 +585,7 @@ I'm going to be using Discrete Event Simulation (DES). This is a prototype flow 
 
 - **Start Simulation**
 - **Initiation Sequences**
+
   - **Populate Databases**
     - tms_database
       - Users (multiple drivers, multiple warehouse managers), fill details
@@ -789,3 +790,7 @@ I managed to make some progress using only threading, it doesn't seem like a goo
 Jul 12
 I think I have it sort of figured out, I'm going to have a simple WMS to handle **inventory management, reorder logic and request handling**. I'm going to probably use an event driven architecture.
 I'm going to have it all inside the same flask app, but I need to make sure it is completely separate, this is because I want to implement a more robust WMS later on and I need it to be able to work independently from each other.
+
+I think I can handle the risks and events for the driver still with simpy. The way this could work is to simulate the drive and save what events were triggered, then share the steps of what happened to the TMS or some other middleware.
+I would need to add things like, original time, total time. Then I would also have to check if an action is needed, then I would also have to trigger the simulation maybe with an api. For example if a reschedule is needed send it to an api to run the simulation with the new data.
+So to recap: WMS not using simpy, Driver events using simpy.
