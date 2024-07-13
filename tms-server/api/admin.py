@@ -6,9 +6,9 @@ from services.user_service import UserService
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
 
 
-@admin_blueprint.route("/")
+@admin_blueprint.route("/test", methods=("GET",))
 def index():
-    return "<p>Hello, World!</p>"
+    return "Hello World!"
 
 
 # TODO: Complete this
