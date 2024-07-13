@@ -35,19 +35,17 @@ CREATE TABLE IF NOT EXISTS warehouses (
     warehouse_id INTEGER PRIMARY KEY,
     warehouse_name TEXT NOT NULL,
     location TEXT NOT NULL,
-    warehouse_capacity INTEGER NOT NULL,
-    warehouse_utilization INTEGER NOT NULL
+    docks INTEGER NOT NULL
 );
 """
 
 create_table_inventory = """
 CREATE TABLE IF NOT EXISTS inventory (
-    inventory_id INTEGER PRIMARY KEY,
-    product_id INTEGER,
+    product_id INTEGER PRIMARY KEY,
     product_name TEXT NOT NULL,
-    quantity_available INTEGER NOT NULL,
+    quantity INTEGER NOT NULL,
     max_quantity INTEGER NOT NULL,
-    reorder_point INTEGER NOT NULL,
+    reorder_level INTEGER NOT NULL,
     warehouse_id INTEGER,
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(warehouse_id)
 );

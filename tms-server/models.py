@@ -37,57 +37,36 @@ CREATE TABLE IF NOT EXISTS user_details (
 );
 """
 
+create_driver_details_table = """
+CREATE TABLE IF NOT EXISTS driver_details (
+    driver_detail_id INTEGER PRIMARY KEY,
+    user_id INTEGER,
+    license_number TEXT NOT NULL UNIQUE,
+    license_expiry DATE NOT NULL,
+    vehicle_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)
+"""
+
+create_vehicles_table = """
+CREATE TABLE IF NOT EXISTS vehicles (
+    vehicle_id INTEGER PRIMARY KEY,
+    vehicle_plate TEXT NOT NULL UNIQUE,
+    vehicle_type TEXT NOT NULL,
+    fuel_capacity REAL NOT NULL CHECK (fuel_capacity >= 0),
+    tonnage REAL NOT NULL CHECK (tonnage >= 0),
+    volume REAL NOT NULL CHECK (volume >= 0)
+);
+"""
+
 create_warehouses_table = """
 CREATE TABLE IF NOT EXISTS warehouses (
     warehouse_id INTEGER PRIMARY KEY,
     warehouse_name TEXT NOT NULL,
     location TEXT NOT NULL,
+    docks INTEGER NOT NULL CHECK (docks >= 1),
     manager_id INTEGER,
     FOREIGN KEY (manager_id) REFERENCES users(user_id)
-);
-"""
-
-create_shipments_table = """
-CREATE TABLE IF NOT EXISTS shipments (
-    shipment_id INTEGER PRIMARY KEY,
-    customer_id INTEGER,
-    carrier_id INTEGER,
-    warehouse_id INTEGER,
-    status TEXT NOT NULL,
-    weight REAL,
-    origin TEXT NOT NULL,
-    destination TEXT NOT NULL,
-    departure_time TIMESTAMP,
-    arrival_time TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (customer_id) REFERENCES users(user_id),
-    FOREIGN KEY (carrier_id) REFERENCES users(user_id),
-    FOREIGN KEY (warehouse_id) REFERENCES warehouses(warehouse_id)
-);
-"""
-
-
-create_shipment_statuses_table = """
-CREATE TABLE IF NOT EXISTS shipment_statuses (
-    status_id INTEGER PRIMARY KEY,
-    shipment_id INTEGER,
-    status TEXT NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (shipment_id) REFERENCES shipments(shipment_id)
-);
-"""
-
-create_inventory_table = """
-CREATE TABLE IF NOT EXISTS inventory (
-    inventory_id INTEGER PRIMARY KEY,
-    warehouse_id INTEGER,
-    product_name TEXT NOT NULL,
-    quantity INTEGER NOT NULL CHECK (quantity >= 0),
-    reorder_level INTEGER NOT NULL CHECK (reorder_level >= 0),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (warehouse_id) REFERENCES warehouses(warehouse_id)
 );
 """
 
@@ -95,12 +74,46 @@ create_orders_table = """
 CREATE TABLE IF NOT EXISTS orders (
     order_id INTEGER PRIMARY KEY,
     customer_id INTEGER,
-    shipment_id INTEGER,
     order_status TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES users(user_id)
+);
+"""
+
+create_order_details_table = """
+CREATE TABLE IF NOT EXISTS order_details (
+    order_detail_id INTEGER PRIMARY KEY,
+    order_id INTEGER,
+    product_id INTEGER,
+    product_name TEXT NOT NULL,
+    quantity INTEGER NOT NULL CHECK (quantity >= 1),
+    total_weight REAL NOT NULL CHECK (total_weight >= 0),
+    total_volume REAL NOT NULL CHECK (total_volume >= 0),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id)
+);
+"""
+
+create_shipments_table = """
+CREATE TABLE IF NOT EXISTS shipments (
+    shipment_id INTEGER PRIMARY KEY,
+    order_id INTEGER,
+    customer_id INTEGER,
+    driver_id INTEGER,
+    warehouse_id INTEGER,
+    status TEXT NOT NULL,
+    origin TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    departure_time TIMESTAMP,
+    arrival_time TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (customer_id) REFERENCES users(user_id),
-    FOREIGN KEY (shipment_id) REFERENCES shipments(shipment_id)
+    FOREIGN KEY (driver_id) REFERENCES users(user_id),
+    FOREIGN KEY (warehouse_id) REFERENCES warehouses(warehouse_id)
 );
 """
 
