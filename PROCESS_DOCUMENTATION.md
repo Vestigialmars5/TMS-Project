@@ -797,4 +797,9 @@ So to recap: WMS not using simpy, Driver events using simpy.
 
 Jul 13
 Maybe I leave the logic of a WMS for later, I should create a basic function like, create order. And just have it sent to the TMS.
-Considering this the new flow, for creating a random order, would have to be something like: select a random vehicle > select random warehouse, select random product, select random supplier > select random quantity below vehicle constraints >
+Considering this the new flow, for creating a random order, would have to be something like: select a random vehicle > select random warehouse, select random product, select random supplier > select random quantity below vehicle constraints > ...
+
+Jul 14
+I decided on having it be more straight forward, I'm working on a TMS not the WMS. So for now I'm developing the connection between them. It will work like this:
+Trigger an order creation, from order cases -> save in current wms db -> send to tms -> receive.
+I'm going to be using event driven architecture. Probably using a post request, but look into including message brokers like Kafka, RabbitMQ.
