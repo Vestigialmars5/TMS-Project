@@ -1,0 +1,162 @@
+[
+  {
+    "warehouse_id": 1,
+    "name": "Warehouse A",
+    "location": "64 Van Patten Dr, Clifton Park, NY 12065",
+    "docks": 5,
+    "inventory": [
+      {
+        "product_id": 1,
+        "product_name": "Heavy Machinery",
+        "quantity": 10,
+        "reorder_level": 5,
+        "product_weight": 7.5,
+        "product_volume": 25
+      },
+      {
+        "product_id": 2,
+        "product_name": "Steel Beams",
+        "quantity": 200,
+        "reorder_level": 50,
+        "product_weight": 0.2,
+        "product_volume": 0.15
+      },
+      {
+        "product_id": 3,
+        "product_name": "Plastic Containers",
+        "quantity": 500,
+        "reorder_level": 100,
+        "product_weight": 0.01,
+        "product_volume": 0.02
+      },
+      {
+        "product_id": 4,
+        "product_name": "Wooden Pallets",
+        "quantity": 300,
+        "reorder_level": 80,
+        "product_weight": 0.02,
+        "product_volume": 0.1
+      }
+    ]
+  },
+  {
+    "warehouse_id": 2,
+    "name": "Warehouse B",
+    "location": "11 Rotterdam Industrial Park, Rotterdam, NY 12306",
+    "docks": 3,
+    "inventory": [
+      {
+        "product_id": 5,
+        "product_name": "Office Supplies",
+        "quantity": 1000,
+        "reorder_level": 200,
+        "product_weight": 0.001,
+        "product_volume": 0.01
+      },
+      {
+        "product_id": 6,
+        "product_name": "Cleaning Supplies",
+        "quantity": 800,
+        "reorder_level": 200,
+        "product_weight": 0.002,
+        "product_volume": 0.02
+      },
+      {
+        "product_id": 7,
+        "product_name": "Cement Bags",
+        "quantity": 300,
+        "reorder_level": 100,
+        "product_weight": 0.033,
+        "product_volume": 0.1
+      },
+      {
+        "product_id": 8,
+        "product_name": "Bricks",
+        "quantity": 5000,
+        "reorder_level": 1000,
+        "product_weight": 0.0018,
+        "product_volume": 0.004
+      }
+    ]
+  },
+  {
+    "warehouse_id": 3,
+    "name": "Warehouse C",
+    "location": "120 Benson Pl, Frankfort, NY 13340",
+    "docks": 4,
+    "inventory": [
+      {
+        "product_id": 9,
+        "product_name": "Electronics",
+        "quantity": 500,
+        "reorder_level": 100,
+        "product_weight": 0.006,
+        "product_volume": 0.03
+      },
+      {
+        "product_id": 10,
+        "product_name": "Batteries",
+        "quantity": 2000,
+        "reorder_level": 500,
+        "product_weight": 0.001,
+        "product_volume": 0.01
+      },
+      {
+        "product_id": 11,
+        "product_name": "Books",
+        "quantity": 3000,
+        "reorder_level": 1000,
+        "product_weight": 0.001,
+        "product_volume": 0.004
+      },
+      {
+        "product_id": 12,
+        "product_name": "Stationery",
+        "quantity": 4000,
+        "reorder_level": 1500,
+        "product_weight": 0.0005,
+        "product_volume": 0.002
+      }
+    ]
+  },
+  {
+    "warehouse_id": 4,
+    "name": "Warehouse D",
+    "location": "1650 Niagara Falls Blvd, Tonawanda, NY 14150",
+    "docks": 6,
+    "inventory": [
+      {
+        "product_id": 13,
+        "product_name": "Furniture",
+        "quantity": 100,
+        "reorder_level": 20,
+        "product_weight": 0.12,
+        "product_volume": 0.6
+      },
+      {
+        "product_id": 14,
+        "product_name": "Large Appliances",
+        "quantity": 50,
+        "reorder_level": 10,
+        "product_weight": 0.16,
+        "product_volume": 0.5
+      },
+      {
+        "product_id": 15,
+        "product_name": "Medical Supplies",
+        "quantity": 1000,
+        "reorder_level": 300,
+        "product_weight": 0.001,
+        "product_volume": 0.01
+      },
+      {
+        "product_id": 16,
+        "product_name": "Pharmaceuticals",
+        "quantity": 1500,
+        "reorder_level": 500,
+        "product_weight": 0.0008,
+        "product_volume": 0.008
+      }
+    ]
+  }
+]
