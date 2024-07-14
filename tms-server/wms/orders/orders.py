@@ -1,5 +1,95 @@
+from db import get_db
+import uuid
+import sqlite3
+import logging
+import requests
+
+
+def place_order(order_type):
+    match order_type:
+        case "basic":
+            order = basic_order()
+        case "multiple_products":
+            order = multiple_products_order()
+        case "high_priority":
+            order = high_priority_order()
+        case "exceeding_weight":
+            order = exceeding_weight_order()
+        case "exceeding_volume":
+            order = exceeding_volume_order()
+        case "multiple_suppliers":
+            order = multiple_suppliers_order()
+        case "invalid_product":
+            order = invalid_product_order()
+        case "invalid_supplier":
+            order = invalid_supplier_order()
+        case "empty_products":
+            order = empty_products_order()
+        case _:
+            return None
+
+    save_order(order["order_id"], order["warehouse_id"], order["products"])
+    send_order(order)
+    return order
+
+
+def save_order(order_id, warehouse_id, products):
+    total_weight = 0
+    total_volume = 0
+
+    for product in products:
+        total_weight += product["weight"]
+        total_volume += product["volume"]
+
+    db = get_db(db_name="wms.db")
+    try:
+        db.execute(
+            "INSERT INTO orders_placed (order_uuid, warehouse_id, total_weight, total_volume) VALUES (?, ?, ?, ?)",
+            (order_id, warehouse_id, total_weight, total_volume),
+        )
+    except sqlite3.Error as e:
+        logging.error(e)
+
+    values = [
+        (
+            order_id,
+            product["product_id"],
+            product["product_name"],
+            product["supplier_id"],
+            product["priority"],
+            product["quantity"],
+            product["weight"],
+            product["volume"],
+        )
+        for product in products
+    ]
+
+    
+
+    try:
+        db.executemany(
+            "INSERT INTO order_products (order_id, product_id, product_name, supplier_id, priority, quantity, weight, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            values,
+        )
+    except sqlite3.Error as e:
+        print("error 2\n")
+        logging.error(e)
+        print("end error 2\n")
+
+    db.commit()
+
+
+def send_order(order):
+    print(f"Sending order: {order}")
+    try:
+        response = requests.post("http://localhost:5000/api/orders", json=order)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(e)
+
+
 def basic_order():
-    # TODO: Insert to db retrieve order_id
+    order_id = str(uuid.uuid4())
     order = {
         "order_id": order_id,
         "warehouse_id": 1,
@@ -24,6 +114,7 @@ def basic_order():
             },
         ],
     }
+    return order
 
 
 def multiple_products_order():
@@ -70,6 +161,7 @@ def multiple_products_order():
             },
         ],
     }
+    return order
 
 
 def high_priority_order():
@@ -88,6 +180,7 @@ def high_priority_order():
             }
         ],
     }
+    return order
 
 
 def exceeding_weight_order():
@@ -106,6 +199,7 @@ def exceeding_weight_order():
             }
         ],
     }
+    return order
 
 
 def exceeding_volume_order():
@@ -124,6 +218,7 @@ def exceeding_volume_order():
             }
         ],
     }
+    return order
 
 
 def multiple_suppliers_order():
@@ -151,6 +246,7 @@ def multiple_suppliers_order():
             },
         ],
     }
+    return order
 
 
 def invalid_product_order():
@@ -169,6 +265,7 @@ def invalid_product_order():
             }
         ],
     }
+    return order
 
 
 def invalid_supplier_order():
@@ -187,7 +284,9 @@ def invalid_supplier_order():
             }
         ],
     }
+    return order
 
 
 def empty_products_order():
     order = {"order_id": order_id, "warehouse_id": 1, "products": []}
+    return order
