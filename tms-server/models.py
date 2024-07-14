@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS vehicles (
     vehicle_plate TEXT NOT NULL UNIQUE,
     vehicle_type TEXT NOT NULL,
     fuel_capacity REAL NOT NULL CHECK (fuel_capacity >= 0),
+    litres_per_100km REAL NOT NULL CHECK (litres_per_100km >= 0),
     tonnage REAL NOT NULL CHECK (tonnage >= 0),
     volume REAL NOT NULL CHECK (volume >= 0)
 );
@@ -87,6 +88,7 @@ CREATE TABLE IF NOT EXISTS order_details (
     order_id INTEGER,
     product_id INTEGER,
     product_name TEXT NOT NULL,
+    priority INTEGER NOT NULL CHECK (priority >= 1),
     quantity INTEGER NOT NULL CHECK (quantity >= 1),
     total_weight REAL NOT NULL CHECK (total_weight >= 0),
     total_volume REAL NOT NULL CHECK (total_volume >= 0),
@@ -169,8 +171,6 @@ cursor.execute(create_users_table)
 cursor.execute(create_user_details_table)
 cursor.execute(create_warehouses_table)
 cursor.execute(create_shipments_table)
-cursor.execute(create_shipment_statuses_table)
-cursor.execute(create_inventory_table)
 cursor.execute(create_orders_table)
 cursor.execute(create_invoices_table)
 cursor.execute(create_payments_table)
