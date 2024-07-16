@@ -29,7 +29,10 @@ def place_order(order_type):
             return None
 
     save_order(order["order_id"], order["warehouse_id"], order["products"])
-    send_order(order)
+
+    # Currently both of these functions kinda are redundant
+    # But in the future, when the wms isn't part of the same server this will be useful
+    send_order(order)  # TODO: Look into a message broker
     return order
 
 
@@ -64,8 +67,6 @@ def save_order(order_id, warehouse_id, products):
         for product in products
     ]
 
-    
-
     try:
         db.executemany(
             "INSERT INTO order_products (order_id, product_id, product_name, supplier_id, priority, quantity, weight, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -82,7 +83,7 @@ def save_order(order_id, warehouse_id, products):
 def send_order(order):
     print(f"Sending order: {order}")
     try:
-        response = requests.post("http://localhost:5000/api/orders", json=order)
+        response = requests.post("http://localhost:5000/api/order", json=order)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         print(e)
@@ -113,12 +114,14 @@ def basic_order():
                 "volume": 1,
             },
         ],
+        "total_weight": 15.5,
+        "total_volume": 12.25,
     }
     return order
 
 
 def multiple_products_order():
-    # TODO: Insert to db retrieve order_id
+    order_id = str(uuid.uuid4())
     order = {
         "order_id": order_id,
         "warehouse_id": 2,
@@ -160,11 +163,14 @@ def multiple_products_order():
                 "product_volume": 0.08,
             },
         ],
+        "total_weight": 0.756,
+        "total_volume": 2.68,
     }
     return order
 
 
 def high_priority_order():
+    order_id = str(uuid.uuid4())
     order = {
         "order_id": order_id,
         "warehouse_id": 4,
@@ -179,11 +185,14 @@ def high_priority_order():
                 "volume": 12,
             }
         ],
+        "total_weight": 2.4,
+        "total_volume": 12,
     }
     return order
 
 
 def exceeding_weight_order():
+    order_id = str(uuid.uuid4())
     order = {
         "order_id": order_id,
         "warehouse_id": 3,
@@ -198,11 +207,15 @@ def exceeding_weight_order():
                 "volume": 1.5,
             }
         ],
+        "total_weight": 999,
+        "total_volume": 1.5,
     }
     return order
 
 
 def exceeding_volume_order():
+    order_id = str(uuid.uuid4())
+    order_id = str(uuid.uuid4())
     order = {
         "order_id": order_id,
         "warehouse_id": 1,
@@ -217,11 +230,14 @@ def exceeding_volume_order():
                 "volume": 999,
             }
         ],
+        "total_weight": 7.5,
+        "total_volume": 999,
     }
     return order
 
 
 def multiple_suppliers_order():
+    order_id = str(uuid.uuid4())
     order = {
         "order_id": order_id,
         "warehouse_id": 3,
@@ -245,11 +261,14 @@ def multiple_suppliers_order():
                 "volume": 4,
             },
         ],
+        "total_weight": 5.1,
+        "total_volume": 14,
     }
     return order
 
 
 def invalid_product_order():
+    order_id = str(uuid.uuid4())
     order = {
         "order_id": order_id,
         "warehouse_id": 1,
@@ -264,11 +283,14 @@ def invalid_product_order():
                 "volume": 4,
             }
         ],
+        "total_weight": 0.3,
+        "total_volume": 4,
     }
     return order
 
 
 def invalid_supplier_order():
+    order_id = str(uuid.uuid4())
     order = {
         "order_id": order_id,
         "warehouse_id": 1,
@@ -283,10 +305,19 @@ def invalid_supplier_order():
                 "volume": 25,
             }
         ],
+        "total_weight": 7.5,
+        "total_volume": 25,
     }
     return order
 
 
 def empty_products_order():
-    order = {"order_id": order_id, "warehouse_id": 1, "products": []}
+    order_id = str(uuid.uuid4())
+    order = {
+        "order_id": order_id,
+        "warehouse_id": 1,
+        "products": [],
+        "total_weight": 0,
+        "total_volume": 0,
+    }
     return order
