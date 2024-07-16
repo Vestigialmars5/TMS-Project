@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS warehouses (
 create_orders_table = """
 CREATE TABLE IF NOT EXISTS orders (
     order_id INTEGER PRIMARY KEY,
+    order_uuid TEXT NOT NULL UNIQUE,
     customer_id INTEGER,
     order_status TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
