@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS orders_placed (
 create_order_products_table = """
 CREATE TABLE IF NOT EXISTS order_products (
     order_product_id INTEGER PRIMARY KEY,
-    order_id TEXT NOT NULL,
+    order_id INTEGER NOT NULL,
     product_id INTEGER NOT NULL,
     product_name TEXT NOT NULL,
     supplier_id INTEGER NOT NULL,

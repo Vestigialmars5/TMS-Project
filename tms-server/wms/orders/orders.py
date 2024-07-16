@@ -36,7 +36,7 @@ def place_order(order_type):
     return order
 
 
-def save_order(order_id, warehouse_id, products):
+def save_order(order_uuid, warehouse_id, products):
     total_weight = 0
     total_volume = 0
 
@@ -46,44 +46,48 @@ def save_order(order_id, warehouse_id, products):
 
     db = get_db(db_name="wms.db")
     try:
-        db.execute(
-            "INSERT INTO orders_placed (order_uuid, warehouse_id, total_weight, total_volume) VALUES (?, ?, ?, ?)",
-            (order_id, warehouse_id, total_weight, total_volume),
-        )
-    except sqlite3.Error as e:
-        logging.error(e)
+        cursor = db.cursor()
+        try:
+            cursor.execute(
+                "INSERT INTO orders_placed (order_uuid, warehouse_id, total_weight, total_volume) VALUES (?, ?, ?, ?)",
+                (order_uuid, warehouse_id, total_weight, total_volume),
+            )
+        except sqlite3.Error as e:
+            logging.error(e)
+        
+        order_id = cursor.lastrowid
 
-    values = [
-        (
-            order_id,
-            product["product_id"],
-            product["product_name"],
-            product["supplier_id"],
-            product["priority"],
-            product["quantity"],
-            product["weight"],
-            product["volume"],
-        )
-        for product in products
-    ]
+        values = [
+            (
+                order_id,
+                product["product_id"],
+                product["product_name"],
+                product["supplier_id"],
+                product["priority"],
+                product["quantity"],
+                product["weight"],
+                product["volume"],
+            )
+            for product in products
+        ]
 
-    try:
-        db.executemany(
-            "INSERT INTO order_products (order_id, product_id, product_name, supplier_id, priority, quantity, weight, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            values,
-        )
-    except sqlite3.Error as e:
-        print("error 2\n")
-        logging.error(e)
-        print("end error 2\n")
+        try:
+            cursor.executemany(
+                "INSERT INTO order_products (order_id, product_id, product_name, supplier_id, priority, quantity, weight, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                values,
+            )
+        except sqlite3.Error as e:
+            logging.error(e)
 
-    db.commit()
+        db.commit()
+    finally:
+        cursor.close()
 
 
 def send_order(order):
     print(f"Sending order: {order}")
     try:
-        response = requests.post("http://localhost:5000/api/order", json=order)
+        response = requests.post("http://localhost:5000/api/orders", json=order)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         print(e)
