@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMS Controller</title>
+</head>
+
+<body>
+    <script>
+        function submitForm() {
+            document.querySelector('form').submit();
+        }
+    </script>
+    <h1>WMS Controller</h1>
+    <div class="container">
+        <form action="/wms/orders" method="post">
+            <div class="form-group">
+                <label for="order_type">Order Type</label>
+                <select class="form-control" id="order_type" name="order_type">
+                    <option value="basic">Basic</option>
+                    <option value="multiple_products">Multiple Products</option>
+                    <option value="high_priority">High Priority</option>
+                    <option value="exceeding_weight">Exceeding Weight</option>
+                    <option value="exceeding_volume">Exceeding Volume</option>
+                    <option value="multiple_suppliers">Multiple Suppliers</option>
+                    <option value="invalid_product">Invalid Product</option>
+                    <option value="invalid_supplier">Invalid Supplier</option>
+                    <option value="empty_products">Empty Products</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
