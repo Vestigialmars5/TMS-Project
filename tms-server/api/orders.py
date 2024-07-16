@@ -3,11 +3,11 @@
 from flask import request, Blueprint
 from db import get_db
 
-orders_blueprint = Blueprint("order", __name__, url_prefix="/order")
+orders_blueprint = Blueprint("orders", __name__, url_prefix="/orders")
 
 
 # Listens for orders sent by the WMS
-@orders_blueprint.route("/receive", methods=["POST"])
+@orders_blueprint.route("/", methods=["POST"])
 def receive_order():
     if request.method == "POST":
         data = request.get_json()
@@ -20,6 +20,9 @@ def receive_order():
 
         # Save the order to the database
         save_order(order_uuid, warehouse_id, products, total_weight, total_volume)
+
+
+# Save the order to the database
 
 
 # Function to decide what vehicle type best suits the order (knapsack problem variant)
