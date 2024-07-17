@@ -803,3 +803,7 @@ Jul 14
 I decided on having it be more straight forward, I'm working on a TMS not the WMS. So for now I'm developing the connection between them. It will work like this:
 Trigger an order creation, from order cases -> save in current wms db -> send to tms -> receive.
 I'm going to be using event driven architecture. Probably using a post request, but look into including message brokers like Kafka, RabbitMQ.
+
+Jul 16
+Today I messed up bad! I tried to rename my server and client folders, but I decided against it and discarded all unstaged changes, this made the tracking for every file to go crazy, and then I tried just going back to the last commit, but ended up deleting all the untracked files (which were all of them since the folders still remained with their new names). I had to delete my local repo and clone it again. I, for some reason, stumbled across errors that weren't supposed to be there. For example: Wrongly named files. I have no idea since when it went back to that naming, but fixable.
+I gotta take a course on git commands so that I know exactly what to do next time.
