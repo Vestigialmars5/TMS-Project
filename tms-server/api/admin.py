@@ -7,7 +7,7 @@ admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
 
 
 # TODO: Complete this
-@admin_blueprint.route("/users", methods=("POST",))
+@admin_blueprint.route("/users", methods=["POST"])
 def create_user():
     """
     Create a user.
@@ -30,7 +30,7 @@ def create_user():
         return jsonify(response), status
 
 
-@admin_blueprint.route("/users", methods=("GET",))
+@admin_blueprint.route("/users", methods=["GET"])
 def get_users():
     """
     Get all users.
@@ -51,7 +51,7 @@ def get_users():
         return jsonify(response), status
 
 
-@admin_blueprint.route("/users/<int:user_id>", methods=("DELETE",))
+@admin_blueprint.route("/users/<int:user_id>", methods=["DELETE"])
 def delete_user(user_id):
     """
     Delete a user.
@@ -66,7 +66,7 @@ def delete_user(user_id):
         return jsonify(response), status
 
 
-@admin_blueprint.route("/users/<int:user_id>", methods=("PUT",))
+@admin_blueprint.route("/users/<int:user_id>", methods=["PUT"])
 def update_user(user_id):
     """
     Update a user.
