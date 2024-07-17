@@ -46,6 +46,43 @@ Each route should have the following attributes:
 """
 
 
+# Create new route from origin to destination
+@tm_blueprint.route("/routes", methods=["POST"])
+def create_route():
+    data = request.get_json()
+
+    origin = data.get("origin")
+    destination = data.get("destination")
+
+    response, status = RouteService.create_route(origin, destination)
+
+
+# Get all previously created routes
+@tm_blueprint.route("/routes", methods=["GET"])
+def get_routes():
+    data = request.get_json()
+
+    response, status = RouteService.get_routes()
+
+
+# Update/optimize existing route based on current conditions
+@tm_blueprint.route("/routes/<int:route_id>", methods=["PUT"])
+def update_route(route_id):
+    data = request.get_json()
+
+    response, status = RouteService.update_route(route_id, data)
+
+
+# Delete specific route
+@tm_blueprint.route("/routes/<int:route_id>", methods=["DELETE"])
+def delete_route(route_id):
+    response, status = RouteService.delete_route(route_id)
+
+
+# Get specific route details
+@tm_blueprint.route("/routes/<int:route_id>", methods=["GET"])
+def get_route(route_id):
+    response, status = RouteService.get_route(route_id)
 
 
 # Carrier Management
@@ -66,7 +103,6 @@ Each carrier should have the following attributes:
 - Cost
 - Status (Active, Inactive)
 """
-
 
 
 # Shipment Tracking (Managed by simulation, triggered events will be sent to the TMS)
@@ -92,8 +128,6 @@ Each shipment should have the following attributes:
 """
 
 
-
-
 # Cost Optimization
 """
 This needs to include the following features:
@@ -108,8 +142,6 @@ The cost optimization module should provide the following functionalities:
 - Cost Comparison: Compare costs with previous periods and identify cost-saving opportunities.
 - Cost Reports: Generate reports on transportation costs, cost trends, and cost-saving measures.
 """
-
-
 
 
 # Reports
@@ -127,8 +159,6 @@ The reports module should provide the following functionalities:
 - Export Reports: Export reports in different formats, such as PDF, Excel, and CSV.
 
 """
-
-
 
 
 # Dashboard Analytics
