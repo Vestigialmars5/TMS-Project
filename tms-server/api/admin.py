@@ -6,11 +6,6 @@ from services.user_service import UserService
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
 
 
-@admin_blueprint.route("/test", methods=("GET",))
-def index():
-    return "Hello World!"
-
-
 # TODO: Complete this
 @admin_blueprint.route("/users", methods=("POST",))
 def create_user():
@@ -73,7 +68,7 @@ def delete_user(user_id):
 
 @admin_blueprint.route("/users/<int:user_id>", methods=("PUT",))
 def update_user(user_id):
-    """ 
+    """
     Update a user.
     Expected data: (str) username, (str) email, (int) role.
 
