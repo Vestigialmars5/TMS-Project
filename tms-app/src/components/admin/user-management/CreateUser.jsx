@@ -8,7 +8,7 @@ const CreateUser = () => {
   const { createUser, refreshUsers } = useUserManagement();
   const { addAlert } = useAlert();
 
-  const hanldeCreateUser = async (userData) => {
+  const handleCreateUser = async (userData) => {
     try {
       await createUser(userData);
       addAlert("User Created Successfully", "success");
@@ -21,7 +21,7 @@ const CreateUser = () => {
   return (
     <>
       <CreateUserForm
-        onSubmit={hanldeCreateUser}
+        onSubmit={handleCreateUser}
         errorMessage={createUserError}
       />
     </>
