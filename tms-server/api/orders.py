@@ -23,7 +23,30 @@ def receive_order():
 
 
 # Save the order to the database
+def save_order(order_uuid, warehouse_id, products, total_weight, total_volume):
+    db = get_db()
+    cursor = db.cursor()
+
+    try:
+        cursor.execute(
+            """INSERT INTO orders (order_uuid, warehouse_id, total_weight, total_volume) VALUES (?, ?, ?, ?)""", (order_uuid, warehouse_id, total_weight, total_volume)
+        )
+
+        order_id = cursor.lastrowid
+
+        for product in products:
+            cursor.execute(
+                """INSERT INTO order_products (order_id, product_id, product_name, supplier_id, priority, quantity, weight, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                (order_id, product["product_id"], product["product_name"], product["supplier_id"], product["priority"], product["quantity"], product["weight"], product["volume"])
+            )
+        
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        print(e)
+    
+    finally:
+        cursor.close()
+    
 
 
-# Function to decide what vehicle type best suits the order (knapsack problem variant)
-def decide_vehicle_type(total_weight, total_volume):
