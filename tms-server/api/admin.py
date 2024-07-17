@@ -6,6 +6,34 @@ from services.user_service import UserService
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
 
 
+""" 
+Oversees the entire system, manages user roles and permissions, and ensures smooth operation of the app.
+
+- **Dashboard**:
+  Overview of system performance, key metrics, and notifications.
+- **User Management**:
+  Add, edit, and remove users. Assign roles and permissions.
+- **System Settings**:
+  Configure system-wide settings and preferences.
+- **Audit Log**:
+  View system activity logs for security and compliance.
+- **Reports**:
+  Generate and view various system reports.
+- **Simulation and Testing Environment**:
+  Scenario Simulator for testing system resilience and performance.
+- **Training and Support Resources**:
+  Training Center with video tutorials, user manuals, FAQs, and helpdesk feature.
+"""
+
+# User Management
+"""
+This needs to include the following features:
+- Add new users
+- Edit user details
+- Delete users
+- View user details
+"""
+
 # TODO: Complete this
 @admin_blueprint.route("/users", methods=["POST"])
 def create_user():
@@ -87,3 +115,36 @@ def update_user(user_id):
         response, status = UserService.update_user(user_id, username, email, role_id)
 
         return jsonify(response), status
+
+
+# System settings
+"""
+This needs to include the following features:
+- Configure system-wide settings
+- Set preferences
+- Manage system resources
+- Define system roles and permissions
+
+"""
+
+
+# Audit Log
+"""
+This needs to include the following features:
+- View system activity logs
+- Monitor user activity
+- Track system events
+- Ensure security and compliance
+
+"""
+
+
+# Reports
+"""
+This needs to include the following features:
+- Generate system reports
+- View performance metrics
+- Analyze data
+- Export reports in various formats
+    
+"""
