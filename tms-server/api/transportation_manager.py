@@ -6,8 +6,6 @@ tm_blueprint = Blueprint(
 )
 
 """ 
-Transportation Manager
-
 Manages transportation operations, including planning and scheduling routes, selecting carriers, 
 tracking shipments, and optimizing transportation costs. 
 
