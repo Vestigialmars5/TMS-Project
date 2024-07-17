@@ -5,6 +5,7 @@ from api.errors_handler import errors_blueprint
 from api.auth import auth_blueprint
 from api.onboarding import onboarding_blueprint
 from api.admin import admin_blueprint
+from wms.wms import wms_blueprint
 from jwt_config import jwt
 
 
@@ -30,6 +31,8 @@ app.register_blueprint(errors_blueprint)
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(onboarding_blueprint)
 app.register_blueprint(admin_blueprint)
+
+app.register_blueprint(wms_blueprint)
 
 
 if __name__ == "__main__":

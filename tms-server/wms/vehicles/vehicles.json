@@ -1,0 +1,23 @@
+[
+    {
+      "vehicle_type": "LARGE_TRUCK",
+      "tonnage": 20,
+      "volume": 100,
+      "fuel_capacity": 500,
+      "litres_per_100km": 40
+    },
+    {
+      "vehicle_type": "MEDIUM_TRUCK",
+      "tonnage": 15,
+      "volume": 50,
+      "fuel_capacity": 450,
+      "litres_per_100km": 35
+    },
+    {
+      "vehicle_type": "SMALL_TRUCK",
+      "tonnage": 12,
+      "volume": 20,
+      "fuel_capacity": 400,
+      "litres_per_100km": 30
+    }
+]
