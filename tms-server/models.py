@@ -179,6 +179,20 @@ cursor.execute(create_payments_table)
 cursor.execute(create_audit_logs_table)
 cursor.execute(create_reports_table)
 
+
+# Create roles
+roles = [
+    ("Admin",),
+    ("Transportation Manager",),
+    ("Carrier",),
+    ("Customer/Shipper",),
+    ("Driver",),
+    ("Finance/Accounting",),
+    ("Warehouse Manager",),
+]
+
+cursor.executemany("INSERT INTO roles (role_name) VALUES (?)", roles)
+
 # Commit changes and close connection
 conn.commit()
 conn.close()
