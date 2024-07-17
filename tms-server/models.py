@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS driver_details (
     license_number TEXT NOT NULL UNIQUE,
     license_expiry DATE NOT NULL,
     vehicle_id INTEGER NOT NULL,
+    driver_status TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)
 """
