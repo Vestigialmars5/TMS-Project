@@ -812,3 +812,6 @@ So apparently when renaming inside a repo, you should rename as commits for exam
 Jul 17
 I'm going to try to rename them properly this time. I get permission denied. I wonder if it's because of OneDrive.
 I'm also going to start implementing flask factory and logging.
+
+Jul 19
+I've been trying to set up my flask factory but I can't get anything to work.
