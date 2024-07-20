@@ -1,13 +1,41 @@
-# Ignore node_modules and build directory from React app
-/tms-app/node_modules/
-/tms-app/build/
+# Ignore virtual environment
+venv/
+ENV/
 
-# Ignore Python virtual environment and __pycache__
-/tms-server/venv/
-/tms-server/__pycache__/
-
-# Ignore any other common files
-.DS_Store
-.idea/
-.vscode/
+# Ignore environment variables file
 .env
+
+# Ignore macOS specific files
+.DS_Store
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore logs
+*.log
+
+# Ignore SQLite database files
+*.sqlite3
+
+# Ignore node_modules in client folder
+client/node_modules/
+
+# Ignore build files in client folder
+client/build/
+client/.cache/
+
+# Ignore coverage files
+coverage/
+
+# Ignore compiled files
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info
+dist/
+build/
