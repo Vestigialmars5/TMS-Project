@@ -1,7 +1,7 @@
 import sqlite3
 
 # Connect to SQLite database
-conn = sqlite3.connect("tms_database.db")
+conn = sqlite3.connect("tms.db")
 cursor = conn.cursor()
 
 # Define SQL CREATE TABLE statements for each model
@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS driver_details (
     driver_status TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)
+);
 """
 
 create_vehicles_table = """
