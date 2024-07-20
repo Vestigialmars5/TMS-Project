@@ -23,13 +23,13 @@ def close_db(exception):
 
 def init_db():
     tms_db = get_db()
-    wms_db = get_db(db_name="wms_database.db")
 
-    with current_app.open_resource("./models/tms_schema.sql") as f:
+    """ wms_db = get_db(db_name="wms_database.db") """
+    with current_app.open_resource("./models/reset_tms.sql") as f:
         tms_db.executescript(f.read().decode("utf8"))
 
-    with current_app.open_resource("./models/wms_schema.sql") as f:
-        wms_db.executescript(f.read().decode("utf8"))
+    """ with current_app.open_resource("./models/wms_schema.sql") as f:
+        wms_db.executescript(f.read().decode("utf8")) """
 
 
 @click.command(name="init-db")
