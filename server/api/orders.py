@@ -1,7 +1,7 @@
 # Receive and process orders from the WMS 
 
 from flask import request, Blueprint
-from db import get_db
+from server.db import get_db
 
 orders_blueprint = Blueprint("orders", __name__, url_prefix="/orders")
 

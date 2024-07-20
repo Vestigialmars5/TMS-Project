@@ -1,6 +1,6 @@
-from db import get_db
+from server.db import get_db
 from werkzeug.security import generate_password_hash
-from utils.token import create_tokens
+from server.utils.token import create_tokens
 from flask import abort
 
 
