@@ -1,5 +1,5 @@
 import sqlite3
-from db import get_db
+from server.db import get_db
 from werkzeug.security import generate_password_hash
 
 

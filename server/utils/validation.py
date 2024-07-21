@@ -1,5 +1,5 @@
 # Use validator class to validate data
-from utils.validator import Validator
+from server.utils.validator import Validator
 
 # TODO: Get roles from db
 

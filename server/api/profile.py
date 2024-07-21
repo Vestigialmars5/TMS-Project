@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from jwt_config import jwt
-from services.profile_service import ProfileService
+from server.jwt_config import jwt
+from server.services.profile_service import ProfileService
 
 profile_blueprint = Blueprint("profile", __name__, url_prefix="/api/profile")
 

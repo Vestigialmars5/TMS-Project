@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, render_template, request, url_for
-from db import get_db
+from server.db import get_db
 from werkzeug.security import generate_password_hash
-from services.user_service import UserService
+from server.services.user_service import UserService
 
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
 

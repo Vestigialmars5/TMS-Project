@@ -1,6 +1,6 @@
 from flask import jsonify, render_template, request, Blueprint
-from db import get_db
-from wms.orders.orders import place_order
+from server.db import get_db
+from server.wms.orders.orders import place_order
 
 
 wms_blueprint = Blueprint("wms", __name__, url_prefix="/wms")

@@ -1,4 +1,4 @@
-from flask import Flask, g
+""" from flask import Flask, g
 from flask_cors import CORS
 import secrets
 from api.errors_handler import errors_blueprint
@@ -37,3 +37,4 @@ app.register_blueprint(wms_blueprint)
 
 if __name__ == "__main__":
     app.run(debug=True)
+ """

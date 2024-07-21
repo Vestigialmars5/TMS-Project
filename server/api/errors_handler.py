@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from jwt_config import jwt
+from server.jwt_config import jwt
 
 errors_blueprint = Blueprint("errors", __name__, url_prefix="/api/errors")
 

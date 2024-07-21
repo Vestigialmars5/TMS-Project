@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-from db import get_db
-from services.auth_service import AuthService
+from server.db import get_db
+from server.services.auth_service import AuthService
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 

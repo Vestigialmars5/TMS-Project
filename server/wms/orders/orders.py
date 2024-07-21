@@ -1,4 +1,4 @@
-from db import get_db
+from server.db import get_db
 import uuid
 import sqlite3
 import logging
