@@ -5,17 +5,14 @@ ENV/
 # Ignore environment variables file
 .env
 
-# Ignore macOS specific files
-.DS_Store
+# Ignore instance folder
+instance/
 
 # Ignore Python cache files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
-# Ignore logs
-*.log
 
 # Ignore SQLite database files
 *.sqlite3

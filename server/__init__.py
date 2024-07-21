@@ -3,34 +3,28 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from .config import Config
-from .jwt_config import jwt
-from dotenv import load_dotenv
-
-load_dotenv()
+from flask_jwt_extended import JWTManager
 
 # Create the application instance
 def create_app(config_class=Config):
     # Create the Flask app
-    app = Flask(__name__)
+    app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_class)
 
-    # Environment variables
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
-
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
-    app.config["JWT_REFRESH_TOKEN_EXPIRES"] = 86400
-    app.config["JWT_ALGORITHM"] = "HS256"
-
+    # Ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
+    # Logs
+
+
     # Enable CORS
     CORS(app)
 
     # Initialize JWT
+    jwt = JWTManager()
     jwt.init_app(app)
 
     # Initialize the databases
