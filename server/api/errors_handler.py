@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify
-from server.jwt_config import jwt
+from flask_jwt_extended import JWTManager
+
+jwt = JWTManager()
 
 errors_blueprint = Blueprint("errors", __name__, url_prefix="/api/errors")
 
