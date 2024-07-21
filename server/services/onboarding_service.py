@@ -38,7 +38,7 @@ class OnboardingService:
             access_token = create_tokens(
                 user_id,
                 {
-                    "onboardingCompleted": True,
+                    "isOnboardingCompleted": True,
                     "email": email,
                     "firstName": first_name,
                     "lastName": last_name,
