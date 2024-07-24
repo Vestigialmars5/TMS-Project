@@ -54,6 +54,34 @@ CREATE TABLE IF NOT EXISTS warehouses (
     FOREIGN KEY (manager_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE IF NOT EXISTS routes (
+    route_id INTEGER PRIMARY KEY,
+    origin TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    distance REAL NOT NULL CHECK (distance >= 0),
+    estimated_time REAL NOT NULL CHECK (estimated_time >= 0),
+    optimal BOOLEAN NOT NULL DEFAULT FALSE,
+    waypoints TEXT,
+    cost REAL NOT NULL CHECK (cost >= 0),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS route_optimization_logs (
+    log_id INTEGER PRIMARY KEY,
+    route_id INTEGER,
+    old_distance REAL NOT NULL CHECK (old_distance >= 0),
+    new_distance REAL NOT NULL CHECK (new_distance >= 0),
+    old_estimated_time REAL NOT NULL CHECK (old_estimated_time >= 0),
+    new_estimated_time REAL NOT NULL CHECK (new_estimated_time >= 0),
+    old_cost REAL NOT NULL CHECK (old_cost >= 0),
+    new_cost REAL NOT NULL CHECK (new_cost >= 0),
+    old_waypoints TEXT,
+    new_waypoints TEXT,
+    optimized_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (route_id) REFERENCES routes(route_id)
+);
+
 CREATE TABLE IF NOT EXISTS orders (
     order_id INTEGER PRIMARY KEY,
     order_uuid TEXT NOT NULL UNIQUE,

@@ -4,6 +4,8 @@ DROP TABLE IF EXISTS user_details;
 DROP TABLE IF EXISTS driver_details;
 DROP TABLE IF EXISTS vehicles;
 DROP TABLE IF EXISTS warehouses;
+DROP TABLE IF EXISTS routes;
+DROP TABLE IF EXISTS route_optimization_logs;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_details;
 DROP TABLE IF EXISTS shipments;
@@ -67,6 +69,34 @@ CREATE TABLE warehouses (
     docks INTEGER NOT NULL CHECK (docks >= 1),
     manager_id INTEGER,
     FOREIGN KEY (manager_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE routes (
+    route_id INTEGER PRIMARY KEY,
+    origin TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    distance REAL NOT NULL CHECK (distance >= 0),
+    estimated_time REAL NOT NULL CHECK (estimated_time >= 0),
+    optimal BOOLEAN NOT NULL DEFAULT FALSE,
+    waypoints TEXT,
+    cost REAL NOT NULL CHECK (cost >= 0),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE route_optimization_logs (
+    log_id INTEGER PRIMARY KEY,
+    route_id INTEGER,
+    old_distance REAL NOT NULL CHECK (old_distance >= 0),
+    new_distance REAL NOT NULL CHECK (new_distance >= 0),
+    old_estimated_time REAL NOT NULL CHECK (old_estimated_time >= 0),
+    new_estimated_time REAL NOT NULL CHECK (new_estimated_time >= 0),
+    old_cost REAL NOT NULL CHECK (old_cost >= 0),
+    new_cost REAL NOT NULL CHECK (new_cost >= 0),
+    old_waypoints TEXT,
+    new_waypoints TEXT,
+    optimized_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (route_id) REFERENCES routes(route_id)
 );
 
 CREATE TABLE orders (
