@@ -815,3 +815,6 @@ I'm also going to start implementing flask factory and logging.
 
 Jul 19
 I've been trying to set up my flask factory but I can't get anything to work.
+
+Jul 26
+I have been trying to refactor my whole app, I was able to make a flask factory pattern, but now I'm struggling refactoring to sqlalchemy. 
