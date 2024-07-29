@@ -1,9 +1,9 @@
 from ..extensions import db
 from datetime import datetime, timezone
-from .base import Base
+from .base import Base1
 
 
-class Role(Base):
+class Role(Base1):
     __tablename__ = "roles"
 
     role_id = db.Column(db.Integer, primary_key=True)
@@ -13,7 +13,7 @@ class Role(Base):
         return f"Role('{self.role_name}' id: {self.role_id})"
 
 
-class User(Base):
+class User(Base1):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key=True)
@@ -33,7 +33,7 @@ class User(Base):
         return f"User('{self.username}', '{self.email}')"
 
 
-class UserDetails(Base):
+class UserDetails(Base1):
     __tablename__ = "user_details"
 
     user_detail_id = db.Column(db.Integer, primary_key=True)
@@ -50,7 +50,7 @@ class UserDetails(Base):
         return f"UserDetails('{self.first_name}', '{self.last_name}')"
 
 
-class DriverDetails(Base):
+class DriverDetails(Base1):
     __tablename__ = "driver_details"
 
     driver_detail_id = db.Column(db.Integer, primary_key=True)
@@ -69,7 +69,7 @@ class DriverDetails(Base):
         return f"DriverDetails('{self.license_number}', '{self.driver_status}')"
 
 
-class Vehicle(Base):
+class Vehicle(Base1):
     __tablename__ = "vehicles"
 
     vehicle_id = db.Column(db.Integer, primary_key=True)
@@ -84,7 +84,7 @@ class Vehicle(Base):
         return f"Vehicle('{self.vehicle_plate}', '{self.vehicle_type}')"
 
 
-class Warehouse(Base):
+class Warehouse(Base1):
     __tablename__ = "warehouses"
 
     warehouse_id = db.Column(db.Integer, primary_key=True)
@@ -99,7 +99,7 @@ class Warehouse(Base):
         return f"Warehouse('{self.warehouse_name}', '{self.location}')"
 
 
-class Order(Base):
+class Order(Base1):
     __tablename__ = "orders"
 
     order_id = db.Column(db.Integer, primary_key=True)
@@ -117,7 +117,7 @@ class Order(Base):
         return f"Order('{self.order_uuid}', '{self.order_status}')"
 
 
-class OrderDetails(Base):
+class OrderDetails(Base1):
     __tablename__ = "order_details"
 
     order_detail_id = db.Column(db.Integer, primary_key=True)
@@ -130,13 +130,12 @@ class OrderDetails(Base):
     price = db.Column(db.Float, nullable=False)
 
     order = db.relationship("Order", backref="order_details")
-    product = db.relationship("Product", backref="order_details")
 
     def __repr__(self):
         return f"OrderDetails('{self.quantity}', '{self.price}')"
 
 
-class Shipment(Base):
+class Shipment(Base1):
     __tablename__ = "shipments"
 
     shipment_id = db.Column(db.Integer, primary_key=True)
@@ -158,8 +157,10 @@ class Shipment(Base):
         timezone.utc), onupdate=datetime.now(timezone.utc))
 
     order = db.relationship("Order", backref="shipments")
-    customer = db.relationship("User", backref="shipments")
-    driver = db.relationship("User", backref="shipments")
+    customer = db.relationship("User", foreign_keys=[
+                               customer_id], backref="customer_shipments")
+    driver = db.relationship("User", foreign_keys=[
+                             driver_id], backref="driver_shipments")
     vehicle = db.relationship("Vehicle", backref="shipments")
     warehouse = db.relationship("Warehouse", backref="shipments")
 
@@ -167,7 +168,7 @@ class Shipment(Base):
         return f"Shipment('{self.status}', '{self.origin}', '{self.destination}')"
 
 
-class Invoice(Base):
+class Invoice(Base1):
     __tablename__ = "invoices"
 
     invoice_id = db.Column(db.Integer, primary_key=True)
@@ -187,7 +188,7 @@ class Invoice(Base):
         return f"Invoice('{self.amount}', '{self.status}', '{self.due_date}')"
 
 
-class Payment(Base):
+class Payment(Base1):
     __tablename__ = "payments"
 
     payment_id = db.Column(db.Integer, primary_key=True)
@@ -204,7 +205,7 @@ class Payment(Base):
         return f"Payment('{self.amount}', '{self.status}', '{self.payment_date}')"
 
 
-class AuditLog(Base):
+class AuditLog(Base1):
     __tablename__ = "audit_logs"
 
     log_id = db.Column(db.Integer, primary_key=True)
@@ -220,7 +221,7 @@ class AuditLog(Base):
         return f"AuditLog('{self.action}', '{self.timestamp}')"
 
 
-class Report(Base):
+class Report(Base1):
     __tablename__ = "reports"
 
     report_id = db.Column(db.Integer, primary_key=True)

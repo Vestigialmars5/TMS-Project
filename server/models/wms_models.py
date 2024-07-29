@@ -1,10 +1,10 @@
 from ..extensions import db
 from datetime import datetime, timezone
-from .base import Base
+from .base import Base2
 
 
 
-class OrdersPlaced(Base):
+class OrdersPlaced(Base2):
     __tablename__ = "orders_placed"
     __bind_key__ = "wms"
 
@@ -20,7 +20,7 @@ class OrdersPlaced(Base):
         return f"Order('{self.order_uuid}', '{self.created_at}')"
 
 
-class OrderProducts(Base):
+class OrderProducts(Base2):
     __tablename__ = "order_products"
     __bind_key__ = "wms"
 
@@ -35,7 +35,6 @@ class OrderProducts(Base):
     volume = db.Column(db.Float, nullable=False)
 
     order = db.relationship("OrdersPlaced", backref="order_products")
-    product = db.relationship("Products", backref="order_products")
 
     def __repr__(self):
         return f"OrderDetails('{self.quantity}', '{self.weight}')"

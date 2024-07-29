@@ -6,8 +6,6 @@ from flask import current_app
 
 from alembic import context
 
-from server.models.base import Base
-
 USE_TWOPHASE = False
 
 # this is the Alembic Config object, which provides
@@ -39,14 +37,12 @@ def get_engine_url(bind_key=None):
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-# Import both models
-# Combine both metadata
-metadata = MetaData()
-for table in Base.metadata.tables.values():
-    table.tometadata(metadata)
-
-target_metadata = metadata
-
+# MODELS IMPORTANT!! DO NOT REMOVE
+from server.models import base, tms_models, wms_models
+target_metadata = {
+    '': base.Base1.metadata,
+    'wms': base.Base2.metadata
+}
 
 config.set_main_option('sqlalchemy.url', get_engine_url())
 bind_names = []
@@ -115,7 +111,7 @@ def run_migrations_offline():
             context.configure(
                 url=rec['url'],
                 output_buffer=buffer,
-                target_metadata=get_metadata(name),
+                target_metadata=target_metadata.get(name), # Using target_metadata instead of get_metadata
                 literal_binds=True,
             )
             with context.begin_transaction():
@@ -174,7 +170,8 @@ def run_migrations_online():
                 connection=rec['connection'],
                 upgrade_token="%s_upgrades" % name,
                 downgrade_token="%s_downgrades" % name,
-                target_metadata=get_metadata(name),
+                target_metadata=target_metadata.get(name), # Using target_metadata instead of get_metadata
+                include_schemas=True, # Added include_schemas=True
                 **conf_args
             )
             context.run_migrations(engine_name=name)

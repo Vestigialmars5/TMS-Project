@@ -27,22 +27,23 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
 
     # Register commands
-    from .db_initiator import init_db_command
+    from .db_initiator import init_db_command, populate_db_command
     app.cli.add_command(init_db_command)
+    app.cli.add_command(populate_db_command)
 
     with app.app_context():
         from .models import tms_models
         from .models import wms_models
 
-    """# Register blueprints
-    from .api.errors_handler import errors_blueprint
+    """from .api.errors_handler import errors_blueprint
+    # Register blueprints
     from .api.auth import auth_blueprint
+    app.register_blueprint(auth_blueprint)
     from .api.admin import admin_blueprint
     from .api.onboarding import onboarding_blueprint
     from .wms.wms import wms_blueprint
 
     app.register_blueprint(errors_blueprint)
-    app.register_blueprint(auth_blueprint)
     app.register_blueprint(admin_blueprint)
     app.register_blueprint(onboarding_blueprint)
     app.register_blueprint(wms_blueprint) """
