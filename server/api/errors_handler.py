@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify
-from flask_jwt_extended import JWTManager
+from server.extensions import jwt
+from werkzeug.exceptions import HTTPException
+import json
 
-jwt = JWTManager()
 
 errors_blueprint = Blueprint("errors", __name__, url_prefix="/api/errors")
 
@@ -51,6 +52,20 @@ def internal_server_error(error):
         "description": error.description,
     }
     return jsonify(response), 500
+
+
+@errors_blueprint.app_errorhandler(HTTPException)
+def handle_exception(error):
+    response = error.get_response()
+    response.data = json.dumps(
+        {
+            "success": False,
+            "error": error.name,
+            "description": error.description,
+        }
+    )
+    response.content_type = "application/json"
+    return response
 
 
 @jwt.unauthorized_loader

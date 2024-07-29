@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-from server.db import get_db
 from server.services.auth_service import AuthService
+from ..extensions import db
+from ..models.tms_models import User
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 
@@ -23,18 +24,22 @@ def login():
         data = request.get_json()
 
         # TODO: Get rid of this, for testing admin
-        db = get_db()
-        res = db.execute("SELECT * FROM users WHERE user_id = ?", (1,))
+        """res = db.execute("SELECT * FROM users WHERE user_id = ?", (1,))
         row = res.fetchone()
         user_id = row["user_id"]
         email = row["email"]
         password = row["password"]
-        role = row["role_id"]
+        role = row["role_id"] """
+        try:
+            user = db.session.query(User).filter(User.user_id == 1).first()
+        except Exception as e:
+            return jsonify({"message": str(e)}), 500
+
         temp_data = {
-            "user_id": user_id,
-            "email": email,
-            "password": password,
-            "role_id": role,
+            "email": user.email,
+            "password": user.password,
+            "role_id": user.role_id,
+            "user_id": user.user_id,
         }
 
         # TODO: Pass actual data

@@ -35,10 +35,10 @@ def create_app(config_class=Config):
         from .models import tms_models
         from .models import wms_models
 
-    """from .api.errors_handler import errors_blueprint
     # Register blueprints
     from .api.auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
+    """from .api.errors_handler import errors_blueprint
     from .api.admin import admin_blueprint
     from .api.onboarding import onboarding_blueprint
     from .wms.wms import wms_blueprint
