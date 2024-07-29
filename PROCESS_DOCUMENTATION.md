@@ -818,3 +818,6 @@ I've been trying to set up my flask factory but I can't get anything to work.
 
 Jul 26
 I have been trying to refactor my whole app, I was able to make a flask factory pattern, but now I'm struggling refactoring to sqlalchemy. 
+
+Jul 28
+Yesterday I was able to implement the multiple database initiation. Today I realized that there are some problems with migrations. For some reason it wants to delete all of my tables. I'm going to probably have to create a smaller example and ask online.
