@@ -27,7 +27,8 @@ class AuthService:
 
         if validate_login_credentials(email, password):
             try:
-                query = db.select(UserDetails.first_name, UserDetails.last_name).filter(UserDetails.user_id == user_id)
+                query = db.select(UserDetails.first_name, UserDetails.last_name).filter(
+                    UserDetails.user_id == user_id)
                 res = db.session.execute(query).first()
 
                 if res is not None:
@@ -80,7 +81,16 @@ class AuthService:
 
         try:
             # Get all roles from db
-            roles = db.session.query(Role).all()
+            roles_res = db.session.query(Role).all()
+            roles = []
+            for role in roles_res:
+                roles.append(
+                    {
+                        "roleId": role.role_id,
+                        "roleName": role.role_name
+                    }
+                )
+            
             return {"success": True, "roles": roles}, 200
         except Exception as e:
             return {"success": False, "roles": [], "error": str(e)}, 400
