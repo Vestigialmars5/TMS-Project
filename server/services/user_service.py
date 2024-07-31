@@ -85,19 +85,13 @@ class UserService:
 
         # TODO: Validations for updating
         try:
-            db = get_db()
-            db.execute(
-                "UPDATE users SET username = ?, email = ?, role_id = ? WHERE user_id = ?",
-                (
-                    username,
-                    email,
-                    role_id,
-                    user_id,
-                ),
-            )
-            db.commit()
-        except:
-            abort(500, description="Error handling db")
+            user = db.session.query(User).filter(User.user_id == user_id).first()
+            user.username = username
+            user.email = email
+            user.role_id = role_id
+            db.session.commit()
+        except Exception as e:
+            abort(500, description=str(e))
         return {"success": True}, 200
 
     @staticmethod
