@@ -37,15 +37,16 @@ def create_app(config_class=Config):
 
     # Register blueprints
     from .api.auth import auth_blueprint
-    app.register_blueprint(auth_blueprint)
-    from .api.errors_handler import errors_blueprint
-    app.register_blueprint(errors_blueprint)
-    """from .api.admin import admin_blueprint
     from .api.onboarding import onboarding_blueprint
+    from .api.admin import admin_blueprint
+    from .api.errors_handler import errors_blueprint
+    app.register_blueprint(auth_blueprint)
+    app.register_blueprint(onboarding_blueprint)
+    app.register_blueprint(admin_blueprint)
+    app.register_blueprint(errors_blueprint)
+    """
     from .wms.wms import wms_blueprint
 
-    app.register_blueprint(admin_blueprint)
-    app.register_blueprint(onboarding_blueprint)
     app.register_blueprint(wms_blueprint) """
 
     # Return the app

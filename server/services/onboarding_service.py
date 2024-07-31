@@ -1,4 +1,5 @@
-from server.db import get_db
+from server.extensions import db
+from server.models.tms_models import User, UserDetails
 from werkzeug.security import generate_password_hash
 from server.utils.token import create_tokens
 from flask import abort
@@ -22,18 +23,23 @@ class OnboardingService:
         # TODO: Validation
 
         try:
-            db = get_db()
-            db.execute(
-                "UPDATE users SET email = ?, password = ? WHERE user_id = ?",
-                (email, generate_password_hash(password), user_id),
-            )
+            password_hash = generate_password_hash(password)
+            # Update user's email and password
+            user = db.session.query(User).filter_by(user_id=user_id).first()
+            user.email = email
+            user.password = password_hash
+            db.session.commit()
 
-            db.execute(
-                "INSERT INTO user_details (user_id, first_name, last_name, phone_number, address) VALUES (?, ?, ?, ?, ?)",
-                (user_id, first_name, last_name, phone_number, address),
+            # Insert other details into user_details table
+            user_detail = UserDetails(
+                user_id=user_id,
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                address=address,
             )
-
-            db.commit()
+            db.session.add(user_detail)
+            db.session.commit()
 
             access_token = create_tokens(
                 user_id,
