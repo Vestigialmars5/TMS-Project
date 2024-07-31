@@ -1,6 +1,6 @@
 import logging
-import sqlite3
-from server.db import get_db
+from server.extensions import db
+from server.models.tms_models import User, Role
 from werkzeug.security import generate_password_hash
 from flask import abort
 
@@ -19,27 +19,9 @@ class UserService:
         @return (dict, int): The response and status code.
         """
         try:
-            db = get_db()
-            query, params = UserService._construct_query(search, sort, page, limit)
+            users = UserService._construct_query(
+                search, sort_by, sort_order, page, limit)
 
-            res = db.execute(query, tuple(params))        
-            rows = res.fetchall()
-            users = []
-
-            for row in rows:
-                users.append(
-                    {
-                        "userId": row["user_id"],
-                        "username": row["username"],
-                        "email": row["email"],
-                        "roleId": row["role_id"],
-                        "roleName": row["role_name"],
-                    }
-                )
-            return {"success": True, "users": users}, 200
-
-        except sqlite3.OperationalError as e:
-            return {"success": False, "users": [], "error": "Error handling db", "description": str(e)}, 500
         except Exception as e:
             abort(500, description=str(e))
 
@@ -56,7 +38,8 @@ class UserService:
         @return (dict, int): The response and status code.
         """
 
-        username = email.split("@")[0]  # TODO: Make this different for uniqueness
+        # TODO: Make this different for uniqueness
+        username = email.split("@")[0]
 
         # TODO: Validations for registering
 
@@ -131,28 +114,32 @@ class UserService:
         @return (str, list): The query and params.
         """
 
-        base_query = """
-            SELECT users.user_id,
-                users.username,
-                users.email,
-                users.role_id,
-                roles.role_name
-            FROM users
-            JOIN roles ON users.role_id = roles.role_id
-        """
-        params = []
+        query = db.session.query(User).join(Role)
+        print(f"Query: {query}")
 
+
+        print(f"Search: {search}")
         if search:
-            base_query += " WHERE username LIKE ?"
-            params.append("%" + search + "%")
+            search_filter = f"%{search}%"
+            query = query.filter(
+                (User.username.like(search_filter)) |
+                (User.email.like(search_filter)) |
+                (Role.role_name.like(search_filter))
+            )
 
-        if sort == "asc":
-            base_query += " ORDER BY users.username ASC"
-        else:
-            base_query += " ORDER BY users.username DESC"
+        print(f"Sort By: {sort_by}, Sort Order: {sort_order}")
+        if sort_by and sort_order:
+            if sort_order == "asc":
+                query.order_by(db.asc(sort_by))
+            else:
+                query.order_by(db.desc(sort_by))
 
         offset = (page - 1) * limit
-        base_query += " LIMIT ? OFFSET ?"
-        params.extend([limit, offset])
+        query = query.offset(offset).limit(limit)
 
-        return base_query, params
+        users = query.all()
+
+        user_list = [user.to_dict_js() for user in users]
+        print(f"User List: {user_list}")
+
+        return user_list

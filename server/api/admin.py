@@ -1,6 +1,4 @@
-from flask import Blueprint, jsonify, render_template, request, url_for
-from server.db import get_db
-from werkzeug.security import generate_password_hash
+from flask import Blueprint, jsonify, request
 from server.services.user_service import UserService
 
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
