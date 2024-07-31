@@ -7,12 +7,13 @@ from flask import abort
 
 class UserService:
     @staticmethod
-    def get_users(search, sort, page, limit):
+    def get_users(search, sort_by, sort_order, page, limit):
         """
         Get all users.
 
         @param search (str): The search query.
-        @param sort (str): The sort order.
+        @param sortBy (str): The sort by field.
+        @param sortOrder (str): The sort order.
         @param page (int): The page number.
         @param limit (int): The number of items per page.
         @return (dict, int): The response and status code.
@@ -117,7 +118,7 @@ class UserService:
         return {"success": True}, 200
 
     @staticmethod
-    def _construct_query(search, sort, page, limit):
+    def _construct_query(search, sort_by, sort_order, page, limit):
         """
         Construct the query for getting users.
 

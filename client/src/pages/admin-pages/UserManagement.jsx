@@ -12,7 +12,8 @@ import { useAlert } from "../../context/AlertProvider";
 const UserManagement = () => {
   const { getUsers, refresh } = useUserManagement();
   const [searchField, setSearchField] = useState("");
-  const [sort, setSort] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState("username");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
@@ -20,11 +21,11 @@ const UserManagement = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [searchField, page, refresh]);
+  }, [sortBy, sortOrder, searchField, page, refresh]);
 
   const fetchUsers = async () => {
     try {
-      await getUsers({ searchField, sort, page, limit });
+      await getUsers({ searchField, sortBy, sortOrder, page, limit });
     } catch (error) {
       addAlert(error.message, "danger");
     }

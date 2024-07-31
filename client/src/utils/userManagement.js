@@ -32,12 +32,13 @@ export const createUserApi = async ({ email, password, roleId }) => {
 };
 
 // TODO: Probably remove limit
-export const getUsersApi = async ({ searchField, sort, page, limit }) => {
+export const getUsersApi = async ({ searchField, sortBy, sortOrder, page, limit }) => {
   /**
    * Gets all users
    * @param {Object} args - The fetch filter
    * @param {string} args.searchField - The search value
-   * @param {string} args.sort - The sort wanted
+   * @param {string} args.sortBy - The sort field
+   * @param {string} args.sortOrder - The sort order wanted
    * @param {int} args.page - The page number
    * @param {int} args.limit - The limit
    * @returns {Array} - The users
@@ -45,7 +46,7 @@ export const getUsersApi = async ({ searchField, sort, page, limit }) => {
 
   try {
     const res = await fetch(
-      `${SERVER_URL}/api/admin/users?search=${searchField}&sort=${sort}&page=${page}&limit=${limit}`
+      `${SERVER_URL}/api/admin/users?search=${searchField}&sortBy=${sortBy}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`
     );
     const response = await res.json();
 

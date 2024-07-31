@@ -62,7 +62,7 @@ def create_user():
 def get_users():
     """
     Get all users.
-    Expected data: (str) search, (str) sort, (int) page, (int) limit.
+    Expected data: (str) search, (str) sort_by, (str) sort_order, (int) page, (int) limit.
 
     @return (dict, int): The response and status code.
     """
@@ -70,11 +70,12 @@ def get_users():
     if request.method == "GET":
 
         search = request.args.get("search", "")
-        sort = request.args.get("sort", "asc")
+        sort_by = request.args.get("sortBy", "asc")
+        sort_order = request.args.get("sortOrder", "username")
         page = request.args.get("page", 1, type=int)
         limit = request.args.get("limit", 25, type=int)
 
-        response, status = UserService.get_users(search, sort, page, limit)
+        response, status = UserService.get_users(search, sort_by, sort_order, page, limit)
 
         return jsonify(response), status
 
