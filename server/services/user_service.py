@@ -65,11 +65,10 @@ class UserService:
         # TODO: Validations for deleting
 
         try:
-            db = get_db()
-            db.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
-            db.commit()
-        except:
-            abort(500, description="Error handling db")
+            db.session.query(User).filter(User.user_id == user_id).delete()
+            db.session.commit()
+        except Exception as e:
+            abort(500, description=str(e))
         return {"success": True}, 200
 
     @staticmethod
