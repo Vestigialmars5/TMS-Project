@@ -41,7 +41,9 @@ class UserService:
         except sqlite3.OperationalError as e:
             return {"success": False, "users": [], "error": "Error handling db", "description": str(e)}, 500
         except Exception as e:
-            return {"success": False, "users": [], "error": "Exception", "description": str(e)}, 500
+            abort(500, description=str(e))
+
+        return {"success": True, "users": users}, 200
 
     @staticmethod
     def create_user(email, password, role_id):

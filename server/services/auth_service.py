@@ -93,4 +93,4 @@ class AuthService:
             
             return {"success": True, "roles": roles}, 200
         except Exception as e:
-            return {"success": False, "roles": [], "error": str(e)}, 400
+            abort(500, description=str(e))
