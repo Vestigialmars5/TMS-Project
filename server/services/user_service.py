@@ -44,14 +44,13 @@ class UserService:
         # TODO: Validations for registering
 
         try:
-            db = get_db()
-            db.execute(
-                "INSERT INTO users (username, email, password, role_id) VALUES (?, ?, ?, ?)",
-                (username, email, generate_password_hash(password), role_id),
-            )
-            db.commit()
-        except:
-            abort(500, description="Error handling db")
+            password_hash = generate_password_hash(password)
+            user = User(username=username, email=email,
+                        password=password_hash, role_id=role_id)
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e:
+            abort(500, description=str(e))
 
         return {"success": True}, 200
 
