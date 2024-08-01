@@ -1,5 +1,4 @@
 from flask import jsonify, render_template, request, Blueprint
-from server.db import get_db
 from server.wms.orders.orders import place_order
 
 
