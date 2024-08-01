@@ -22,8 +22,8 @@ export const createUserApi = async ({ email, password, roleId }) => {
     const response = await res.json();
 
     if (!res.ok) {
-      console.error(response.description);
-      throw new Error(response.error);
+      console.log(response.error);
+      throw new Error(response.description);
     }
 
   } catch (error) {
@@ -51,8 +51,8 @@ export const getUsersApi = async ({ searchField, sortBy, sortOrder, page, limit 
     const response = await res.json();
 
     if (!res.ok) {
-      console.error(response.description);
-      throw new Error(response.error);
+      console.error(response.error);
+      throw new Error(response.description);
     } else {
       return response.users;
     }
@@ -76,8 +76,8 @@ export const deleteUserApi = async (userId) => {
     const response = await res.json();
 
     if (!res.ok) {
-      console.error(response.description);
-      throw new Error(response.error);
+      console.error(response.error);
+      throw new Error(response.description);
     } else {
       
     }
@@ -109,8 +109,8 @@ export const updateUserApi = async ({ userId, username, email, roleId }) => {
     const response = await res.json();
 
     if (!res.ok) {
-      console.error(response.description);
-      throw new Error(response.error);
+      console.error(response.error);
+      throw new Error(response.description);
     }
     
   } catch (error) {
