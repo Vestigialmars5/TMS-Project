@@ -1,8 +1,9 @@
 from server.utils.validation import validate_login_credentials
 from server.utils.token import create_tokens
-from server.db import get_db
-import sqlite3
 from flask import abort
+from server.utils.logging import log_error
+from ..extensions import db
+from ..models.tms_models import User, UserDetails, Role
 
 
 class AuthService:
@@ -26,21 +27,20 @@ class AuthService:
         user_id = data.get("user_id")
 
         if validate_login_credentials(email, password):
-            db = get_db()
-            res = db.execute(
-                "SELECT first_name, last_name FROM user_details WHERE user_id = ?",
-                (user_id,),
-            )
-            row = res.fetchone()
+            try:
+                query = db.select(UserDetails.first_name, UserDetails.last_name).filter(
+                    UserDetails.user_id == user_id)
+                res = db.session.execute(query).first()
 
-            if not row:
-                first_name = ""
-                last_name = ""
-                isOnboarding_completed = False
-            else:
-                first_name = row["first_name"]
-                last_name = row["last_name"]
-                isOnboarding_completed = True
+                if res is not None:
+                    first_name, last_name = res
+                    isOnboarding_completed = True
+                else:
+                    first_name, last_name = "", ""
+                    isOnboarding_completed = False
+            except Exception as e:
+                log_error(e)
+                abort(400, description="Error Fetching User Details")
 
             access_token = create_tokens(
                 user_id,
@@ -71,7 +71,8 @@ class AuthService:
             # TODO: Add jti and blacklist for tokens
             return {"success": True}, 200
         except Exception as e:
-            abort(400, description=str(e))
+            log_error(e)
+            abort(400, description="Error Handling JWT")
 
     @staticmethod
     def get_roles():
@@ -80,20 +81,20 @@ class AuthService:
 
         @return (dict, int): The response and status code.
         """
+
         try:
-            db = get_db()
-            res = db.execute("SELECT * FROM roles")
-            rows = res.fetchall()
+            # Get all roles from db
+            roles_res = db.session.query(Role).all()
             roles = []
-            for row in rows:
+            for role in roles_res:
                 roles.append(
                     {
-                        "roleId": row["role_id"],
-                        "roleName": row["role_name"],
+                        "roleId": role.role_id,
+                        "roleName": role.role_name
                     }
                 )
+            
             return {"success": True, "roles": roles}, 200
-        except sqlite3.OperationalError as e:
-            return {"success": False, "roles": [], "error": str(e)}, 400
         except Exception as e:
-            return {"success": False, "roles": [], "error": str(e)}, 400
+            log_error(e)
+            abort(500, description="Error Fetching Roles")

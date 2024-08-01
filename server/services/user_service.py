@@ -1,46 +1,32 @@
-import logging
-import sqlite3
-from server.db import get_db
+from server.extensions import db
+from server.models.tms_models import User, Role
+from server.utils.logging import log_error
 from werkzeug.security import generate_password_hash
 from flask import abort
 
 
 class UserService:
     @staticmethod
-    def get_users(search, sort, page, limit):
+    def get_users(search, sort_by, sort_order, page, limit):
         """
         Get all users.
 
         @param search (str): The search query.
-        @param sort (str): The sort order.
+        @param sortBy (str): The sort by field.
+        @param sortOrder (str): The sort order.
         @param page (int): The page number.
         @param limit (int): The number of items per page.
         @return (dict, int): The response and status code.
         """
         try:
-            db = get_db()
-            query, params = UserService._construct_query(search, sort, page, limit)
+            users = UserService._construct_query(
+                search, sort_by, sort_order, page, limit)
 
-            res = db.execute(query, tuple(params))        
-            rows = res.fetchall()
-            users = []
-
-            for row in rows:
-                users.append(
-                    {
-                        "userId": row["user_id"],
-                        "username": row["username"],
-                        "email": row["email"],
-                        "roleId": row["role_id"],
-                        "roleName": row["role_name"],
-                    }
-                )
-            return {"success": True, "users": users}, 200
-
-        except sqlite3.OperationalError as e:
-            return {"success": False, "users": [], "error": "Error handling db", "description": str(e)}, 500
         except Exception as e:
-            return {"success": False, "users": [], "error": "Exception", "description": str(e)}, 500
+            log_error(e)
+            abort(500, description="Error Querying Users")
+
+        return {"success": True, "users": users}, 200
 
     @staticmethod
     def create_user(email, password, role_id):
@@ -53,19 +39,20 @@ class UserService:
         @return (dict, int): The response and status code.
         """
 
-        username = email.split("@")[0]  # TODO: Make this different for uniqueness
+        # TODO: Make this different for uniqueness
+        username = email.split("@")[0]
 
         # TODO: Validations for registering
 
         try:
-            db = get_db()
-            db.execute(
-                "INSERT INTO users (username, email, password, role_id) VALUES (?, ?, ?, ?)",
-                (username, email, generate_password_hash(password), role_id),
-            )
-            db.commit()
-        except:
-            abort(500, description="Error handling db")
+            password_hash = generate_password_hash(password)
+            user = User(username=username, email=email,
+                        password=password_hash, role_id=role_id)
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e:
+            log_error(e)
+            abort(500, description="Error Creating User")
 
         return {"success": True}, 200
 
@@ -80,11 +67,11 @@ class UserService:
         # TODO: Validations for deleting
 
         try:
-            db = get_db()
-            db.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
-            db.commit()
-        except:
-            abort(500, description="Error handling db")
+            db.session.query(User).filter(User.user_id == user_id).delete()
+            db.session.commit()
+        except Exception as e:
+            log_error(e)
+            abort(500, description="Error Deleting User")
         return {"success": True}, 200
 
     @staticmethod
@@ -101,23 +88,18 @@ class UserService:
 
         # TODO: Validations for updating
         try:
-            db = get_db()
-            db.execute(
-                "UPDATE users SET username = ?, email = ?, role_id = ? WHERE user_id = ?",
-                (
-                    username,
-                    email,
-                    role_id,
-                    user_id,
-                ),
-            )
-            db.commit()
-        except:
-            abort(500, description="Error handling db")
+            user = db.session.query(User).filter(User.user_id == user_id).first()
+            user.username = username
+            user.email = email
+            user.role_id = role_id
+            db.session.commit()
+        except Exception as e:
+            log_error(e)
+            abort(500, description="Error Updating User")
         return {"success": True}, 200
 
     @staticmethod
-    def _construct_query(search, sort, page, limit):
+    def _construct_query(search, sort_by, sort_order, page, limit):
         """
         Construct the query for getting users.
 
@@ -128,28 +110,32 @@ class UserService:
         @return (str, list): The query and params.
         """
 
-        base_query = """
-            SELECT users.user_id,
-                users.username,
-                users.email,
-                users.role_id,
-                roles.role_name
-            FROM users
-            JOIN roles ON users.role_id = roles.role_id
-        """
-        params = []
+        query = db.session.query(User).join(Role)
+        print(f"Query: {query}")
 
+
+        print(f"Search: {search}")
         if search:
-            base_query += " WHERE username LIKE ?"
-            params.append("%" + search + "%")
+            search_filter = f"%{search}%"
+            query = query.filter(
+                (User.username.like(search_filter)) |
+                (User.email.like(search_filter)) |
+                (Role.role_name.like(search_filter))
+            )
 
-        if sort == "asc":
-            base_query += " ORDER BY users.username ASC"
-        else:
-            base_query += " ORDER BY users.username DESC"
+        print(f"Sort By: {sort_by}, Sort Order: {sort_order}")
+        if sort_by and sort_order:
+            if sort_order == "asc":
+                query.order_by(db.asc(sort_by))
+            else:
+                query.order_by(db.desc(sort_by))
 
         offset = (page - 1) * limit
-        base_query += " LIMIT ? OFFSET ?"
-        params.extend([limit, offset])
+        query = query.offset(offset).limit(limit)
 
-        return base_query, params
+        users = query.all()
+
+        user_list = [user.to_dict_js() for user in users]
+        print(f"User List: {user_list}")
+
+        return user_list

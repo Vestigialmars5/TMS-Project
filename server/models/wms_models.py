@@ -1,42 +1,40 @@
-import sqlite3
+from ..extensions import db
+from datetime import datetime, timezone
+from .base import Base2
 
-# Connect to SQLite database
-conn = sqlite3.connect("wms.db")
-cursor = conn.cursor()
 
-# Define SQL CREATE TABLE statements for each model
-create_orders_placed_table = """
-CREATE TABLE IF NOT EXISTS orders_placed (
-    order_id INTEGER PRIMARY KEY,
-    order_uuid TEXT NOT NULL UNIQUE,
-    warehouse_id INTEGER NOT NULL,
-    total_weight REAL NOT NULL,
-    total_volume REAL NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-"""
 
-create_order_products_table = """
-CREATE TABLE IF NOT EXISTS order_products (
-    order_product_id INTEGER PRIMARY KEY,
-    order_id INTEGER NOT NULL,
-    product_id INTEGER NOT NULL,
-    product_name TEXT NOT NULL,
-    supplier_id INTEGER NOT NULL,
-    priority INTEGER NOT NULL,
-    quantity INTEGER NOT NULL,
-    weight REAL NOT NULL,
-    volume REAL NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES orders_placed(order_id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
-);
-"""
+class OrdersPlaced(Base2):
+    __tablename__ = "orders_placed"
+    __bind_key__ = "wms"
 
-# Execute CREATE TABLE statements
-cursor.execute(create_orders_placed_table)
-cursor.execute(create_order_products_table)
+    order_id = db.Column(db.Integer, primary_key=True)
+    order_uuid = db.Column(db.String(36), unique=True, nullable=False)
+    warehouse_id = db.Column(db.Integer, nullable=False)
+    total_weight = db.Column(db.Float, nullable=False)
+    total_volume = db.Column(db.Float, nullable=False)
+    created_at = db.Column(
+        db.DateTime, default=datetime.now(timezone.utc))
 
-# Commit changes and close connection
-conn.commit()
-conn.close()
+    def __repr__(self):
+        return f"Order('{self.order_uuid}', '{self.created_at}')"
 
+
+class OrderProducts(Base2):
+    __tablename__ = "order_products"
+    __bind_key__ = "wms"
+
+    order_product_id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey(
+        "orders_placed.order_id", ondelete="CASCADE"))
+    product_id = db.Column(db.Integer, nullable=False)
+    supplier_id = db.Column(db.Integer, nullable=False)
+    priority = db.Column(db.Integer, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    weight = db.Column(db.Float, nullable=False)
+    volume = db.Column(db.Float, nullable=False)
+
+    order = db.relationship("OrdersPlaced", backref="order_products")
+
+    def __repr__(self):
+        return f"OrderDetails('{self.quantity}', '{self.weight}')"

@@ -1,6 +1,6 @@
-from server.db import get_db
+from server.extensions import db
+from server.models.wms_models import OrdersPlaced, OrderProducts
 import uuid
-import sqlite3
 import logging
 import requests
 
@@ -44,53 +44,40 @@ def save_order(order_uuid, warehouse_id, products):
         total_weight += product["weight"]
         total_volume += product["volume"]
 
-    db = get_db(db_name="wms.db")
     try:
-        cursor = db.cursor()
-        try:
-            cursor.execute(
-                "INSERT INTO orders_placed (order_uuid, warehouse_id, total_weight, total_volume) VALUES (?, ?, ?, ?)",
-                (order_uuid, warehouse_id, total_weight, total_volume),
-            )
-        except sqlite3.Error as e:
-            logging.error(e)
-        
-        order_id = cursor.lastrowid
+        # Insert order into orders_placed table and get the order_id
+        order = OrdersPlaced(order_uuid=order_uuid, warehouse_id=warehouse_id,
+                             total_weight=total_weight, total_volume=total_volume)
+        db.session.add(order)
+        db.session.commit()
 
-        values = [
-            (
-                order_id,
-                product["product_id"],
-                product["product_name"],
-                product["supplier_id"],
-                product["priority"],
-                product["quantity"],
-                product["weight"],
-                product["volume"],
-            )
-            for product in products
-        ]
+        # Create list of all products that will go into the same order and then insert into order_products table
+        order_products = []
+        for product in products:
+            order_products.append(OrderProducts(
+                order_id=order.order_id,
+                product_id=product["product_id"],
+                supplier_id=product["supplier_id"],
+                priority=product["priority"],
+                quantity=product["quantity"],
+                weight=product["weight"],
+                volume=product["volume"]
+            ))
+        db.session.bulk_save_objects(order_products)
+        db.session.commit()
 
-        try:
-            cursor.executemany(
-                "INSERT INTO order_products (order_id, product_id, product_name, supplier_id, priority, quantity, weight, volume) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                values,
-            )
-        except sqlite3.Error as e:
-            logging.error(e)
-
-        db.commit()
-    finally:
-        cursor.close()
+    except Exception as e:
+        logging.error(e)
 
 
 def send_order(order):
     print(f"Sending order: {order}")
     try:
-        response = requests.post("http://localhost:5000/api/orders", json=order)
+        response = requests.post(
+            "http://localhost:5000/api/orders", json=order)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
-        print(e)
+        logging.error(e)
 
 
 def basic_order():
