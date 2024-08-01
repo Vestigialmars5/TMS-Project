@@ -3,6 +3,7 @@ from server.models.tms_models import User, UserDetails
 from werkzeug.security import generate_password_hash
 from server.utils.token import create_tokens
 from flask import abort
+from server.utils.logging import log_error
 
 
 class OnboardingService:
@@ -55,4 +56,5 @@ class OnboardingService:
 
             return {"success": True, "access_token": access_token}, 200
         except Exception as e:
+            log_error(e)
             abort(400, description=str(e))

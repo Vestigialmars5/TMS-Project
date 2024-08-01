@@ -1,6 +1,7 @@
 from server.utils.validation import validate_login_credentials
 from server.utils.token import create_tokens
 from flask import abort
+from server.utils.logging import log_error
 from ..extensions import db
 from ..models.tms_models import User, UserDetails, Role
 
@@ -38,7 +39,8 @@ class AuthService:
                     first_name, last_name = "", ""
                     isOnboarding_completed = False
             except Exception as e:
-                abort(400, description=str(e))
+                log_error(e)
+                abort(400, description="Error Fetching User Details")
 
             access_token = create_tokens(
                 user_id,
@@ -69,7 +71,8 @@ class AuthService:
             # TODO: Add jti and blacklist for tokens
             return {"success": True}, 200
         except Exception as e:
-            abort(400, description=str(e))
+            log_error(e)
+            abort(400, description="Error Handling JWT")
 
     @staticmethod
     def get_roles():
@@ -93,4 +96,5 @@ class AuthService:
             
             return {"success": True, "roles": roles}, 200
         except Exception as e:
-            abort(500, description=str(e))
+            log_error(e)
+            abort(500, description="Error Fetching Roles")

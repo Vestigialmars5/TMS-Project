@@ -9,7 +9,6 @@ errors_blueprint = Blueprint("errors", __name__, url_prefix="/api/errors")
 
 @errors_blueprint.app_errorhandler(400)
 def bad_request(error):
-    print(error.description)
     response = {
         "success": False,
         "error": "Bad Request",
@@ -20,7 +19,6 @@ def bad_request(error):
 
 @errors_blueprint.app_errorhandler(401)
 def unauthorized(error):
-    print(error.description)
 
     response = {
         "success": False,
@@ -32,7 +30,6 @@ def unauthorized(error):
 
 @errors_blueprint.app_errorhandler(404)
 def not_found(error):
-    print(error.description)
 
     response = {
         "success": False,
@@ -44,7 +41,6 @@ def not_found(error):
 
 @errors_blueprint.app_errorhandler(500)
 def internal_server_error(error):
-    print(error.description)
 
     response = {
         "success": False,
@@ -52,20 +48,6 @@ def internal_server_error(error):
         "description": error.description,
     }
     return jsonify(response), 500
-
-
-@errors_blueprint.app_errorhandler(HTTPException)
-def handle_exception(error):
-    response = error.get_response()
-    response.data = json.dumps(
-        {
-            "success": False,
-            "error": error.name,
-            "description": error.description,
-        }
-    )
-    response.content_type = "application/json"
-    return response
 
 
 @jwt.unauthorized_loader

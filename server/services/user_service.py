@@ -1,6 +1,6 @@
-import logging
 from server.extensions import db
 from server.models.tms_models import User, Role
+from server.utils.logging import log_error
 from werkzeug.security import generate_password_hash
 from flask import abort
 
@@ -23,7 +23,8 @@ class UserService:
                 search, sort_by, sort_order, page, limit)
 
         except Exception as e:
-            abort(500, description=str(e))
+            log_error(e)
+            abort(500, description="Error Querying Users")
 
         return {"success": True, "users": users}, 200
 
@@ -50,7 +51,8 @@ class UserService:
             db.session.add(user)
             db.session.commit()
         except Exception as e:
-            abort(500, description=str(e))
+            log_error(e)
+            abort(500, description="Error Creating User")
 
         return {"success": True}, 200
 
@@ -68,7 +70,8 @@ class UserService:
             db.session.query(User).filter(User.user_id == user_id).delete()
             db.session.commit()
         except Exception as e:
-            abort(500, description=str(e))
+            log_error(e)
+            abort(500, description="Error Deleting User")
         return {"success": True}, 200
 
     @staticmethod
@@ -91,7 +94,8 @@ class UserService:
             user.role_id = role_id
             db.session.commit()
         except Exception as e:
-            abort(500, description=str(e))
+            log_error(e)
+            abort(500, description="Error Updating User")
         return {"success": True}, 200
 
     @staticmethod
