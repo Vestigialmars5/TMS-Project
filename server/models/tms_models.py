@@ -29,6 +29,28 @@ class User(Base1):
 
     role = db.relationship("Role", backref="users")
 
+    def to_dict(self):
+        return {
+            "user_id": self.user_id,
+            "username": self.username,
+            "email": self.email,
+            "role_id": self.role_id,
+            "role_name": self.role.role_name,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+
+    def to_dict_js(self):
+        return {
+            "userId": self.user_id,
+            "username": self.username,
+            "email": self.email,
+            "roleId": self.role_id,
+            "roleName": self.role.role_name,
+            "createdAt": self.created_at,
+            "updatedAt": self.updated_at
+        }
+
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
 
