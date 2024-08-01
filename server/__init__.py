@@ -2,12 +2,12 @@
 import os
 from flask import Flask
 from flask_cors import CORS
-from .config import Config
+from .config import Config, Development
 from .extensions import jwt, db, migrate
 
 
 # Create the application instance
-def create_app(config_class=Config):
+def create_app(config_class=Development):
     # Create the Flask app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_class)
