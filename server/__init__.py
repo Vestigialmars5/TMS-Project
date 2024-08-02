@@ -4,6 +4,7 @@ from flask import Flask
 from flask_cors import CORS
 from .config import Config, Development
 from .extensions import jwt, db, migrate
+from .logging_config import setup_logging
 
 
 # Create the application instance
@@ -17,6 +18,11 @@ def create_app(config_class=Development):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    logs_dir = os.path.join(app.instance_path, "logs")
+
+    # Set up logging from the logging_config.py file
+    setup_logging(logs_dir)
 
     # Enable CORS
     CORS(app)

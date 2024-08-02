@@ -239,8 +239,13 @@ class AuditLog(Base1):
 
     user = db.relationship("User", backref="audit_logs")
 
+    def __init__(self, user_id, action, details=""):
+        self.user_id = user_id
+        self.action = action
+        self.details = details
+
     def __repr__(self):
-        return f"AuditLog('{self.action}', '{self.timestamp}')"
+        return f"AuditLog('{self.action}', '{self.timestamp}, '{self.details}')"
 
 
 class Report(Base1):
