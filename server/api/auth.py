@@ -20,7 +20,7 @@ def login():
     @return (dict, int): The response and status code
     """
     if request.method == "POST":
-        # Recieve data from request
+        # Receive data from request
         data = request.get_json()
 
         # TODO: Get rid of this, for testing admin
