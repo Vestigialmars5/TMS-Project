@@ -821,3 +821,6 @@ I have been trying to refactor my whole app, I was able to make a flask factory 
 
 Jul 28
 Yesterday I was able to implement the multiple database initiation. Today I realized that there are some problems with migrations. For some reason it wants to delete all of my tables. I'm going to probably have to create a smaller example and ask online.
+
+Aug 3
+I have been busy refactoring to sqlalchemy, but I got that done. I am now asking online about my error handling questions, aborts, etc.
