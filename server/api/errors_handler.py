@@ -1,7 +1,5 @@
 from flask import Blueprint, jsonify
 from server.extensions import jwt
-from werkzeug.exceptions import HTTPException
-import json
 
 
 errors_blueprint = Blueprint("errors", __name__, url_prefix="/api/errors")
@@ -19,7 +17,6 @@ def bad_request(error):
 
 @errors_blueprint.app_errorhandler(401)
 def unauthorized(error):
-
     response = {
         "success": False,
         "error": "Unauthorized",
@@ -30,7 +27,6 @@ def unauthorized(error):
 
 @errors_blueprint.app_errorhandler(404)
 def not_found(error):
-
     response = {
         "success": False,
         "error": "Not Found",
@@ -41,7 +37,6 @@ def not_found(error):
 
 @errors_blueprint.app_errorhandler(500)
 def internal_server_error(error):
-
     response = {
         "success": False,
         "error": "Internal Server Error",
