@@ -1,14 +1,18 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import jwt_required
 from server.services.auth_service import AuthService
 from ..extensions import db
-from ..models.tms_models import User
+import logging
+import traceback
+from ..models.tms_models import User, AuditLog
+from ..services.exceptions import InvalidCredentials, DatabaseQueryError
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 # TODO: check auth libraries
 # TODO: Add role based access control
 
+logger = logging.getLogger(__name__)
 
 # TODO: Complete login
 @auth_blueprint.route("/login", methods=["POST"])
@@ -30,10 +34,12 @@ def login():
         email = row["email"]
         password = row["password"]
         role = row["role_id"] """
+
+
         try:
             user = db.session.query(User).filter(User.user_id == 1).first()
         except Exception as e:
-            return jsonify({"message": str(e)}), 500
+            abort(500, description="Error Retrieving Data")
 
         temp_data = {
             "email": user.email,
@@ -42,9 +48,37 @@ def login():
             "user_id": user.user_id,
         }
 
+        logger.info(f"Login Attempt: {temp_data['email']}")
+
         # TODO: Pass actual data
-        response, status = AuthService.login(temp_data)
-        return jsonify(response), status
+        try:
+            response, status = AuthService.login(temp_data)
+            logger.info(f"Login Successful: {temp_data['email']}")
+            audit_log = AuditLog(
+                user_id=temp_data["user_id"], action="Login", details="Successful Login"
+            )
+            return jsonify(response), status
+        except InvalidCredentials as e:
+            logger.warning(f"Login Attempt Failed: {temp_data['email']} - Invalid Credentials")
+            audit_log = AuditLog(
+                user_id=temp_data["user_id"], action="Login", details="Login Attempt Failed: Invalid Credentials"
+            )
+            abort(401, description="Email Or Password Is Incorrect")
+        except DatabaseQueryError as e:
+            logger.error(f"Login Attempt Failed: {temp_data['email']} - {traceback.format_exc()}")
+            audit_log = AuditLog(
+                user_id=temp_data["user_id"], action="Login", details="Login Attempt Failed: Database Query Error"
+            )
+            abort(500, description="Error Retrieving Data")
+        except Exception as e:
+            logger.error(f"Login Attempt Failed: {temp_data['email']} - {traceback.format_exc()}")
+            audit_log = AuditLog(
+                user_id=temp_data["user_id"], action="Login", details="Login Attempt Failed: Unexpected Error"
+            )
+            abort(500, description="Unexpected Error")
+        finally:
+            db.session.add(audit_log)
+            db.session.commit()
 
 
 # TODO: Specify what data is, if it is token make it token
