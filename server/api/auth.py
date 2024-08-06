@@ -6,6 +6,7 @@ import logging
 import traceback
 from ..models.tms_models import User, AuditLog
 from ..services.exceptions import InvalidCredentials, DatabaseQueryError
+from server.utils.logging import create_audit_log
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 
@@ -54,31 +55,20 @@ def login():
         try:
             response, status = AuthService.login(temp_data)
             logger.info(f"Login Successful: {temp_data['email']}")
-            audit_log = AuditLog(
-                user_id=temp_data["user_id"], action="Login", details="Successful Login"
-            )
+            create_audit_log(temp_data["user_id"], "Login", "Login Attempt Successful")
             return jsonify(response), status
         except InvalidCredentials as e:
             logger.warning(f"Login Attempt Failed: {temp_data['email']} - Invalid Credentials")
-            audit_log = AuditLog(
-                user_id=temp_data["user_id"], action="Login", details="Login Attempt Failed: Invalid Credentials"
-            )
+            create_audit_log(temp_data["user_id"], "Login", "Login Attempt Failed: Invalid Credentials")
             abort(401, description="Email Or Password Is Incorrect")
         except DatabaseQueryError as e:
             logger.error(f"Login Attempt Failed: {temp_data['email']} - {traceback.format_exc()}")
-            audit_log = AuditLog(
-                user_id=temp_data["user_id"], action="Login", details="Login Attempt Failed: Database Query Error"
-            )
+            create_audit_log(temp_data["user_id"], "Login", "Login Attempt Failed: Database Query Error")
             abort(500, description="Error Retrieving Data")
         except Exception as e:
             logger.error(f"Login Attempt Failed: {temp_data['email']} - {traceback.format_exc()}")
-            audit_log = AuditLog(
-                user_id=temp_data["user_id"], action="Login", details="Login Attempt Failed: Unexpected Error"
-            )
+            create_audit_log(temp_data["user_id"], "Login", "Login Attempt Failed: Unexpected Error")
             abort(500, description="Unexpected Error")
-        finally:
-            db.session.add(audit_log)
-            db.session.commit()
 
 
 # TODO: Specify what data is, if it is token make it token
