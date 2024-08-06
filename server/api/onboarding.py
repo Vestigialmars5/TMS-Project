@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from server.services.onboarding_service import OnboardingService
+from server.services import onboarding_service
 
 onboarding_blueprint = Blueprint("onboarding", __name__, url_prefix="/api/onboarding")
 
@@ -22,7 +22,7 @@ def onboard_user():
     role_id = claims["roleId"]
     role_name = claims["roleName"]
 
-    response, status = OnboardingService.onboard_user(
+    response, status = onboarding_service.onboard_user(
         user_id,
         email,
         password,

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import jwt_required
-from server.services.auth_service import AuthService
+from server.services import auth_service
 from ..extensions import db
 import logging
 import traceback
@@ -53,7 +53,7 @@ def login():
 
         # TODO: Pass actual data
         try:
-            response, status = AuthService.login(temp_data)
+            response, status = auth_service.login(temp_data)
             logger.info(f"Login Successful: {temp_data['email']}")
             create_audit_log(temp_data["user_id"], "Login", "Login Attempt Successful")
             return jsonify(response), status
@@ -83,7 +83,7 @@ def logout():
     """
     if request.method == "POST":
         data = request.get_json()
-        response, status = AuthService.logout(data)
+        response, status = auth_service.logout(data)
 
         return jsonify(response), status
 
@@ -97,6 +97,6 @@ def get_roles():
     @return (dict, int): The response and status code.
     """
     if request.method == "GET":
-        response, status = AuthService.get_roles()
+        response, status = auth_service.get_roles()
 
         return jsonify(response), status

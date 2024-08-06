@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from server.services.user_service import UserService
+from server.services import user_service
 
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
 
@@ -51,7 +51,7 @@ def create_user():
         password = data.get("password")
         role_id = data.get("roleId")
 
-        response, status = UserService.create_user(email, password, role_id)
+        response, status = user_service.create_user(email, password, role_id)
 
         return jsonify(response), status
 
@@ -73,7 +73,7 @@ def get_users():
         page = request.args.get("page", 1, type=int)
         limit = request.args.get("limit", 25, type=int)
 
-        response, status = UserService.get_users(search, sort_by, sort_order, page, limit)
+        response, status = user_service.get_users(search, sort_by, sort_order, page, limit)
 
         return jsonify(response), status
 
@@ -88,7 +88,7 @@ def delete_user(user_id):
     """
     if request.method == "DELETE":
 
-        response, status = UserService.delete_user(user_id)
+        response, status = user_service.delete_user(user_id)
 
         return jsonify(response), status
 
@@ -111,7 +111,7 @@ def update_user(user_id):
         email = data.get("email")
         role_id = data.get("roleId")
 
-        response, status = UserService.update_user(user_id, username, email, role_id)
+        response, status = user_service.update_user(user_id, username, email, role_id)
 
         return jsonify(response), status
 
