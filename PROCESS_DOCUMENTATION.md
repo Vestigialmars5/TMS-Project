@@ -824,3 +824,6 @@ Yesterday I was able to implement the multiple database initiation. Today I real
 
 Aug 3
 I have been busy refactoring to sqlalchemy, but I got that done. I am now asking online about my error handling questions, aborts, etc.
+
+Aug 7
+I've been stuck trying to decide on what to do with aborts and exceptions and logging.
