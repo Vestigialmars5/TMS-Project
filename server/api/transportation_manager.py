@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from server.services import route_service
 
 
 tm_blueprint = Blueprint(
@@ -54,7 +55,7 @@ def create_route():
     origin = data.get("origin")
     destination = data.get("destination")
 
-    response, status = RouteService.create_route(origin, destination)
+    response, status = route_service.create_route(origin, destination)
 
 
 # Get all previously created routes
@@ -62,7 +63,7 @@ def create_route():
 def get_routes():
     data = request.get_json()
 
-    response, status = RouteService.get_routes()
+    response, status = route_service.get_routes()
 
 
 # Update/optimize existing route based on current conditions
@@ -70,19 +71,19 @@ def get_routes():
 def update_route(route_id):
     data = request.get_json()
 
-    response, status = RouteService.update_route(route_id, data)
+    response, status = route_service.update_route(route_id, data)
 
 
 # Delete specific route
 @tm_blueprint.route("/routes/<int:route_id>", methods=["DELETE"])
 def delete_route(route_id):
-    response, status = RouteService.delete_route(route_id)
+    response, status = route_service.delete_route(route_id)
 
 
 # Get specific route details
 @tm_blueprint.route("/routes/<int:route_id>", methods=["GET"])
 def get_route(route_id):
-    response, status = RouteService.get_route(route_id)
+    response, status = route_service.get_route(route_id)
 
 
 # Carrier Management

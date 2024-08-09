@@ -2,42 +2,61 @@ from server.extensions import db
 from server.models.tms_models import User, Role
 from server.utils.logging import log_error
 from werkzeug.security import generate_password_hash
-from flask import abort
+from server.services.exceptions import DatabaseQueryError
+import logging
+from server.utils.logging import create_audit_log
 
 
-class UserService:
-    @staticmethod
-    def get_users(search, sort_by, sort_order, page, limit):
-        """
-        Get all users.
+logger = logging.getLogger(__name__)
 
-        @param search (str): The search query.
-        @param sortBy (str): The sort by field.
-        @param sortOrder (str): The sort order.
-        @param page (int): The page number.
-        @param limit (int): The number of items per page.
-        @return (dict, int): The response and status code.
-        """
+
+def get_users(search, sort_by, sort_order, page, limit, initiator_id):
+    """
+    Get all users.
+
+    @param search (str): The search query.
+    @param sortBy (str): The sort by field.
+    @param sortOrder (str): The sort order.
+    @param page (int): The page number.
+    @param limit (int): The number of items per page.
+    @return (dict, int): The response and status code.
+    """
+    logger.info("Get Users Attempt: by %s", initiator_id)
+    try:
         try:
-            users = UserService._construct_query(
+            users = _construct_query(
                 search, sort_by, sort_order, page, limit)
 
+            logger.info("Get Users Attempt Successful: by %s", initiator_id)
+            create_audit_log("Get Users", initiator_id, details="Success")
+            return {"success": True, "users": users}
+
         except Exception as e:
-            log_error(e)
-            abort(500, description="Error Querying Users")
+            raise DatabaseQueryError("Error Fetching Users")
 
-        return {"success": True, "users": users}, 200
+    except DatabaseQueryError as e:
+        logger.error("Get Users Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Get Users", user_id=initiator_id, details=e.message)
+        raise
 
-    @staticmethod
-    def create_user(email, password, role_id):
-        """
-        Create a user.
+    except Exception as e:
+        logger.error("Get Users Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Get Users", user_id=initiator_id, details="Internal Server Error")
+        raise
 
-        @param email (str): The email of the user.
-        @param password (str): The password of the user.
-        @param role_id (int): The role_id of the user.
-        @return (dict, int): The response and status code.
-        """
+
+def create_user(email, password, role_id, initiator_id):
+    """
+    Create a user.
+
+    @param email (str): The email of the user.
+    @param password (str): The password of the user.
+    @param role_id (int): The role_id of the user.
+    @return (dict, int): The response and status code.
+    """
+    logger.info("Create User Attempt: by %s", initiator_id)
+
+    try:
 
         # TODO: Make this different for uniqueness
         username = email.split("@")[0]
@@ -51,41 +70,70 @@ class UserService:
             db.session.add(user)
             db.session.commit()
         except Exception as e:
-            log_error(e)
-            abort(500, description="Error Creating User")
+            raise DatabaseQueryError("Error Creating User")
 
-        return {"success": True}, 200
+        logger.info("Create User Attempt Successful: by %s | created %s",
+                    initiator_id, user.user_id)
+        create_audit_log("Create User", user_id=initiator_id, details=f"Created {user.user_id}")
+        return {"success": True}
 
-    @staticmethod
-    def delete_user(user_id):
-        """
-        Delete a user.
+    except DatabaseQueryError as e:
+        logger.error("Create User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Create User", user_id=initiator_id, details=e.message)
+        raise
 
-        @param user_id (int): The id of the user.
-        @return (dict, int): The response and status code.
-        """
-        # TODO: Validations for deleting
+    except Exception as e:
+        logger.error("Create User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Create User", user_id=initiator_id, details=e.message)
+        raise
 
+
+def delete_user(user_id, initiator_id):
+    """
+    Delete a user.
+
+    @param user_id (int): The id of the user.
+    @return (dict, int): The response and status code.
+    """
+    # TODO: Validations for deleting
+    logger.info("Delete User Attempt: by %s", initiator_id)
+
+    try:
         try:
             db.session.query(User).filter(User.user_id == user_id).delete()
             db.session.commit()
         except Exception as e:
-            log_error(e)
-            abort(500, description="Error Deleting User")
-        return {"success": True}, 200
+            raise DatabaseQueryError("Error Deleting User")
 
-    @staticmethod
-    def update_user(user_id, username, email, role_id):
-        """
-        Update a user.
+        logger.info(
+            "Delete User Attempt Successful: by %s | deleted %s", initiator_id, user_id)
+        create_audit_log("Delete User", user_id=initiator_id, details=f"Deleted {user_id}")
+        return {"success": True}
 
-        @param user_id (int): The id of the user.
-        @param username (str): The username of the user.
-        @param email (str): The email of the user.
-        @param role_id (int): The role_id of the user.
-        @return (dict, int): The response and status code.
-        """
+    except DatabaseQueryError as e:
+        logger.error("Delete User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Delete User", user_id=initiator_id, details=e.message)
+        raise
 
+    except Exception as e:
+        logger.error("Delete User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Delete User", user_id=initiator_id, details="Internal Server Error")
+        raise
+
+
+def update_user(user_id, username, email, role_id, initiator_id):
+    """
+    Update a user.
+
+    @param user_id (int): The id of the user.
+    @param username (str): The username of the user.
+    @param email (str): The email of the user.
+    @param role_id (int): The role_id of the user.
+    @return (dict, int): The response and status code.
+    """
+    logger.info("Update User Attempt: by %s", initiator_id)
+
+    try:
         # TODO: Validations for updating
         try:
             user = db.session.query(User).filter(User.user_id == user_id).first()
@@ -94,48 +142,55 @@ class UserService:
             user.role_id = role_id
             db.session.commit()
         except Exception as e:
-            log_error(e)
-            abort(500, description="Error Updating User")
-        return {"success": True}, 200
+            raise DatabaseQueryError("Error Updating User")
+        
+        logger.info("Update User Attempt Successful: by %s | updated %s", initiator_id, user_id)
+        create_audit_log("Update User", user_id=initiator_id, details=f"Updated {user_id}")
+        return {"success": True}
+    
+    except DatabaseQueryError as e:
+        logger.error("Update User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Update User", user_id=initiator_id, details=e.message)
+        raise
 
-    @staticmethod
-    def _construct_query(search, sort_by, sort_order, page, limit):
-        """
-        Construct the query for getting users.
-
-        @param search (str): The search query.
-        @param sort (str): The sort order.
-        @param page (int): The page number.
-        @param limit (int): The number of items per page.
-        @return (str, list): The query and params.
-        """
-
-        query = db.session.query(User).join(Role)
-        print(f"Query: {query}")
+    except Exception as e:
+        logger.error("Update User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Update User", user_id=initiator_id, details="Internal Server Error")
+        raise
 
 
-        print(f"Search: {search}")
-        if search:
-            search_filter = f"%{search}%"
-            query = query.filter(
-                (User.username.like(search_filter)) |
-                (User.email.like(search_filter)) |
-                (Role.role_name.like(search_filter))
-            )
+def _construct_query(search, sort_by, sort_order, page, limit):
+    """
+    Construct the query for getting users.
 
-        print(f"Sort By: {sort_by}, Sort Order: {sort_order}")
-        if sort_by and sort_order:
-            if sort_order == "asc":
-                query.order_by(db.asc(sort_by))
-            else:
-                query.order_by(db.desc(sort_by))
+    @param search (str): The search query.
+    @param sort (str): The sort order.
+    @param page (int): The page number.
+    @param limit (int): The number of items per page.
+    @return (str, list): The query and params.
+    """
 
-        offset = (page - 1) * limit
-        query = query.offset(offset).limit(limit)
+    query = db.session.query(User).join(Role)
 
-        users = query.all()
+    if search:
+        search_filter = f"%{search}%"
+        query = query.filter(
+            (User.username.like(search_filter)) |
+            (User.email.like(search_filter)) |
+            (Role.role_name.like(search_filter))
+        )
 
-        user_list = [user.to_dict_js() for user in users]
-        print(f"User List: {user_list}")
+    if sort_by and sort_order:
+        if sort_order == "asc":
+            query.order_by(db.asc(sort_by))
+        else:
+            query.order_by(db.desc(sort_by))
 
-        return user_list
+    offset = (page - 1) * limit
+    query = query.offset(offset).limit(limit)
+
+    users = query.all()
+
+    user_list = [user.to_dict_js() for user in users]
+
+    return user_list

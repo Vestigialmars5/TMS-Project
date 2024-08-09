@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
-from server.services.user_service import UserService
+from server.services import user_service
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
 
@@ -33,6 +34,7 @@ This needs to include the following features:
 """
 
 # TODO: Complete this
+@jwt_required()
 @admin_blueprint.route("/users", methods=["POST"])
 def create_user():
     """
@@ -51,11 +53,19 @@ def create_user():
         password = data.get("password")
         role_id = data.get("roleId")
 
-        response, status = UserService.create_user(email, password, role_id)
+        initiator_id = get_jwt_identity()
 
-        return jsonify(response), status
+        # Validations -> abort(400, description="Missing Data")
+
+        response = user_service.create_user(email, password, role_id, initiator_id)
+
+        if response["success"]:
+            return jsonify(response), 201
+        else:
+            return jsonify(response), 500
 
 
+@jwt_required()
 @admin_blueprint.route("/users", methods=["GET"])
 def get_users():
     """
@@ -73,11 +83,19 @@ def get_users():
         page = request.args.get("page", 1, type=int)
         limit = request.args.get("limit", 25, type=int)
 
-        response, status = UserService.get_users(search, sort_by, sort_order, page, limit)
+        initiator_id = get_jwt_identity()
 
-        return jsonify(response), status
+        # Validations -> abort(400, description="Missing Data")
+
+        response = user_service.get_users(search, sort_by, sort_order, page, limit, initiator_id)
+
+        if response["success"]:
+            return jsonify(response), 200
+        else:
+            return jsonify(response), 500
 
 
+@jwt_required()
 @admin_blueprint.route("/users/<int:user_id>", methods=["DELETE"])
 def delete_user(user_id):
     """
@@ -88,11 +106,19 @@ def delete_user(user_id):
     """
     if request.method == "DELETE":
 
-        response, status = UserService.delete_user(user_id)
+        initiator_id = get_jwt_identity()
 
-        return jsonify(response), status
+        # Validations -> abort(400, description="Missing Data")
+
+        response = user_service.delete_user(user_id, initiator_id)
+
+        if response["success"]:
+            return jsonify(response), 200
+        else:
+            return jsonify(response), 500
 
 
+@jwt_required()
 @admin_blueprint.route("/users/<int:user_id>", methods=["PUT"])
 def update_user(user_id):
     """
@@ -111,10 +137,16 @@ def update_user(user_id):
         email = data.get("email")
         role_id = data.get("roleId")
 
-        response, status = UserService.update_user(user_id, username, email, role_id)
+        initiator_id = get_jwt_identity()
 
-        return jsonify(response), status
+        # Validations -> abort(400, description="Missing Data")
 
+        response = user_service.update_user(user_id, username, email, role_id, initiator_id)
+
+        if response["success"]:
+            return jsonify(response), 200
+        else:
+            return jsonify(response), 500
 
 # System settings
 """

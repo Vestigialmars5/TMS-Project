@@ -26,9 +26,7 @@ export const loginApi = async ({ email, password }) => {
 
     const response = await res.json();
 
-    if (res.status === 401) {
-      throw new Error(response.error);
-    } else if (!res.ok) {
+    if (!res.ok) {
       console.error(response.error);
       throw new Error(response.description);
     } else {
