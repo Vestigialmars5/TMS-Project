@@ -822,5 +822,12 @@ I have been trying to refactor my whole app, I was able to make a flask factory 
 Jul 28
 Yesterday I was able to implement the multiple database initiation. Today I realized that there are some problems with migrations. For some reason it wants to delete all of my tables. I'm going to probably have to create a smaller example and ask online.
 
+Aug 3
+I have been busy refactoring to sqlalchemy, but I got that done. I am now asking online about my error handling questions, aborts, etc.
+
+Aug 7
+I've been stuck trying to decide on what to do with aborts and exceptions and logging.
+
 Aug 8
 The way I'm going to be handling request is as follows, endpoint receives check if data exists, abort if not, run service, if success return success response if error return appropriate error response. In service, try-catch block wrapping, raise custom exceptions, they are handled by errors_handler. Logging and audit happen before returning to the endpoint or before raising the error after catching it. Service only returns response.
+
