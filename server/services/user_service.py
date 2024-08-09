@@ -2,10 +2,15 @@ from server.extensions import db
 from server.models.tms_models import User, Role
 from server.utils.logging import log_error
 from werkzeug.security import generate_password_hash
-from flask import abort
+from server.services.exceptions import DatabaseQueryError
+import logging
+from server.utils.logging import create_audit_log
 
 
-def get_users(search, sort_by, sort_order, page, limit):
+logger = logging.getLogger(__name__)
+
+
+def get_users(search, sort_by, sort_order, page, limit, initiator_id):
     """
     Get all users.
 
@@ -16,18 +21,31 @@ def get_users(search, sort_by, sort_order, page, limit):
     @param limit (int): The number of items per page.
     @return (dict, int): The response and status code.
     """
+    logger.info("Get Users Attempt: by %s", initiator_id)
     try:
-        users = _construct_query(
-            search, sort_by, sort_order, page, limit)
+        try:
+            users = _construct_query(
+                search, sort_by, sort_order, page, limit)
+
+            logger.info("Get Users Attempt Successful: by %s", initiator_id)
+            create_audit_log("Get Users", initiator_id, details="Success")
+            return {"success": True, "users": users}
+
+        except Exception as e:
+            raise DatabaseQueryError("Error Fetching Users")
+
+    except DatabaseQueryError as e:
+        logger.error("Get Users Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Get Users", user_id=initiator_id, details=e.message)
+        raise
 
     except Exception as e:
-        log_error(e)
-        abort(500, description="Error Querying Users")
+        logger.error("Get Users Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Get Users", user_id=initiator_id, details="Internal Server Error")
+        raise
 
-    return {"success": True, "users": users}, 200
 
-
-def create_user(email, password, role_id):
+def create_user(email, password, role_id, initiator_id):
     """
     Create a user.
 
@@ -36,26 +54,41 @@ def create_user(email, password, role_id):
     @param role_id (int): The role_id of the user.
     @return (dict, int): The response and status code.
     """
-
-    # TODO: Make this different for uniqueness
-    username = email.split("@")[0]
-
-    # TODO: Validations for registering
+    logger.info("Create User Attempt: by %s", initiator_id)
 
     try:
-        password_hash = generate_password_hash(password)
-        user = User(username=username, email=email,
-                    password=password_hash, role_id=role_id)
-        db.session.add(user)
-        db.session.commit()
+
+        # TODO: Make this different for uniqueness
+        username = email.split("@")[0]
+
+        # TODO: Validations for registering
+
+        try:
+            password_hash = generate_password_hash(password)
+            user = User(username=username, email=email,
+                        password=password_hash, role_id=role_id)
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e:
+            raise DatabaseQueryError("Error Creating User")
+
+        logger.info("Create User Attempt Successful: by %s | created %s",
+                    initiator_id, user.user_id)
+        create_audit_log("Create User", user_id=initiator_id, details=f"Created {user.user_id}")
+        return {"success": True}
+
+    except DatabaseQueryError as e:
+        logger.error("Create User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Create User", user_id=initiator_id, details=e.message)
+        raise
+
     except Exception as e:
-        log_error(e)
-        abort(500, description="Error Creating User")
+        logger.error("Create User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Create User", user_id=initiator_id, details=e.message)
+        raise
 
-    return {"success": True}, 200
 
-
-def delete_user(user_id):
+def delete_user(user_id, initiator_id):
     """
     Delete a user.
 
@@ -63,17 +96,32 @@ def delete_user(user_id):
     @return (dict, int): The response and status code.
     """
     # TODO: Validations for deleting
+    logger.info("Delete User Attempt: by %s", initiator_id)
 
     try:
-        db.session.query(User).filter(User.user_id == user_id).delete()
-        db.session.commit()
+        try:
+            db.session.query(User).filter(User.user_id == user_id).delete()
+            db.session.commit()
+        except Exception as e:
+            raise DatabaseQueryError("Error Deleting User")
+
+        logger.info(
+            "Delete User Attempt Successful: by %s | deleted %s", initiator_id, user_id)
+        create_audit_log("Delete User", user_id=initiator_id, details=f"Deleted {user_id}")
+        return {"success": True}
+
+    except DatabaseQueryError as e:
+        logger.error("Delete User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Delete User", user_id=initiator_id, details=e.message)
+        raise
+
     except Exception as e:
-        log_error(e)
-        abort(500, description="Error Deleting User")
-    return {"success": True}, 200
+        logger.error("Delete User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Delete User", user_id=initiator_id, details="Internal Server Error")
+        raise
 
 
-def update_user(user_id, username, email, role_id):
+def update_user(user_id, username, email, role_id, initiator_id):
     """
     Update a user.
 
@@ -83,18 +131,32 @@ def update_user(user_id, username, email, role_id):
     @param role_id (int): The role_id of the user.
     @return (dict, int): The response and status code.
     """
+    logger.info("Update User Attempt: by %s", initiator_id)
 
-    # TODO: Validations for updating
     try:
-        user = db.session.query(User).filter(User.user_id == user_id).first()
-        user.username = username
-        user.email = email
-        user.role_id = role_id
-        db.session.commit()
+        # TODO: Validations for updating
+        try:
+            user = db.session.query(User).filter(User.user_id == user_id).first()
+            user.username = username
+            user.email = email
+            user.role_id = role_id
+            db.session.commit()
+        except Exception as e:
+            raise DatabaseQueryError("Error Updating User")
+        
+        logger.info("Update User Attempt Successful: by %s | updated %s", initiator_id, user_id)
+        create_audit_log("Update User", user_id=initiator_id, details=f"Updated {user_id}")
+        return {"success": True}
+    
+    except DatabaseQueryError as e:
+        logger.error("Update User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Update User", user_id=initiator_id, details=e.message)
+        raise
+
     except Exception as e:
-        log_error(e)
-        abort(500, description="Error Updating User")
-    return {"success": True}, 200
+        logger.error("Update User Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Update User", user_id=initiator_id, details="Internal Server Error")
+        raise
 
 
 def _construct_query(search, sort_by, sort_order, page, limit):
@@ -109,7 +171,6 @@ def _construct_query(search, sort_by, sort_order, page, limit):
     """
 
     query = db.session.query(User).join(Role)
-
 
     if search:
         search_filter = f"%{search}%"

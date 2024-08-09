@@ -2,8 +2,11 @@ from server.extensions import db
 from server.models.tms_models import User, UserDetails
 from werkzeug.security import generate_password_hash
 from server.utils.token import create_tokens
-from flask import abort
-from server.utils.logging import log_error
+from server.services.exceptions import *
+from server.utils.logging import create_audit_log
+import logging
+
+logger = logging.get_logger(__name__)
 
 
 def onboard_user(
@@ -20,25 +23,31 @@ def onboard_user(
 ):
 
     # TODO: Validation
-
+    logger.info("Onboard Attempt: by %s", user_id)
     try:
-        password_hash = generate_password_hash(password)
-        # Update user's email and password
-        user = db.session.query(User).filter_by(user_id=user_id).first()
-        user.email = email
-        user.password = password_hash
-        db.session.commit()
+        try:
+            password_hash = generate_password_hash(password)
+            # Update user's email and password
+            user = db.session.query(User).filter_by(user_id=user_id).first()
+            user.email = email
+            user.password = password_hash
+            db.session.commit()
+        except Exception as e:
+            raise DatabaseQueryError("Error Updating User")
 
-        # Insert other details into user_details table
-        user_detail = UserDetails(
-            user_id=user_id,
-            first_name=first_name,
-            last_name=last_name,
-            phone_number=phone_number,
-            address=address,
-        )
-        db.session.add(user_detail)
-        db.session.commit()
+        try:
+            # Insert other details into user_details table
+            user_detail = UserDetails(
+                user_id=user_id,
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                address=address,
+            )
+            db.session.add(user_detail)
+            db.session.commit()
+        except Exception as e:
+            raise DatabaseQueryError("Error Adding User Details")
 
         access_token = create_tokens(
             user_id,
@@ -52,7 +61,16 @@ def onboard_user(
             },
         )
 
+        logger.info("Onboard Attempt Successful: by %s", user_id)
+        create_audit_log("Onboard", user_id=user_id, details="Success")
         return {"success": True, "access_token": access_token}, 200
+
+    except DatabaseQueryError as e:
+        logger.error("Onboard Attempt Failed: by %s | %s", user_id, e)
+        create_audit_log("Onboard", user_id=user_id, details=e.message)
+        raise
+
     except Exception as e:
-        log_error(e)
-        abort(400, description=str(e))
+        logger.error("Onboard Attempt Failed: by %s | %s", user_id, e)
+        create_audit_log("Onboard", user_id=user_id, details="Internal Server Error")
+        raise
