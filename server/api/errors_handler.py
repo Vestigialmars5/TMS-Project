@@ -1,8 +1,11 @@
 from flask import Blueprint, jsonify
 from server.extensions import jwt
-
+from server.services.exceptions import *
+import logging
 
 errors_blueprint = Blueprint("errors", __name__, url_prefix="/api/errors")
+
+logger = logging.getLogger(__name__)
 
 
 @errors_blueprint.app_errorhandler(400)
@@ -41,6 +44,25 @@ def internal_server_error(error):
         "success": False,
         "error": "Internal Server Error",
         "description": error.description,
+    }
+    return jsonify(response), 500
+
+@errors_blueprint.app_errorhandler(DatabaseError)
+def handle_database_error(error):
+    response = {
+        "success": False,
+        "error": "Database Error",
+        "description": error.message,
+    }
+    return jsonify(response), error.status_code
+
+
+@errors_blueprint.app_errorhandler(Exception)
+def handle_exception(error):
+    response = {
+        "success": False,
+        "error": "Unhandled Exception",
+        "description": "Internal Server Error",
     }
     return jsonify(response), 500
 
