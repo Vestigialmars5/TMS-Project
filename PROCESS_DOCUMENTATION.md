@@ -821,3 +821,6 @@ I have been trying to refactor my whole app, I was able to make a flask factory 
 
 Jul 28
 Yesterday I was able to implement the multiple database initiation. Today I realized that there are some problems with migrations. For some reason it wants to delete all of my tables. I'm going to probably have to create a smaller example and ask online.
+
+Aug 8
+The way I'm going to be handling request is as follows, endpoint receives check if data exists, abort if not, run service, if success return success response if error return appropriate error response. In service, try-catch block wrapping, raise custom exceptions, they are handled by errors_handler. Logging and audit happen before returning to the endpoint or before raising the error after catching it. Service only returns response.
