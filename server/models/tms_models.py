@@ -231,21 +231,23 @@ class AuditLog(Base1):
     __tablename__ = "audit_logs"
 
     log_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=True)
     action = db.Column(db.String(50), nullable=False)
     timestamp = db.Column(
         db.DateTime, default=datetime.now(timezone.utc))
     details = db.Column(db.String(255))
+    email = db.Column(db.String(100), nullable=True)
 
     user = db.relationship("User", backref="audit_logs")
 
-    def __init__(self, user_id, action, details=""):
+    def __init__(self, action, user_id=None, email=None, details=""):
         self.user_id = user_id
+        self.email = email
         self.action = action
         self.details = details
 
     def __repr__(self):
-        return f"AuditLog('{self.action}', '{self.timestamp}, '{self.details}')"
+        return f"AuditLog('{self.action}', '{self.timestamp}, '{self.details}', user_id: {self.user_id}', email: {self.email}')"
 
 
 class Report(Base1):
