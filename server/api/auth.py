@@ -2,20 +2,16 @@ from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import jwt_required
 from server.services import auth_service
 from ..extensions import db
-import logging
-import traceback
-from ..models.tms_models import User, AuditLog
-from ..services.exceptions import InvalidCredentials, DatabaseQueryError
-from server.utils.logging import create_audit_log
+from ..models.tms_models import User
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 # TODO: check auth libraries
 # TODO: Add role based access control
 
-logger = logging.getLogger(__name__)
-
 # TODO: Complete login
+
+
 @auth_blueprint.route("/login", methods=["POST"])
 def login():
     """
@@ -28,6 +24,11 @@ def login():
         # Receive data from request
         data = request.get_json()
 
+        email = data.get("email")
+        password = data.get("password")
+
+        # Validations -> abort(400, description="Missing Data")
+
         # TODO: Get rid of this, for testing admin
         """res = db.execute("SELECT * FROM users WHERE user_id = ?", (1,))
         row = res.fetchone()
@@ -35,7 +36,6 @@ def login():
         email = row["email"]
         password = row["password"]
         role = row["role_id"] """
-
 
         try:
             user = db.session.query(User).filter(User.user_id == 1).first()
@@ -49,26 +49,15 @@ def login():
             "user_id": user.user_id,
         }
 
-        logger.info(f"Login Attempt: {temp_data['email']}")
-
         # TODO: Pass actual data
-        try:
-            response, status = auth_service.login(temp_data)
-            logger.info(f"Login Successful: {temp_data['email']}")
-            create_audit_log(temp_data["user_id"], "Login", "Login Attempt Successful")
-            return jsonify(response), status
-        except InvalidCredentials as e:
-            logger.warning(f"Login Attempt Failed: {temp_data['email']} - Invalid Credentials")
-            create_audit_log(temp_data["user_id"], "Login", "Login Attempt Failed: Invalid Credentials")
-            abort(401, description="Email Or Password Is Incorrect")
-        except DatabaseQueryError as e:
-            logger.error(f"Login Attempt Failed: {temp_data['email']} - {traceback.format_exc()}")
-            create_audit_log(temp_data["user_id"], "Login", "Login Attempt Failed: Database Query Error")
-            abort(500, description="Error Retrieving Data")
-        except Exception as e:
-            logger.error(f"Login Attempt Failed: {temp_data['email']} - {traceback.format_exc()}")
-            create_audit_log(temp_data["user_id"], "Login", "Login Attempt Failed: Unexpected Error")
-            abort(500, description="Unexpected Error")
+        response = auth_service.login(temp_data)
+
+        if response["success"]:
+            return jsonify(response), 200
+        elif response["error"] == "Invalid Credentials":
+            return jsonify(response), 401
+        else:
+            return jsonify(response), 500
 
 
 # TODO: Specify what data is, if it is token make it token
@@ -83,9 +72,14 @@ def logout():
     """
     if request.method == "POST":
         data = request.get_json()
-        response, status = auth_service.logout(data)
+        # Validations -> abort(400, description="Missing Data")
 
-        return jsonify(response), status
+        response = auth_service.logout(data)
+
+        if response["success"]:
+            return jsonify(response), 200
+        else:
+            return jsonify(response), 500
 
 
 @auth_blueprint.route("/roles", methods=["GET"])
@@ -97,6 +91,13 @@ def get_roles():
     @return (dict, int): The response and status code.
     """
     if request.method == "GET":
-        response, status = auth_service.get_roles()
 
-        return jsonify(response), status
+        # Validations -> abort(400, description="Missing Data")        
+
+        response = auth_service.get_roles()
+
+        if response["success"]:
+            return jsonify(response), 200
+        else:
+            return jsonify(response), 500
+

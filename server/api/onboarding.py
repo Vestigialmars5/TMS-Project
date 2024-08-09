@@ -2,7 +2,8 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from server.services import onboarding_service
 
-onboarding_blueprint = Blueprint("onboarding", __name__, url_prefix="/api/onboarding")
+onboarding_blueprint = Blueprint(
+    "onboarding", __name__, url_prefix="/api/onboarding")
 
 
 @onboarding_blueprint.route("/onboard", methods=["POST"])
@@ -22,7 +23,9 @@ def onboard_user():
     role_id = claims["roleId"]
     role_name = claims["roleName"]
 
-    response, status = onboarding_service.onboard_user(
+    # Validations -> abort(400, description="Missing Data")
+
+    response = onboarding_service.onboard_user(
         user_id,
         email,
         password,
@@ -35,4 +38,7 @@ def onboard_user():
         role_name,
     )
 
-    return jsonify(response), status
+    if response["success"]:
+        return jsonify(response), 200
+    else:
+        return jsonify(response), 400
