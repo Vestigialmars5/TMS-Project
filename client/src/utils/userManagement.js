@@ -1,3 +1,4 @@
+import { getToken } from "./tokenFunctions";
 const SERVER_URL = "http://localhost:5000";
 
 export const createUserApi = async ({ email, password, roleId }) => {
@@ -10,10 +11,12 @@ export const createUserApi = async ({ email, password, roleId }) => {
    * @returns {void}
    **/
 
+  const token = getToken();
   try {
     const res = await fetch(`${SERVER_URL}/api/admin/users`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password, roleId }),
@@ -25,14 +28,19 @@ export const createUserApi = async ({ email, password, roleId }) => {
       console.log(response.error);
       throw new Error(response.description);
     }
-
   } catch (error) {
     throw new Error(`Create User Failed: ${error.message}`);
   }
 };
 
 // TODO: Probably remove limit
-export const getUsersApi = async ({ searchField, sortBy, sortOrder, page, limit }) => {
+export const getUsersApi = async ({
+  searchField,
+  sortBy,
+  sortOrder,
+  page,
+  limit,
+}) => {
   /**
    * Gets all users
    * @param {Object} args - The fetch filter
@@ -44,9 +52,17 @@ export const getUsersApi = async ({ searchField, sortBy, sortOrder, page, limit 
    * @returns {Array} - The users
    **/
 
+  const token = getToken();
   try {
     const res = await fetch(
-      `${SERVER_URL}/api/admin/users?search=${searchField}&sortBy=${sortBy}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`
+      `${SERVER_URL}/api/admin/users?search=${searchField}&sortBy=${sortBy}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
     );
     const response = await res.json();
 
@@ -68,9 +84,14 @@ export const deleteUserApi = async (userId) => {
    * @returns {void}
    **/
 
+  const token = getToken();
   try {
     const res = await fetch(`${SERVER_URL}/api/admin/users/${userId}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
 
     const response = await res.json();
@@ -79,7 +100,6 @@ export const deleteUserApi = async (userId) => {
       console.error(response.error);
       throw new Error(response.description);
     } else {
-      
     }
   } catch (error) {
     throw new Error(`Delete Failed: ${error.message}`);
@@ -97,10 +117,12 @@ export const updateUserApi = async ({ userId, username, email, roleId }) => {
    * @returns {void}
    **/
 
+  const token = getToken();
   try {
     const res = await fetch(`${SERVER_URL}/api/admin/users/${userId}`, {
       method: "PUT",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ username, email, roleId }),
@@ -112,7 +134,6 @@ export const updateUserApi = async ({ userId, username, email, roleId }) => {
       console.error(response.error);
       throw new Error(response.description);
     }
-    
   } catch (error) {
     throw new Error(`Edit User Failed: ${error.message}`);
   }

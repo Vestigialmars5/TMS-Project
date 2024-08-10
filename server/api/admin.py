@@ -34,8 +34,8 @@ This needs to include the following features:
 """
 
 # TODO: Complete this
-@jwt_required()
 @admin_blueprint.route("/users", methods=["POST"])
+@jwt_required()
 def create_user():
     """
     Create a user.
@@ -65,8 +65,8 @@ def create_user():
             return jsonify(response), 500
 
 
-@jwt_required()
 @admin_blueprint.route("/users", methods=["GET"])
+@jwt_required()
 def get_users():
     """
     Get all users.
@@ -95,8 +95,8 @@ def get_users():
             return jsonify(response), 500
 
 
-@jwt_required()
 @admin_blueprint.route("/users/<int:user_id>", methods=["DELETE"])
+@jwt_required()
 def delete_user(user_id):
     """
     Delete a user.
@@ -118,8 +118,8 @@ def delete_user(user_id):
             return jsonify(response), 500
 
 
-@jwt_required()
 @admin_blueprint.route("/users/<int:user_id>", methods=["PUT"])
+@jwt_required()
 def update_user(user_id):
     """
     Update a user.

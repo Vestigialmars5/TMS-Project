@@ -6,7 +6,7 @@ from server.services.exceptions import *
 from server.utils.logging import create_audit_log
 import logging
 
-logger = logging.get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def onboard_user(
