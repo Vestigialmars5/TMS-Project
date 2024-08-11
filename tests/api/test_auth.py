@@ -9,9 +9,9 @@ def test_login(client):
     assert "access_token" in response.json
 
 
-def test_logout(client, auth_token):
+def test_logout(client, admin_token):
     response = client.post("api/auth/logout", headers={
-        "Authorization": f"Bearer {auth_token}",
+        "Authorization": f"Bearer {admin_token}",
         "Content-Type": "application/json"
     }, json={})
 
