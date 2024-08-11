@@ -27,6 +27,10 @@ def populate_db():
         db.session.add(admin)
         db.session.commit()
 
+        admin_details = UserDetails(user_id=admin.user_id, first_name="Admin", last_name="Admin", phone_number="1234567890", address="123 Admin St.")
+        db.session.add(admin_details)
+        db.session.commit()
+
 
 @click.command("populate-db")
 def populate_db_command():
