@@ -86,6 +86,7 @@ def logout(data):
     @param data (dict): The data containing the token.
     @return (dict, int): The response and status code.
     """
+    logger.info("Logout Attempt: by %s", "Placeholder")
 
     try:
         # TODO: Add jti and blacklist for tokens
