@@ -25,6 +25,10 @@ def onboard_user(
     # TODO: Validation
     logger.info("Onboard Attempt: by %s", user_id)
     try:
+        # Check if user already onboarded
+        if not isOnboarded(user_id):
+            return {"success": False, "error": "User Already Onboarded"}
+
         try:
             password_hash = generate_password_hash(password)
             # Update user's email and password
@@ -63,7 +67,7 @@ def onboard_user(
 
         logger.info("Onboard Attempt Successful: by %s", user_id)
         create_audit_log("Onboard", user_id=user_id, details="Success")
-        return {"success": True, "access_token": access_token}, 200
+        return {"success": True, "access_token": access_token}
 
     except DatabaseQueryError as e:
         logger.error("Onboard Attempt Failed: by %s | %s", user_id, e)
@@ -74,3 +78,12 @@ def onboard_user(
         logger.error("Onboard Attempt Failed: by %s | %s", user_id, e)
         create_audit_log("Onboard", user_id=user_id, details="Internal Server Error")
         raise
+
+
+def isOnboarded(user_id):
+    user_details = db.session.query(UserDetails).filter_by(user_id=user_id).first()
+
+    if user_details is not None:
+        return False
+    else:
+        return True

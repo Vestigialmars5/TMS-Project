@@ -40,5 +40,7 @@ def onboard_user():
 
     if response["success"]:
         return jsonify(response), 200
+    elif response["error"] == "User Already Onboarded":
+        return jsonify(response), 409
     else:
-        return jsonify(response), 400
+        return jsonify(response), 500
