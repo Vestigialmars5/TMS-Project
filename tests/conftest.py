@@ -35,14 +35,3 @@ def client(app):
 @pytest.fixture()
 def runner(app):
     return app.test_cli_runner()
-
-
-@pytest.fixture()
-def auth_token(client):
-    response = client.post("api/auth/login", json={
-        "email": "asdf@asdf.com",
-        "password": "asdfasdf"
-    })
-    assert response.status_code == 200
-    print(f"The auth_token: {response.json["access_token"]}")
-    return response.json["access_token"]
