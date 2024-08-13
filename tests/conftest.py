@@ -20,6 +20,7 @@ def app():
         from server.models import tms_models
         from server.models import wms_models
         init_db()
+        # Creates roles and admin
         populate_db()
         yield app
         

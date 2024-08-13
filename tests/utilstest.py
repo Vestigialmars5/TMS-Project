@@ -6,7 +6,7 @@ from server.models.tms_models import User, UserDetails
 @pytest.fixture()
 def admin_token(client):
     response = client.post("api/auth/login", json={
-        "email": "asdf@asdf.com",
+        "email": "admin@gmail.com",
         "password": "asdfasdf"
     })
     assert response.status_code == 200

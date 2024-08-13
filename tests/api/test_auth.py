@@ -1,6 +1,8 @@
+from tests.utilstest import admin_token
+
 def test_login(client):
     response = client.post("/api/auth/login", json={
-        "email": "admin",
+        "email": "admin@gmail.com",
         "password": "asdfasdf"
     })
 
