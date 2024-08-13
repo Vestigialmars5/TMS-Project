@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def login(data):
+def login(email, password):
     """
     Login user with email and password.
 

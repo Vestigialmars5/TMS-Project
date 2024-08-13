@@ -50,7 +50,7 @@ def login():
         }
 
         # TODO: Pass actual data
-        response = auth_service.login(temp_data)
+        response = auth_service.login(email, password)
 
         if response["success"]:
             return jsonify(response), 200
