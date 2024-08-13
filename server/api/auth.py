@@ -22,32 +22,16 @@ def login():
     """
     if request.method == "POST":
         # Receive data from request
-        data = request.get_json()
+        try:
+            data = request.get_json()
+        except:
+            abort(400, description="Invalid JSON")
 
         email = data.get("email")
         password = data.get("password")
 
-        # Validations -> abort(400, description="Missing Data")
-
-        # TODO: Get rid of this, for testing admin
-        """res = db.execute("SELECT * FROM users WHERE user_id = ?", (1,))
-        row = res.fetchone()
-        user_id = row["user_id"]
-        email = row["email"]
-        password = row["password"]
-        role = row["role_id"] """
-
-        try:
-            user = db.session.query(User).filter(User.user_id == 1).first()
-        except Exception as e:
-            abort(500, description="Error Retrieving Data")
-
-        temp_data = {
-            "email": user.email,
-            "password": user.password,
-            "role_id": user.role_id,
-            "user_id": user.user_id,
-        }
+        if not email or not password:
+            abort(400, description="Missing Data")
 
         # TODO: Pass actual data
         response = auth_service.login(email, password)

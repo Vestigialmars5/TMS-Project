@@ -1,4 +1,4 @@
-from server.utils.validation import validate_login_credentials
+from server.utils.validation import validate_login_credentials, get_first_name_last_name
 from server.utils.token import create_tokens
 from server.utils.logging import create_audit_log
 from ..extensions import db
@@ -16,55 +16,41 @@ def login(email, password):
     @param data (dict): The data containing email and password.
     @return (dict, int): The response and status code.
     """
-    email = data.get("email")
-    password = data.get("password")
-    role_id = data.get("role_id")
-
-    logger.info("Login Attempt: by %s", data.get("email"))
+    logger.info("Login Attempt: by %s", email)
 
     try:
-
-        # TODO: Get rid of these, retrieve from db
-        # Maybe even from profile_service
-        role_name = "Admin"
-
-        user_id = data.get("user_id")
-
+        # Check if email and password are valid
         if not validate_login_credentials(email, password):
-            logger.warning(
-                "Login Attempt Failed: by %s | Invalid Credentials", email)
-            create_audit_log("Login", email=email,
-                             details="Invalid Credentials")
+            logger.warning("Login Attempt Failed: by %s | Invalid Credentials", email)
+            create_audit_log("Login", email=email, details="Invalid Credentials")
             return {"success": False, "error": "Invalid Credentials", "description": "Email Or Password Incorrect"}
 
+        # Retrieve user details, if not found onboarding is not completed
         try:
-            query = db.select(UserDetails.first_name, UserDetails.last_name).filter(
-                UserDetails.user_id == user_id)
-            res = db.session.execute(query).first()
-
-            if res is not None:
-                first_name, last_name = res
-                isOnboarding_completed = True
-            else:
-                first_name, last_name = "", ""
-                isOnboarding_completed = False
+            user = db.session.query(User).filter(User.email == email).first()
+            first_name, last_name = get_first_name_last_name(user.user_id)
         except Exception as e:
             raise DatabaseQueryError("Error Retrieving Data")
 
+        if first_name and last_name:
+            is_onboarding_completed = True
+        else:
+            is_onboarding_completed = False
+
         access_token = create_tokens(
-            user_id,
+            user.user_id,
             {
-                "isOnboardingCompleted": isOnboarding_completed,
+                "isOnboardingCompleted": is_onboarding_completed,
                 "email": email,
                 "firstName": first_name,
                 "lastName": last_name,
-                "roleName": role_name,
-                "roleId": role_id,
+                "roleName": user.role.role_name,
+                "roleId": user.role_id,
             },
         )
 
-        logger.info("Login Attempt Successful: by %s", user_id)
-        create_audit_log("Login", user_id=user_id, details="Success")
+        logger.info("Login Attempt Successful: by %s", user.user_id)
+        create_audit_log("Login", user_id=user.user_id, details="Success")
         return {"success": True, "access_token": access_token}
 
     except DatabaseQueryError as e:
