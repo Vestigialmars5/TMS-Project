@@ -831,3 +831,6 @@ I've been stuck trying to decide on what to do with aborts and exceptions and lo
 Aug 8
 The way I'm going to be handling request is as follows, endpoint receives check if data exists, abort if not, run service, if success return success response if error return appropriate error response. In service, try-catch block wrapping, raise custom exceptions, they are handled by errors_handler. Logging and audit happen before returning to the endpoint or before raising the error after catching it. Service only returns response.
 
+Aug 13
+I'm now done with adding the logging, audit, structuring how the app handles errors and setting up tests. Now I need to either keep moving forward with the app, or start adding validations and cleaning things up.
+I think that I will start adding validations because it is going to take some time and I need to start so that when I have more things in my app, I already have a set structure and can just go through it.
