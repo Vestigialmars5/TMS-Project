@@ -57,6 +57,16 @@ def handle_database_error(error):
     return jsonify(response), error.status_code
 
 
+@errors_blueprint.app_errorhandler(ValidationError)
+def handle_validation_error(error):
+    response = {
+        "success": False,
+        "error": "Validation Error",
+        "description": error.message,
+    }
+    return jsonify(response), error.status_code
+
+
 @errors_blueprint.app_errorhandler(Exception)
 def handle_exception(error):
     response = {

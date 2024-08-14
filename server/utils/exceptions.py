@@ -14,7 +14,7 @@ class ValidationError(Exception):
     pass
 
 
-class InvalidDataError(ValidationError):
+class DataValidationError(ValidationError):
     status_code = 400
     def __init__(self, message="Invalid Data"):
         self.message = message
