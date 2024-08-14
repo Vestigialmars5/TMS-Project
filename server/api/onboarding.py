@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from server.services import onboarding_service
+from server.utils.data_cleanup import data_cleanup_onboarding
 
 onboarding_blueprint = Blueprint(
     "onboarding", __name__, url_prefix="/api/onboarding")

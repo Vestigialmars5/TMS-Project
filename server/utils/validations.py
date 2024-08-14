@@ -1,9 +1,8 @@
 # Use validator class to validate data
-from server.utils.validator import *
+from server.utils.data_validation import *
 from server.extensions import db
 from server.models.tms_models import *
 from werkzeug.security import check_password_hash
-from server.utils.exceptions import DatabaseQueryError, InvalidDataError
 
 # TODO: Get roles from db
 

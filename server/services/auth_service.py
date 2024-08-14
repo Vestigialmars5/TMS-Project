@@ -1,4 +1,4 @@
-from server.utils.validation import validate_login_credentials, get_first_name_last_name
+from server.utils.validations import validate_login_credentials, get_first_name_last_name
 from server.utils.token import create_tokens
 from server.utils.logging import create_audit_log
 from ..extensions import db

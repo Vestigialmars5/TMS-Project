@@ -1,8 +1,7 @@
 from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import jwt_required
 from server.services import auth_service
-from ..extensions import db
-from ..models.tms_models import User
+from ..utils.data_cleanup import data_cleanup_login
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 
