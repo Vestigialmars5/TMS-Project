@@ -11,7 +11,7 @@ const Onboarding = () => {
   const { user, updateUser, updateLoginStatus } = useAuth();
   const { addAlert } = useAlert();
   const navigate = useNavigate();
-  const [userData, setUserInfo] = useState({
+  const [userData, setUserData] = useState({
     email: user.email,
     password: "********",
     confirmation: "",
@@ -24,7 +24,7 @@ const Onboarding = () => {
   // TODO: Validations
 
   const handleChange = (e) => {
-    setUserInfo({ ...userData, [e.target.name]: e.target.value });
+    setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
