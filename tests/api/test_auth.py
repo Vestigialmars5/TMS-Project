@@ -18,3 +18,14 @@ def test_logout(client, admin_token):
     }, json={})
 
     assert response.status_code == 200
+
+
+def test_bad_login(client):
+    response = client.post("/api/auth/login", json={
+        "email": "admin@wrong.com",
+        "password": "wrong"
+    })
+
+    assert response.status_code == 401
+    assert response.json["success"] == False
+    assert response.json["error"] == "Invalid Credentials"
