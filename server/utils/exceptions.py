@@ -8,3 +8,14 @@ class DatabaseQueryError(DatabaseError):
     def __init__(self, message="Database Query Error"):
         self.message = message
         super().__init__(self.message)
+
+
+class ValidationError(Exception):
+    pass
+
+
+class InvalidDataError(ValidationError):
+    status_code = 400
+    def __init__(self, message="Invalid Data"):
+        self.message = message
+        super().__init__(self.message)

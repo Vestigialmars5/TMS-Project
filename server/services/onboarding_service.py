@@ -2,7 +2,7 @@ from server.extensions import db
 from server.models.tms_models import User, UserDetails
 from werkzeug.security import generate_password_hash
 from server.utils.token import create_tokens
-from server.services.exceptions import *
+from server.utils.exceptions import *
 from server.utils.logging import create_audit_log
 import logging
 

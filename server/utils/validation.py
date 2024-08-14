@@ -3,7 +3,7 @@ from server.utils.validator import *
 from server.extensions import db
 from server.models.tms_models import *
 from werkzeug.security import check_password_hash
-from server.services.exceptions import DatabaseQueryError
+from server.utils.exceptions import DatabaseQueryError, InvalidDataError
 
 # TODO: Get roles from db
 

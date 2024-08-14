@@ -1,7 +1,7 @@
 from server.extensions import db
 from server.models.tms_models import User, Role
 from werkzeug.security import generate_password_hash
-from server.services.exceptions import DatabaseQueryError
+from server.utils.exceptions import DatabaseQueryError
 import logging
 from server.utils.logging import create_audit_log
 
