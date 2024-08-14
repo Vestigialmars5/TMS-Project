@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { loginApi, logoutApi, getRolesApi } from "../utils/auth";
+import { loginApi, logoutApi } from "../utils/auth";
+import { getRolesApi } from "../utils/common";
 import { decodeToken, getToken } from "../utils/tokenFunctions";
 import { useNavigate } from "react-router-dom";
 import { navigateBasedOnRole } from "../utils/navigation";
@@ -71,6 +72,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Including getRoles in auth context to not cluster the app with too many contexts 
+  // If there are more functions added to common, then a common context will be necessary
+  // For now just manage it from here
   const getRoles = async () => {
     try {
       const roles = await getRolesApi();
