@@ -30,7 +30,7 @@ def login(email, password):
             user = db.session.query(User).filter(User.email == email).first()
             first_name, last_name = get_first_name_last_name(user.user_id)
         except Exception as e:
-            raise DatabaseQueryError("Error Retrieving Data")
+            raise DatabaseQueryError("Error Retrieving User Data")
 
         if first_name and last_name:
             is_onboarding_completed = True

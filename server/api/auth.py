@@ -26,13 +26,8 @@ def login():
         except:
             abort(400, description="Invalid JSON")
 
-        email = data.get("email")
-        password = data.get("password")
-
-        if not email or not password:
-            abort(400, description="Missing Data")
-
-        # TODO: Pass actual data
+        email, password = data_cleanup_login(data)
+    
         response = auth_service.login(email, password)
 
         if response["success"]:
@@ -54,6 +49,7 @@ def logout():
     @return (dict, int): The response and status code.
     """
     if request.method == "POST":
+        # TODO: Check things with token and blacklist etc
         data = request.get_json()
         # Validations -> abort(400, description="Missing Data")
 
@@ -63,24 +59,3 @@ def logout():
             return jsonify(response), 200
         else:
             return jsonify(response), 500
-
-
-@auth_blueprint.route("/roles", methods=["GET"])
-@jwt_required()
-def get_roles():
-    """
-    Get all roles.
-
-    @return (dict, int): The response and status code.
-    """
-    if request.method == "GET":
-
-        # Validations -> abort(400, description="Missing Data")        
-
-        response = auth_service.get_roles()
-
-        if response["success"]:
-            return jsonify(response), 200
-        else:
-            return jsonify(response), 500
-

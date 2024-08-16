@@ -23,7 +23,7 @@ def test_logout(client, admin_token):
 def test_bad_login(client):
     response = client.post("/api/auth/login", json={
         "email": "admin@wrong.com",
-        "password": "wrong"
+        "password": "wrongwrong"
     })
 
     assert response.status_code == 401
