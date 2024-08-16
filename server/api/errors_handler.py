@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 @errors_blueprint.app_errorhandler(400)
 def bad_request(error):
+    logger.error("Bad Request: %s", error.description)
     response = {
         "success": False,
         "error": "Bad Request",
@@ -20,6 +21,7 @@ def bad_request(error):
 
 @errors_blueprint.app_errorhandler(401)
 def unauthorized(error):
+    logger.error("Unauthorized: %s", error.description)
     response = {
         "success": False,
         "error": "Unauthorized",
@@ -30,6 +32,7 @@ def unauthorized(error):
 
 @errors_blueprint.app_errorhandler(404)
 def not_found(error):
+    logger.error("Not Found: %s", error.description)
     response = {
         "success": False,
         "error": "Not Found",
@@ -40,6 +43,7 @@ def not_found(error):
 
 @errors_blueprint.app_errorhandler(500)
 def internal_server_error(error):
+    logger.error("Internal Server Error: %s", error.description)
     response = {
         "success": False,
         "error": "Internal Server Error",
@@ -49,6 +53,7 @@ def internal_server_error(error):
 
 @errors_blueprint.app_errorhandler(DatabaseError)
 def handle_database_error(error):
+    logger.error("Database Error: %s", error.message)
     response = {
         "success": False,
         "error": "Database Error",
@@ -59,6 +64,7 @@ def handle_database_error(error):
 
 @errors_blueprint.app_errorhandler(ValidationError)
 def handle_validation_error(error):
+    logger.error("Validation Error: %s", error.message)
     response = {
         "success": False,
         "error": "Validation Error",
@@ -69,6 +75,7 @@ def handle_validation_error(error):
 
 @errors_blueprint.app_errorhandler(Exception)
 def handle_exception(error):
+    logger.error("Unhandled Exception: %s", error)
     response = {
         "success": False,
         "error": "Unhandled Exception",
@@ -79,6 +86,7 @@ def handle_exception(error):
 
 @jwt.unauthorized_loader
 def unauthorized_response(callback):
+    logger.error("Unauthorized Access: Missing Authorization Header")
     response = {
         "success": False,
         "error": "Unauthorized Access",
@@ -89,6 +97,7 @@ def unauthorized_response(callback):
 
 @jwt.invalid_token_loader
 def invalid_token_response(callback):
+    logger.error("Invalid Token: Signature Verification Failed")
     response = {
         "success": False,
         "error": "Invalid Token",
