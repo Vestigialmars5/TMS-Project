@@ -4,6 +4,7 @@ from .models.tms_models import *
 from .models.wms_models import *
 from .models.base import Base1, Base2
 import click
+from werkzeug.security import generate_password_hash
 
 def init_db():
     with current_app.app_context():
@@ -23,7 +24,8 @@ def populate_db():
         db.session.commit()
 
         # Add admin
-        admin = User(username="admin", email="admin@gmail.com", password="asdfasdf", role_id=1)
+        admin_password = generate_password_hash("asdfasdf")
+        admin = User(username="admin", email="admin@gmail.com", password=admin_password, role_id=1)
         db.session.add(admin)
         db.session.commit()
 
