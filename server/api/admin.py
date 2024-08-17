@@ -33,6 +33,7 @@ This needs to include the following features:
 - View user details
 """
 
+
 # TODO: Complete this
 @admin_blueprint.route("/users", methods=["POST"])
 @jwt_required()
@@ -57,7 +58,8 @@ def create_user():
 
         # Validations -> abort(400, description="Missing Data")
 
-        response = user_service.create_user(email, password, role_id, initiator_id)
+        response = user_service.create_user(
+            email, password, role_id, initiator_id)
 
         if response["success"]:
             return jsonify(response), 201
@@ -87,7 +89,8 @@ def get_users():
 
         # Validations -> abort(400, description="Missing Data")
 
-        response = user_service.get_users(search, sort_by, sort_order, page, limit, initiator_id)
+        response = user_service.get_users(
+            search, sort_by, sort_order, page, limit, initiator_id)
 
         if response["success"]:
             return jsonify(response), 200
@@ -141,12 +144,14 @@ def update_user(user_id):
 
         # Validations -> abort(400, description="Missing Data")
 
-        response = user_service.update_user(user_id, username, email, role_id, initiator_id)
+        response = user_service.update_user(
+            user_id, username, email, role_id, initiator_id)
 
         if response["success"]:
             return jsonify(response), 200
         else:
             return jsonify(response), 500
+
 
 # System settings
 """
