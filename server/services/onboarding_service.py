@@ -26,30 +26,30 @@ def onboard_user(
     logger.info("Onboard Attempt: by %s", user_id)
     try:
         # Check if user already onboarded
-        if not isOnboarded(user_id):
-            return {"success": False, "error": "User Already Onboarded"}
+        if not is_onboarded(user_id):
+            logger.warning(
+                "Onboard Attempt Failed: by %s | User Already Onboarded", user_id)
+            create_audit_log("Onboard", user_id=user_id,
+                             details="User Already Onboarded")
+            return {"success": False, "error": "Action Was Already Completed", "description": "User Already Onboarded"}
+
+        # Check if password and confirmation match
+        if password != confirmation:
+            logger.warning(
+                "Onboard Attempt Failed: by %s | Passwords Do Not Match", user_id)
+            create_audit_log("Onboard", user_id=user_id,
+                             details="Passwords Do Not Match")
+            return {"success": False, "error": "Passwords Do Not Match", "description": "Password and Confirmation Do Not Match"}
 
         try:
-            password_hash = generate_password_hash(password)
-            # Update user's email and password
-            user = db.session.query(User).filter_by(user_id=user_id).first()
-            user.email = email
-            user.password = password_hash
-            db.session.commit()
+            update_password(user_id, password)
         except Exception as e:
-            raise DatabaseQueryError("Error Updating User")
+            raise DatabaseQueryError("Error Updating Password")
 
         try:
             # Insert other details into user_details table
-            user_detail = UserDetails(
-                user_id=user_id,
-                first_name=first_name,
-                last_name=last_name,
-                phone_number=phone_number,
-                address=address,
-            )
-            db.session.add(user_detail)
-            db.session.commit()
+            update_user_details(user_id, first_name,
+                                last_name, phone_number, address)
         except Exception as e:
             raise DatabaseQueryError("Error Adding User Details")
 
@@ -76,14 +76,34 @@ def onboard_user(
 
     except Exception as e:
         logger.error("Onboard Attempt Failed: by %s | %s", user_id, e)
-        create_audit_log("Onboard", user_id=user_id, details="Internal Server Error")
+        create_audit_log("Onboard", user_id=user_id,
+                         details="Internal Server Error")
         raise
 
 
-def isOnboarded(user_id):
-    user_details = db.session.query(UserDetails).filter_by(user_id=user_id).first()
+def is_onboarded(user_id):
+    user_details = db.session.query(
+        UserDetails).filter_by(user_id=user_id).first()
 
     if user_details is not None:
         return False
     else:
         return True
+
+
+def update_password(user_id, password):
+    user = db.session.query(User).filter(User.user_id == user_id).first()
+    user.password = generate_password_hash(password)
+    db.session.commit()
+
+
+def update_user_details(user_id, first_name, last_name, phone_number, address):
+    user_details = UserDetails(
+        user_id=user_id,
+        first_name=first_name,
+        last_name=last_name,
+        phone_number=phone_number,
+        address=address,
+    )
+    db.session.add(user_details)
+    db.session.commit()

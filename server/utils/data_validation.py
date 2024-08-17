@@ -39,13 +39,18 @@ def is_password_valid(password):
 
 def clean_phone_number(phone_number):
     if not phone_number or not isinstance(phone_number, str):
-        raise DataValidationError("Invalid Phone Number")
+        raise DataValidationError("Phone Number Missing or Invalid")
     # Remove all non-digits except '+'
     phone_number = re.sub(r'[^\d+]', '', phone_number)
-    if not len(phone_number) == 10 or not phone_number.startswith('+'):
-        raise DataValidationError("Invalid Phone Number")
 
-    return phone_number
+    if not len(phone_number) == 10:
+        if not phone_number.startswith('+') or not len(phone_number) == 12:
+            raise DataValidationError("Invalid Phone Number Length")
+        else:
+            return phone_number
+    else:
+        return phone_number
+
 
 def clean_address(address):
     # TODO: Implement address validation service

@@ -1,15 +1,16 @@
 from server.models.tms_models import Role, User, UserDetails
 from server.extensions import db
+from tests.utilstest import user_not_onboarded_token
 
 
-def test_onboard_user(client, auth_token, user_not_onboarded):
+def test_onboard_user(client, user_not_onboarded_token):
     response = client.post("/api/onboarding/onboard", headers={
-        "Authorization": f"Bearer {auth_token}",
+        "Authorization": f"Bearer {user_not_onboarded_token}",
         "Content-Type": "application/json"
     }, json={
-        "email": "admin@admin.com",
-        "password": "asdfasdf",
-        "confirmation": "asdfasdf",
+        "email": "test_user_not_onboarded@email.com",
+        "password": "notOnboarded",
+        "confirmation": "notOnboarded",
         "firstName": "Admin",
         "lastName": "Admin",
         "phoneNumber": "1234567890",
@@ -22,9 +23,9 @@ def test_onboard_user(client, auth_token, user_not_onboarded):
 
     assert response.status_code == 200
     assert response.json["success"] == True
-    assert db.session.query(User).filter_by(email="admin@admin.com").first() is not None
+    assert db.session.query(User).filter_by(email="test_user_not_onboarded@email.com").first() is not None
 
-    user = db.session.query(User).filter_by(email="admin@admin.com").first()
+    user = db.session.query(User).filter_by(email="test_user_not_onboarded@email.com").first()
     
     assert user.user_details.first_name == "Admin"
     assert user.user_details.last_name == "Admin"
