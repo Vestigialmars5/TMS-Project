@@ -28,6 +28,7 @@ class User(Base1):
         timezone.utc), onupdate=datetime.now(timezone.utc))
 
     role = db.relationship("Role", backref="users")
+    user_details = db.relationship("UserDetails", backref="UserDetails", uselist=False)
 
     def to_dict(self):
         return {
@@ -65,8 +66,6 @@ class UserDetails(Base1):
     last_name = db.Column(db.String(50))
     phone_number = db.Column(db.String(15))
     address = db.Column(db.String(255))
-
-    user = db.relationship("User", backref="user_details")
 
     def __repr__(self):
         return f"UserDetails('{self.first_name}', '{self.last_name}')"
