@@ -2,7 +2,7 @@ from tests.utilstest import admin_token, carrier_token
 from server.models.tms_models import User
 from server.extensions import db
 
-# test_admin.py
+
 def test_create_user(client, admin_token):
     response = client.post("/api/admin/users", headers={
         "Authorization": f"Bearer {admin_token}",
@@ -16,7 +16,8 @@ def test_create_user(client, admin_token):
     assert response.status_code == 201
     assert response.json["success"] == True
 
-    user = db.session.query(User).filter(User.email == "new_user@test.com").first()
+    user = db.session.query(User).filter(
+        User.email == "new_user@test.com").first()
     assert user is not None
 
 
@@ -31,6 +32,7 @@ def test_bad_create_user(client, carrier_token):
     })
 
     assert response.status_code == 401
+
 
 def test_get_users_plain(client, admin_token):
     response = client.get("/api/admin/users", headers={
