@@ -15,7 +15,7 @@ class ValidationError(Exception):
 
 
 class DataValidationError(ValidationError):
-    status_code = 400
+    status_code = 403
     def __init__(self, message="Invalid Data"):
         self.message = message
         super().__init__(self.message)

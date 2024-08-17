@@ -14,6 +14,41 @@ def admin_token(client):
 
 
 @pytest.fixture()
+def carrier_token(client):
+    user = User(
+        email="carrier@gmail.com",
+        username="carrier",
+        password="asdfasdf",
+        role_id=3
+    )
+    db.session.add(user)
+    db.session.commit()
+
+    assert db.session.query(User).filter_by(email="carrier@gmail.com").first() is not None
+
+    user_details = UserDetails(
+        user_id=user.user_id,
+        first_name="Carrier",
+        last_name="Carrier",
+        phone_number="1234567890",
+        address="123 Carrier St."
+    )
+
+    db.session.add(user_details)   
+    db.session.commit()
+
+    assert db.session.query(UserDetails).filter_by(user_id=user.user_id).first() is not None
+
+    response = client.post("api/auth/login", json={
+        "email": "carrier@gmail.com",
+        "password": "asdfasdf"
+    })
+
+    assert response.status_code == 200
+    return response.json["access_token"]
+
+
+@pytest.fixture()
 def user_complete_token(client):
     user = User(
         email="test_user_complete@email.com",

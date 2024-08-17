@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash
 from server.utils.exceptions import DatabaseQueryError
 import logging
 from server.utils.logging import create_audit_log
+from sqlalchemy.exc import IntegrityError
 
 
 logger = logging.getLogger(__name__)
@@ -57,22 +58,29 @@ def create_user(email, password, role_id, initiator_id):
 
     try:
 
-        # TODO: Make this different for uniqueness
-        username = email.split("@")[0]
-
-        # TODO: Validations for registering
+        try:
+            if user_exists(email):
+                logger.error("Create User Attempt Failed: by %s | User Already Exists", initiator_id)
+                create_audit_log("Create User", user_id=initiator_id, details="User Already Exists")
+                return {"success": False, "error": "Unique Constraint Violation", "description": "User Already Exists"}
+        except:
+            raise DatabaseQueryError("Error Checking User")
 
         try:
-            password_hash = generate_password_hash(password)
-            user = User(username=username, email=email,
-                        password=password_hash, role_id=role_id)
-            db.session.add(user)
-            db.session.commit()
+            simple_username = email.split("@")[0]
+            username = create_unique_username(simple_username)
+        except Exception as e:
+            raise DatabaseQueryError("Error Creating Username")
+
+
+        try:
+            user = insert_user(email, username, password, role_id)
+        except IntegrityError as e:
+            raise DatabaseQueryError("Username Already Exists")
         except Exception as e:
             raise DatabaseQueryError("Error Creating User")
 
-        logger.info("Create User Attempt Successful: by %s | created %s",
-                    initiator_id, user.user_id)
+        logger.info("Create User Attempt Successful: by %s | created %s", initiator_id, user.user_id)
         create_audit_log("Create User", user_id=initiator_id, details=f"Created {user.user_id}")
         return {"success": True}
 
@@ -193,3 +201,36 @@ def _construct_query(search, sort_by, sort_order, page, limit):
     user_list = [user.to_dict_js() for user in users]
 
     return user_list
+
+
+def user_exists(email):
+    user = db.session.query(User).filter(User.email == email).first()
+    if user:
+        return True
+    return False
+
+
+def create_unique_username(username):
+    
+    if not is_username_avaibable(username):
+        count = db.session.query(User).filter(
+            User.username.like(f"{username}%")).count()
+        return f"{username}{count}"
+
+    return username
+
+
+def is_username_avaibable(username):
+    user = db.session.query(User).filter(User.username == username).first()
+    if user:
+        return False
+    return True
+
+
+def insert_user(email, username, password, role_id):
+    password_hash = generate_password_hash(password)
+    user = User(username=username, email=email,
+                password=password_hash, role_id=role_id)
+    db.session.add(user)
+    db.session.commit()
+    return user

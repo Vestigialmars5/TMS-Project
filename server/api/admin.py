@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, abort
 from server.services import user_service
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from server.utils.data_cleanup import data_cleanup_create_user
 
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
 
@@ -46,23 +47,26 @@ def create_user():
     """
 
     if request.method == "POST":
-
-        # TODO: Get data from request
-        data = request.get_json()
-
-        email = data.get("email")
-        password = data.get("password")
-        role_id = data.get("roleId")
-
         initiator_id = get_jwt_identity()
+        claims = get_jwt()
+        if claims["roleId"] != 1:
+            abort(401, description="Unauthorized: Admin Only")
 
-        # Validations -> abort(400, description="Missing Data")
+        # Get data from request
+        try:
+            data = request.get_json()
+        except:
+            abort(400, description="Invalid JSON")
+
+        email, password, role_id = data_cleanup_create_user(data)
 
         response = user_service.create_user(
             email, password, role_id, initiator_id)
 
         if response["success"]:
             return jsonify(response), 201
+        elif response["error"] == "Unique Constraint Violation":
+            return jsonify(response), 409
         else:
             return jsonify(response), 500
 

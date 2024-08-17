@@ -51,7 +51,6 @@ def clean_phone_number(phone_number):
     else:
         return phone_number
 
-
 def clean_address(address):
     # TODO: Implement address validation service
     if not address or not isinstance(address, str):
@@ -63,3 +62,14 @@ def clean_address(address):
         raise DataValidationError("Invalid Address")
     
     return address
+
+def clean_role_id(role_id):
+    if not role_id or not isinstance(role_id, int):
+        raise DataValidationError("Role ID Missing or Invalid")
+    
+    # Role ID must be between 1 and 7
+    if not 0 < role_id <= 7:
+        raise DataValidationError("Invalid Role ID")
+
+    return role_id
+
