@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request, abort
 from server.services import user_service
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from server.utils.data_cleanup import data_cleanup_create_user
+from server.utils.authorization_decorators import roles_required
 
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
 
@@ -38,6 +39,7 @@ This needs to include the following features:
 # TODO: Complete this
 @admin_blueprint.route("/users", methods=["POST"])
 @jwt_required()
+@roles_required("Admin")
 def create_user():
     """
     Create a user.
@@ -48,10 +50,6 @@ def create_user():
 
     if request.method == "POST":
         initiator_id = get_jwt_identity()
-        claims = get_jwt()
-        if claims["roleId"] != 1:
-            abort(401, description="Unauthorized: Admin Only")
-
         # Get data from request
         try:
             data = request.get_json()
@@ -73,6 +71,7 @@ def create_user():
 
 @admin_blueprint.route("/users", methods=["GET"])
 @jwt_required()
+@roles_required("Admin")
 def get_users():
     """
     Get all users.
@@ -104,6 +103,7 @@ def get_users():
 
 @admin_blueprint.route("/users/<int:user_id>", methods=["DELETE"])
 @jwt_required()
+@roles_required("Admin")
 def delete_user(user_id):
     """
     Delete a user.
@@ -127,6 +127,7 @@ def delete_user(user_id):
 
 @admin_blueprint.route("/users/<int:user_id>", methods=["PUT"])
 @jwt_required()
+@roles_required("Admin")
 def update_user(user_id):
     """
     Update a user.
