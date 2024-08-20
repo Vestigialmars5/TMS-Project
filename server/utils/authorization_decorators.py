@@ -17,7 +17,8 @@ def roles_required(*roles):
                 raise e
 
             if current_user_role not in roles:
-                abort(401, description=f"{roles} Required")
+                roles_clean = ", ".join(roles)
+                abort(401, description=f"{roles_clean} Required")
 
             return f(*args, **kwargs)
 
