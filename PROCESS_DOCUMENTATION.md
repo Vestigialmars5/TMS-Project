@@ -834,3 +834,6 @@ The way I'm going to be handling request is as follows, endpoint receives check 
 Aug 13
 I'm now done with adding the logging, audit, structuring how the app handles errors and setting up tests. Now I need to either keep moving forward with the app, or start adding validations and cleaning things up.
 I think that I will start adding validations because it is going to take some time and I need to start so that when I have more things in my app, I already have a set structure and can just go through it.
+
+Aug 19
+Will probably have to look into flask-limiter. Moving forward to developing transportation manager, carrier, etc.
