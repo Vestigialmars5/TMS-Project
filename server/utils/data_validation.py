@@ -7,7 +7,7 @@ MIN_PASSWORD = 8
 
 def clean_email(email):
     if not email or not isinstance(email, str):
-        raise DataValidationError("Invalid Email")
+        raise DataValidationError("Email Missing or Invalid")
 
     # Email contains @ and .
     regex = r'[^@]+@[^@]+\.[^@]+'

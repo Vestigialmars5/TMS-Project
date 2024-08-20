@@ -46,7 +46,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const userData = await loginApi(credentials.email, credentials.password);
+      const userData = await loginApi(credentials);
+
       const roleName = userData.roleName;
       const isOnboardingCompleted = userData.isOnboardingCompleted;
       setUser(userData);
