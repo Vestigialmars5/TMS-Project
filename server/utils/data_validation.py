@@ -73,3 +73,45 @@ def clean_role_id(role_id):
 
     return role_id
 
+def clean_search(search):
+    if not search or not isinstance(search, str):
+        return ""
+
+    return search.strip()
+
+def clean_sort_by(sort_by):
+    if not sort_by or not isinstance(sort_by, str):
+        return "asc"
+    
+    sort_by = sort_by.strip().lower()
+
+    if sort_by not in ["asc", "desc"]:
+        return "asc"
+    
+    return sort_by
+
+def clean_sort_order_users(sort_order):
+    if not sort_order or not isinstance(sort_order, str):
+        return "username"
+    
+    sort_order = sort_order.strip().lower()
+
+    if sort_order not in ["username", "email", "role_name"]:
+        return "username"
+    
+    return sort_order
+
+def clean_page(page):
+    if not page or not isinstance(page, int):
+        return 1
+    
+    return page
+
+def clean_limit(limit):
+    if not limit or not isinstance(limit, int):
+        return 25
+    
+    if 0 >= limit > 100:
+        return 25
+    
+    return limit

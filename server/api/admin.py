@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, abort
 from server.services import user_service
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from server.utils.data_cleanup import data_cleanup_create_user
+from server.utils.data_cleanup import data_cleanup_create_user, data_cleanup_get_users
 from server.utils.authorization_decorators import roles_required
 
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
@@ -73,24 +73,12 @@ def create_user():
 @jwt_required()
 @roles_required("Admin")
 def get_users():
-    """
-    Get all users.
-    Expected data: (str) search, (str) sort_by, (str) sort_order, (int) page, (int) limit.
-
-    @return (dict, int): The response and status code.
-    """
-
     if request.method == "GET":
 
-        search = request.args.get("search", "")
-        sort_by = request.args.get("sortBy", "asc")
-        sort_order = request.args.get("sortOrder", "username")
-        page = request.args.get("page", 1, type=int)
-        limit = request.args.get("limit", 25, type=int)
+        search, sort_by, sort_order, page, limit = data_cleanup_get_users(
+            request.args)
 
         initiator_id = get_jwt_identity()
-
-        # Validations -> abort(400, description="Missing Data")
 
         response = user_service.get_users(
             search, sort_by, sort_order, page, limit, initiator_id)

@@ -35,3 +35,14 @@ def data_cleanup_create_user(data):
         raise DataValidationError("Invalid Password")
 
     return email, password, role_id
+
+
+def data_cleanup_get_users(args):
+    search = clean_search(args.get("search"))
+    sort_by = clean_sort_by(args.get("sortBy"))
+    sort_order = clean_sort_order_users(args.get("sortOrder"))
+    page = clean_page(args.get("page"))
+    limit = clean_limit(args.get("limit"))
+
+    return search, sort_by, sort_order, page, limit
+
