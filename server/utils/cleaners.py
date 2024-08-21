@@ -32,11 +32,6 @@ def clean_name(name):
 
     return name
 
-def is_password_valid(password):
-    if not password or not isinstance(password, str):
-        return False
-    return len(password) >= MIN_PASSWORD
-
 def clean_phone_number(phone_number):
     if not phone_number or not isinstance(phone_number, str):
         raise DataValidationError("Phone Number Missing or Invalid")

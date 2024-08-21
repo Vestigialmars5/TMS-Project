@@ -1,4 +1,4 @@
-from server.utils.validations import validate_login_credentials, get_first_name_last_name
+from server.utils.validations import validate_login_credentials
 from server.utils.token import create_tokens
 from server.utils.logging import create_audit_log
 from ..extensions import db
@@ -82,3 +82,12 @@ def logout(data):
         logger.error("Logout Attempt Failed: by %s", e)
         create_audit_log("Logout", user_id=data.get("user_id"), details="Internal Server Error")
         raise
+
+
+def get_first_name_last_name(user_id):
+    query = db.select(UserDetails.first_name, UserDetails.last_name).filter(
+        UserDetails.user_id == user_id)
+    res = db.session.execute(query).first()
+    if not res:
+        return None, None
+    return res.first_name, res.last_name

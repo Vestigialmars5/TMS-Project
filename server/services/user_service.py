@@ -5,6 +5,8 @@ from server.utils.exceptions import DatabaseQueryError
 import logging
 from server.utils.logging import create_audit_log
 from sqlalchemy.exc import IntegrityError
+from server.utils.validations import user_exists
+from server.utils.helpers import create_unique_username
 
 
 logger = logging.getLogger(__name__)
@@ -59,7 +61,7 @@ def create_user(email, password, role_id, initiator_id):
     try:
 
         try:
-            if user_exists(email):
+            if not user_exists(email=email):
                 logger.error("Create User Attempt Failed: by %s | User Already Exists", initiator_id)
                 create_audit_log("Create User", user_id=initiator_id, details="User Already Exists")
                 return {"success": False, "error": "Unique Constraint Violation", "description": "User Already Exists"}
@@ -201,30 +203,6 @@ def _construct_query(search, sort_by, sort_order, page, limit):
     user_list = [user.to_dict_js() for user in users]
 
     return user_list
-
-
-def user_exists(email):
-    user = db.session.query(User).filter(User.email == email).first()
-    if user:
-        return True
-    return False
-
-
-def create_unique_username(username):
-    
-    if not is_username_avaibable(username):
-        count = db.session.query(User).filter(
-            User.username.like(f"{username}%")).count()
-        return f"{username}{count}"
-
-    return username
-
-
-def is_username_avaibable(username):
-    user = db.session.query(User).filter(User.username == username).first()
-    if user:
-        return False
-    return True
 
 
 def insert_user(email, username, password, role_id):
