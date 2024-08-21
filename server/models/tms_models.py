@@ -1,6 +1,7 @@
 from ..extensions import db
 from datetime import datetime, timezone
 from .base import Base1
+from sqlalchemy import Index
 
 
 class Role(Base1):
@@ -8,6 +9,10 @@ class Role(Base1):
 
     role_id = db.Column(db.Integer, primary_key=True)
     role_name = db.Column(db.String(50), unique=True, nullable=False)
+
+    __table_args__ = (
+        Index('ix_role_name', 'role_name'),
+    )
 
     def __repr__(self):
         return f"Role('{self.role_name}' id: {self.role_id})"
@@ -29,6 +34,12 @@ class User(Base1):
 
     role = db.relationship("Role", backref="users")
     user_details = db.relationship("UserDetails", backref="UserDetails", uselist=False)
+
+    __table_args__ = (
+        Index('ix_username', 'username'),
+        Index('ix_email', 'email'),
+        Index('ix_role_id', 'role_id')
+    )
 
     def to_dict(self):
         return {
@@ -67,6 +78,10 @@ class UserDetails(Base1):
     phone_number = db.Column(db.String(15))
     address = db.Column(db.String(255))
 
+    __table_args__ = (
+        Index('ix_user_details_user_id', 'user_id'),
+    )
+
     def __repr__(self):
         return f"UserDetails('{self.first_name}', '{self.last_name}')"
 
@@ -81,13 +96,19 @@ class DriverDetails(Base1):
     license_expiry = db.Column(db.DateTime, nullable=False)
     vehicle_id = db.Column(db.Integer, db.ForeignKey(
         "vehicles.vehicle_id"), nullable=False)
-    driver_status = db.Column(db.String(50), nullable=False)
+    status = db.Column(db.String(50), nullable=False)
 
     user = db.relationship("User", backref="driver_details")
     vehicle = db.relationship("Vehicle", backref="driver_details")
 
+    __table_args__ = (
+        Index('ix_driver_details_user_id', 'user_id'),
+        Index('ix_license_number', 'license_number'),
+        Index('ix_vehicle_id', 'vehicle_id')
+    )
+
     def __repr__(self):
-        return f"DriverDetails('{self.license_number}', '{self.driver_status}')"
+        return f"DriverDetails('{self.license_number}', '{self.status}')"
 
 
 class Vehicle(Base1):
@@ -97,9 +118,16 @@ class Vehicle(Base1):
     vehicle_plate = db.Column(db.String(50), unique=True, nullable=False)
     vehicle_type = db.Column(db.String(50), nullable=False)
     fuel_capacity = db.Column(db.Float, nullable=False)
-    litres_per_100jkm = db.Column(db.Float, nullable=False)
+    litres_per_100km = db.Column(db.Float, nullable=False)
     tonnage = db.Column(db.Float, nullable=False)
     volume = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(50), nullable=False)
+
+    __table_args__ = (
+        Index('ix_vehicle_plate', 'vehicle_plate'),
+        Index('ix_vehicle_type', 'vehicle_type'),
+        Index('ix_vehicle_status', 'status')
+    )
 
     def __repr__(self):
         return f"Vehicle('{self.vehicle_plate}', '{self.vehicle_type}')"
@@ -116,6 +144,11 @@ class Warehouse(Base1):
 
     manager = db.relationship("User", backref="warehouses")
 
+    __table_args__ = (
+        Index('ix_warehouse_name', 'warehouse_name'),
+        Index('ix_warehouse_location', 'location')
+    )
+
     def __repr__(self):
         return f"Warehouse('{self.warehouse_name}', '{self.location}')"
 
@@ -126,7 +159,7 @@ class Order(Base1):
     order_id = db.Column(db.Integer, primary_key=True)
     order_uuid = db.Column(db.String(50), unique=True, nullable=False)
     customer_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
-    order_status = db.Column(db.String(50), nullable=False)
+    status = db.Column(db.String(50), nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(
@@ -134,8 +167,14 @@ class Order(Base1):
 
     customer = db.relationship("User", backref="orders")
 
+    __table_args__ = (
+        Index('ix_order_uuid', 'order_uuid'),
+        Index('ix_order_customer_id', 'customer_id'),
+        Index('ix_order_status', 'status')
+    )
+
     def __repr__(self):
-        return f"Order('{self.order_uuid}', '{self.order_status}')"
+        return f"Order('{self.order_uuid}', '{self.status}')"
 
 
 class OrderDetails(Base1):
@@ -151,6 +190,12 @@ class OrderDetails(Base1):
     price = db.Column(db.Float, nullable=False)
 
     order = db.relationship("Order", backref="order_details")
+
+    __table_args__ = (
+        Index('ix_order_id', 'order_id'),
+        Index('ix_product_id', 'product_id'),
+        Index('ix_priority', 'priority')
+    )
 
     def __repr__(self):
         return f"OrderDetails('{self.quantity}', '{self.price}')"
@@ -185,6 +230,15 @@ class Shipment(Base1):
     vehicle = db.relationship("Vehicle", backref="shipments")
     warehouse = db.relationship("Warehouse", backref="shipments")
 
+    __table_args__ = (
+        Index('ix_shipment_order_id', 'order_id'),
+        Index('ix_shipment_customer_id', 'customer_id'),
+        Index('ix_driver_id', 'driver_id'),
+        Index('ix_shipment_vehicle_id', 'vehicle_id'),
+        Index('ix_warehouse_id', 'warehouse_id'),
+        Index('ix_shipment_status', 'status')
+    )
+
     def __repr__(self):
         return f"Shipment('{self.status}', '{self.origin}', '{self.destination}')"
 
@@ -205,6 +259,11 @@ class Invoice(Base1):
 
     shipment = db.relationship("Shipment", backref="invoices")
 
+    __table_args__ = (
+        Index('ix_shipment_id', 'shipment_id'),
+        Index('ix_invoice_status', 'status')
+    )
+
     def __repr__(self):
         return f"Invoice('{self.amount}', '{self.status}', '{self.due_date}')"
 
@@ -221,6 +280,11 @@ class Payment(Base1):
     status = db.Column(db.String(50), nullable=False)
 
     invoice = db.relationship("Invoice", backref="payments")
+
+    __table_args__ = (
+        Index('ix_invoice_id', 'invoice_id'),
+        Index('ix_payment_status', 'status')
+    )
 
     def __repr__(self):
         return f"Payment('{self.amount}', '{self.status}', '{self.payment_date}')"
