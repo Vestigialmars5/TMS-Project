@@ -125,20 +125,20 @@ def update_user(user_id, username, email, role_id, initiator_id):
     logger.info("Update User Attempt: by %s", initiator_id)
 
     try:
-        # TODO: Validations for updating
         try:
-            user = db.session.query(User).filter(User.user_id == user_id).first()
+            user = db.session.query(User).filter(
+                User.user_id == user_id).first()
             user.username = username
             user.email = email
             user.role_id = role_id
             db.session.commit()
         except Exception as e:
             raise DatabaseQueryError("Error Updating User")
-        
+
         logger.info("Update User Attempt Successful: by %s | updated %s", initiator_id, user_id)
         create_audit_log("Update User", user_id=initiator_id, details=f"Updated {user_id}")
         return {"success": True}
-    
+
     except DatabaseQueryError as e:
         logger.error("Update User Attempt Failed: by %s | %s", initiator_id, e)
         create_audit_log("Update User", user_id=initiator_id, details=e.message)
