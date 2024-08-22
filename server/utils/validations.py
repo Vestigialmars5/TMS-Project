@@ -32,10 +32,7 @@ def is_password_valid(password):
 
 
 def validate_login_credentials(email, password):
-    email = clean_email(email)
-
-    user = db.session.query(User).filter(User.email == email).first()
-    if not user:
+    if not user_exists(email=email):
         return False
 
     # TODO: Uncomment -Ignores if password is wrong
