@@ -58,6 +58,16 @@ def clean_address(address):
     
     return address
 
+def clean_user_id(user_id):
+    if not user_id or not isinstance(user_id, int):
+        raise DataValidationError("Missing Or Invalid User ID")
+
+    if 0 >= user_id:
+        raise DataValidationError("Invalid User ID")
+
+    return user_id
+
+
 def clean_role_id(role_id):
     if not role_id or not isinstance(role_id, int):
         raise DataValidationError("Role ID Missing or Invalid")

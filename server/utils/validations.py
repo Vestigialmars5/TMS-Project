@@ -3,6 +3,26 @@ from server.utils.cleaners import *
 from server.extensions import db
 from server.models.tms_models import *
 from werkzeug.security import check_password_hash
+from server.utils.exceptions import DatabaseQueryError
+
+
+def user_exists(user_id=None, email=None, username=None):
+    try:
+        if user_id:
+            user = db.session.query(User).filter(User.user_id == user_id).first()
+        elif email:
+            user = db.session.query(User).filter(User.email == email).first()
+        elif username:
+            user = db.session.query(User).filter(User.username == username).first()
+        else:
+            return False
+    except Exception as e:
+        raise DatabaseQueryError("Error Finding User")
+
+    if not user:
+        return False
+
+    return True
 
 
 def is_password_valid(password):
@@ -26,30 +46,10 @@ def validate_login_credentials(email, password):
 
 
 def validate_delete_user(user_id, initiator_id):
-    if not user_id or not isinstance(user_id, int):
-        raise DataValidationError("Invalid User ID")
-
     if user_id == initiator_id:
-        return False
+        return False, "Cannot Delete Self"
 
-    user = db.session.query(User).filter(User.user_id == user_id).first()
-    if not user:
-        raise DataValidationError("User Not Found", initiator_id=initiator_id)
-
-    return True
-
-
-def user_exists(user_id=None, email=None, username=None):
-    if user_id:
-        user = db.session.query(User).filter(User.user_id == user_id).first()
-    elif email:
-        user = db.session.query(User).filter(User.email == email).first()
-    elif username:
-        user = db.session.query(User).filter(User.username == username).first()
-    else:
-        return False
-
-    if not user:
-        return False
+    if not user_exists(user_id=user_id):
+        return False, "User Does Not Exist"
 
     return True

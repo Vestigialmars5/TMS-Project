@@ -5,7 +5,7 @@ from server.utils.exceptions import DatabaseQueryError
 import logging
 from server.utils.logging import create_audit_log
 from sqlalchemy.exc import IntegrityError
-from server.utils.validations import user_exists
+from server.utils.validations import user_exists, validate_delete_user
 from server.utils.helpers import create_unique_username
 
 
@@ -98,24 +98,29 @@ def create_user(email, password, role_id, initiator_id):
 
 
 def delete_user(user_id, initiator_id):
-    """
-    Delete a user.
-
-    @param user_id (int): The id of the user.
-    @return (dict, int): The response and status code.
-    """
-    # TODO: Validations for deleting
     logger.info("Delete User Attempt: by %s", initiator_id)
 
     try:
+        is_valid, error = validate_delete_user(user_id, initiator_id)
+        if not is_valid:
+            if error == "Cannot Delete Self":
+                logger.error(
+                    "Delete User Attempt Failed: by %s | Cannot Delete Self", initiator_id)
+                create_audit_log("Delete User", user_id=initiator_id, details="Cannot Delete Self")
+                return {"success": False, "error": "Forbidden", "description": "Cannot Delete Self"}
+
+            else:
+                logger.error("Delete User Attempt Failed: by %s | User Does Not Exist", initiator_id)
+                create_audit_log("Delete User", user_id=initiator_id, details="User Does Not Exist")
+                return {"success": False, "error": "User Not Found", "description": "User Does Not Exist"}
+
         try:
             db.session.query(User).filter(User.user_id == user_id).delete()
             db.session.commit()
         except Exception as e:
             raise DatabaseQueryError("Error Deleting User")
 
-        logger.info(
-            "Delete User Attempt Successful: by %s | deleted %s", initiator_id, user_id)
+        logger.info("Delete User Attempt Successful: by %s | deleted %s", initiator_id, user_id)
         create_audit_log("Delete User", user_id=initiator_id, details=f"Deleted {user_id}")
         return {"success": True}
 

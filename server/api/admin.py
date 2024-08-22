@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, abort
 from server.services import user_service
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from server.utils.data_cleanup import data_cleanup_create_user, data_cleanup_get_users
+from server.utils.data_cleanup import data_cleanup_create_user, data_cleanup_get_users, clean_user_id
 from server.utils.authorization_decorators import roles_required
 
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
@@ -36,7 +36,6 @@ This needs to include the following features:
 """
 
 
-# TODO: Complete this
 @admin_blueprint.route("/users", methods=["POST"])
 @jwt_required()
 @roles_required("Admin")
@@ -103,12 +102,16 @@ def delete_user(user_id):
 
         initiator_id = get_jwt_identity()
 
-        # Validations -> abort(400, description="Missing Data")
+        user_id = clean_user_id(user_id)
 
         response = user_service.delete_user(user_id, initiator_id)
 
         if response["success"]:
             return jsonify(response), 200
+        elif response["error"] == "User Not Found":
+            return jsonify(response), 404
+        elif response["error"] == "Forbidden":
+            return jsonify(response), 403
         else:
             return jsonify(response), 500
 
