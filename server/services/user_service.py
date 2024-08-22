@@ -13,21 +13,12 @@ logger = logging.getLogger(__name__)
 
 
 def get_users(search, sort_by, sort_order, page, limit, initiator_id):
-    """
-    Get all users.
 
-    @param search (str): The search query.
-    @param sortBy (str): The sort by field.
-    @param sortOrder (str): The sort order.
-    @param page (int): The page number.
-    @param limit (int): The number of items per page.
-    @return (dict, int): The response and status code.
-    """
     logger.info("Get Users Attempt: by %s", initiator_id)
+
     try:
         try:
-            users = _construct_query(
-                search, sort_by, sort_order, page, limit)
+            users = construct_query_users(search, sort_by, sort_order, page, limit)
 
             logger.info("Get Users Attempt Successful: by %s", initiator_id)
             create_audit_log("Get Users", initiator_id, details="Success")
@@ -173,7 +164,16 @@ def update_user(user_id, username, email, role_id, initiator_id):
         raise
 
 
-def _construct_query(search, sort_by, sort_order, page, limit):
+def insert_user(email, username, password, role_id):
+    password_hash = generate_password_hash(password)
+    user = User(username=username, email=email,
+                password=password_hash, role_id=role_id)
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+def construct_query_users(search, sort_by, sort_order, page, limit):
     """
     Construct the query for getting users.
 
@@ -208,12 +208,3 @@ def _construct_query(search, sort_by, sort_order, page, limit):
     user_list = [user.to_dict_js() for user in users]
 
     return user_list
-
-
-def insert_user(email, username, password, role_id):
-    password_hash = generate_password_hash(password)
-    user = User(username=username, email=email,
-                password=password_hash, role_id=role_id)
-    db.session.add(user)
-    db.session.commit()
-    return user
