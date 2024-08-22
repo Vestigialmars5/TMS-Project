@@ -39,32 +39,17 @@ def get_users(search, sort_by, sort_order, page, limit, initiator_id):
 
 
 def create_user(email, password, role_id, initiator_id):
-    """
-    Create a user.
-
-    @param email (str): The email of the user.
-    @param password (str): The password of the user.
-    @param role_id (int): The role_id of the user.
-    @return (dict, int): The response and status code.
-    """
     logger.info("Create User Attempt: by %s", initiator_id)
 
     try:
+        if not user_exists(email=email):
+            logger.error("Create User Attempt Failed: by %s | User Already Exists", initiator_id)
+            create_audit_log("Create User", user_id=initiator_id, details="User Already Exists")
+            return {"success": False, "error": "Unique Constraint Violation", "description": "User Already Exists"}
+        
 
-        try:
-            if not user_exists(email=email):
-                logger.error("Create User Attempt Failed: by %s | User Already Exists", initiator_id)
-                create_audit_log("Create User", user_id=initiator_id, details="User Already Exists")
-                return {"success": False, "error": "Unique Constraint Violation", "description": "User Already Exists"}
-        except:
-            raise DatabaseQueryError("Error Checking User")
-
-        try:
-            simple_username = email.split("@")[0]
-            username = create_unique_username(simple_username)
-        except Exception as e:
-            raise DatabaseQueryError("Error Creating Username")
-
+        simple_username = email.split("@")[0]
+        username = create_unique_username(simple_username)
 
         try:
             user = insert_user(email, username, password, role_id)
@@ -72,6 +57,7 @@ def create_user(email, password, role_id, initiator_id):
             raise DatabaseQueryError("Username Already Exists")
         except Exception as e:
             raise DatabaseQueryError("Error Creating User")
+
 
         logger.info("Create User Attempt Successful: by %s | created %s", initiator_id, user.user_id)
         create_audit_log("Create User", user_id=initiator_id, details=f"Created {user.user_id}")
