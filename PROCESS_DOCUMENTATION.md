@@ -837,3 +837,6 @@ I think that I will start adding validations because it is going to take some ti
 
 Aug 19
 Will probably have to look into flask-limiter. Moving forward to developing transportation manager, carrier, etc.
+
+Aug 22
+Did a diagram on how to approach cleaning things. Currently working on adding validations to update user. Got an idea of how to improve onboarding check: Add a status column to the user model, there will be 3 possible things "active", "inactive", "not_onboarded". This way I will only access first and last name if user is onboarded.
