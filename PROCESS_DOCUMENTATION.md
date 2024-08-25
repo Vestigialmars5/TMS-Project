@@ -840,3 +840,6 @@ Will probably have to look into flask-limiter. Moving forward to developing tran
 
 Aug 22
 Did a diagram on how to approach cleaning things. Currently working on adding validations to update user. Got an idea of how to improve onboarding check: Add a status column to the user model, there will be 3 possible things "active", "inactive", "not_onboarded". This way I will only access first and last name if user is onboarded.
+
+Aug 25
+I had an idea on how to improve the onboarding check. By adding a status column to the user model. Having three cases "active, inactive or not_onboarded". This way I can keep everything bundled up and neat. But I have to consider how to correctly use it so it doesn't become more work than it was.
