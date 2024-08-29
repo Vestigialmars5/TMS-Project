@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, abort
 from server.services import user_service
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from server.utils.data_cleanup import data_cleanup_create_user, data_cleanup_get_users, clean_user_id
+from server.utils.data_cleanup import data_cleanup_create_user, data_cleanup_get_users, clean_user_id, data_cleanup_update_user
 from server.utils.authorization_decorators import roles_required
 
 admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
@@ -130,21 +130,23 @@ def update_user(user_id):
 
     if request.method == "PUT":
 
-        data = request.get_json()
+        try:
+            data = request.get_json()
+        except:
+            abort(400, description="Invalid JSON")
 
-        username = data.get("username")
-        email = data.get("email")
-        role_id = data.get("roleId")
+        username, email, role_id = data_cleanup_update_user(data)
+        user_id = clean_user_id(user_id)
 
         initiator_id = get_jwt_identity()
-
-        # Validations -> abort(400, description="Missing Data")
 
         response = user_service.update_user(
             user_id, username, email, role_id, initiator_id)
 
         if response["success"]:
             return jsonify(response), 200
+        elif response["error"] == "Unique Constraint Violation":
+            return jsonify(response), 409
         else:
             return jsonify(response), 500
 
