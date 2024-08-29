@@ -5,7 +5,7 @@ from server.utils.exceptions import DatabaseQueryError
 import logging
 from server.utils.logging import create_audit_log
 from sqlalchemy.exc import IntegrityError
-from server.utils.validations import user_exists, validate_delete_user
+from server.utils.validations import user_exists, validate_delete_user, validate_update_user
 from server.utils.helpers import create_unique_username
 
 
@@ -48,11 +48,11 @@ def create_user(email, password, role_id, initiator_id):
             return {"success": False, "error": "Unique Constraint Violation", "description": "User Already Exists"}
         
 
-        simple_username = email.split("@")[0]
-        username = create_unique_username(simple_username)
+        username = email.split("@")[0]
+        unique_username = create_unique_username(username, role_id)
 
         try:
-            user = insert_user(email, username, password, role_id)
+            user = insert_user(email, unique_username, password, role_id)
         except IntegrityError as e:
             raise DatabaseQueryError("Username Already Exists")
         except Exception as e:
@@ -113,21 +113,27 @@ def delete_user(user_id, initiator_id):
 
 
 def update_user(user_id, username, email, role_id, initiator_id):
-    """
-    Update a user.
-
-    @param user_id (int): The id of the user.
-    @param username (str): The username of the user.
-    @param email (str): The email of the user.
-    @param role_id (int): The role_id of the user.
-    @return (dict, int): The response and status code.
-    """
     logger.info("Update User Attempt: by %s", initiator_id)
 
     try:
+        is_valid, user = validate_update_user(user_id, username, email, role_id)
+        if not is_valid:
+            if user == "Username Already Exists":
+                recommended = create_unique_username(username)
+
+                logger.warning("Update User Attempt Failed: by %s | Username Already Exists", initiator_id)
+                create_audit_log("Update User", user_id=initiator_id, details="Username Already Exists")
+                return {"success": False, "error": "Unique Constraint Violation", "description": f"Username Already Exists. Recommended: {recommended}"}
+            elif user == "User Does Not Exist":
+                logger.error("Update User Attempt Failed: by %s | User Does Not Exist", initiator_id)
+                create_audit_log("Update User", user_id=initiator_id, details="User Does Not Exist")
+                return {"success": False, "error": "User Not Found", "description": "User Does Not Exist"}
+            else:
+                logger.warning("Update User Attempt Failed: by %s | No Changes Made", initiator_id)
+                create_audit_log("Update User", user_id=initiator_id, details="No Changes Made")
+                return {"success": False, "error": "No Changes Made", "description": "No Changes Made"}
+    
         try:
-            user = db.session.query(User).filter(
-                User.user_id == user_id).first()
             user.username = username
             user.email = email
             user.role_id = role_id

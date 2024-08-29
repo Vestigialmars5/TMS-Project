@@ -75,7 +75,8 @@ def validate_update_user(user_id, username, email, role_id):
         return False, "No Changes Made"
 
     if user_exists(username=username):
-        recommended = create_unique_username(username)
-        return False, "Username Already Exists: Recommended {recommended}"
+        return False, "Username Already Exists"
+    
+    # Email and role_id are cleaned and validated in the endpoint
 
-    return True
+    return True, user
