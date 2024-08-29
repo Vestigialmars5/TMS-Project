@@ -1,9 +1,7 @@
 import re
 from server.utils.exceptions import DataValidationError
+from server.utils.consts import MIN_NAME, MAX_NAME, MIN_USERNAME, MAX_USERNAME
 
-MIN_NAME = 2
-MAX_NAME = 30
-MIN_PASSWORD = 8
 
 def clean_email(email):
     if not email or not isinstance(email, str):

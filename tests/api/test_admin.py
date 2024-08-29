@@ -1,6 +1,7 @@
 from tests.utilstest import admin_token, carrier_token
 from server.models.tms_models import User
 from server.extensions import db
+import tests.consts as consts
 
 
 def test_create_user(client, admin_token):
@@ -8,26 +9,26 @@ def test_create_user(client, admin_token):
         "Authorization": f"Bearer {admin_token}",
         "Content-Type": "application/json"
     }, json={
-        "email": "new_user@test.com",
-        "password": "asdfasdf",
-        "roleId": 1
+        "email": consts.COMPLETE_USER_EMAIL,
+        "password": consts.COMPLETE_USER_PASSWORD,
+        "roleId": consts.COMPLETE_USER_ROLE_ID
     })
 
     assert response.status_code == 201
     assert response.json["success"] == True
 
     user = db.session.query(User).filter(
-        User.email == "new_user@test.com").first()
+        User.email == consts.COMPLETE_USER_EMAIL).first()
     assert user is not None
 
 
-def test_bad_create_user(client, carrier_token):
+def test_bad_create_user(client, admin_token):
     response = client.post("/api/admin/users", headers={
-        "Authorization": f"Bearer {carrier_token}",
+        "Authorization": f"Bearer {admin_token}",
         "Content-Type": "application/json"
     }, json={
-        "email": "new_user@gmail.com",
-        "password": "asdfasdf",
+        "email": consts.INVALID_EMAIL,
+        "password": consts.COMPLETE_USER_PASSWORD,
         "roleId": 3
     })
 
@@ -65,6 +66,7 @@ def test_delete_user(client, admin_token):
 
 
 def test_update_user(client, admin_token):
+    # Test case 1: Update user with valid inputs
     response = client.put("/api/admin/users/1", headers={
         "Authorization": f"Bearer {admin_token}",
         "Content-Type": "application/json"
@@ -76,3 +78,7 @@ def test_update_user(client, admin_token):
 
     assert response.status_code == 200
     assert response.json["success"] == True
+
+    # Test case 2: Update user with existing username
+    # Test case 3: Update user with non-existing user_id
+    # Test case 4: Update user with no changes made

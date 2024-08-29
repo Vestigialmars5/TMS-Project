@@ -5,6 +5,7 @@ from server.models.tms_models import *
 from werkzeug.security import check_password_hash
 from server.utils.exceptions import DatabaseQueryError
 from server.utils.helpers import create_unique_username
+from server.utils.consts import MIN_PASSWORD
 
 
 def user_exists(user_id=None, email=None, username=None):
