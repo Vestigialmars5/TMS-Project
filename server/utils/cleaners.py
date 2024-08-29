@@ -65,7 +65,6 @@ def clean_user_id(user_id):
 
     return user_id
 
-
 def clean_role_id(role_id):
     if not role_id or not isinstance(role_id, int):
         raise DataValidationError("Role ID Missing or Invalid")
@@ -118,3 +117,14 @@ def clean_limit(limit):
         return 25
     
     return limit
+
+def clean_username(username):
+    if not username or not isinstance(username, str):
+        raise DataValidationError("Invalid Username")
+    
+    username = username.strip()
+    
+    if not MIN_USERNAME <= len(username) <= MAX_USERNAME:
+        raise DataValidationError("Invalid Username Length")
+    
+    return username
