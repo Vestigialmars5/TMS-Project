@@ -42,7 +42,7 @@ def create_user(email, password, role_id, initiator_id):
     logger.info("Create User Attempt: by %s", initiator_id)
 
     try:
-        if not user_exists(email=email):
+        if user_exists(email=email):
             logger.error("Create User Attempt Failed: by %s | User Already Exists", initiator_id)
             create_audit_log("Create User", user_id=initiator_id, details="User Already Exists")
             return {"success": False, "error": "Unique Constraint Violation", "description": "User Already Exists"}
