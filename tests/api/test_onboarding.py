@@ -1,11 +1,11 @@
 from server.models.tms_models import Role, User, UserDetails
 from server.extensions import db
-from tests.utilstest import user_not_onboarded_token
+from tests.utilstest import incomplete_user_token
 
 
-def test_onboard_user(client, user_not_onboarded_token):
+def test_onboard_user(client, incomplete_user_token):
     response = client.post("/api/onboarding/onboard", headers={
-        "Authorization": f"Bearer {user_not_onboarded_token}",
+        "Authorization": f"Bearer {incomplete_user_token}",
         "Content-Type": "application/json"
     }, json={
         "email": "test_user_not_onboarded@email.com",
