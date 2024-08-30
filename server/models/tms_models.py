@@ -27,6 +27,7 @@ class User(Base1):
     password = db.Column(db.String(120), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey(
         "roles.role_id"), nullable=False)
+    status = db.Column(db.String(50), nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(
@@ -38,7 +39,8 @@ class User(Base1):
     __table_args__ = (
         Index('ix_username', 'username'),
         Index('ix_email', 'email'),
-        Index('ix_role_id', 'role_id')
+        Index('ix_role_id', 'role_id'),
+        Index('ix_user_status', 'status')
     )
 
     def to_dict(self):
@@ -48,6 +50,7 @@ class User(Base1):
             "email": self.email,
             "role_id": self.role_id,
             "role_name": self.role.role_name,
+            "status": self.status,
             "created_at": self.created_at,
             "updated_at": self.updated_at
         }
@@ -59,12 +62,13 @@ class User(Base1):
             "email": self.email,
             "roleId": self.role_id,
             "roleName": self.role.role_name,
+            "status": self.status,
             "createdAt": self.created_at,
             "updatedAt": self.updated_at
         }
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}')"
+        return f"User('{self.username}', '{self.email}', '{self.status}')"
 
 
 class UserDetails(Base1):
