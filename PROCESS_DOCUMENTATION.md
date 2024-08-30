@@ -844,3 +844,5 @@ Did a diagram on how to approach cleaning things. Currently working on adding va
 Aug 25
 I had an idea on how to improve the onboarding check. By adding a status column to the user model. Having three cases "active, inactive or not_onboarded". This way I can keep everything bundled up and neat. But I have to consider how to correctly use it so it doesn't become more work than it was.
 
+Aug 29
+In order to improve the onboarding I need to do the following first: Update the database population (probably separating adding the roles from the users created), define the flow of the status in the auth token...
