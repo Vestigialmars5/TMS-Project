@@ -21,7 +21,7 @@ def app():
         from server.models import wms_models
         init_db()
         # Creates roles and admin
-        populate_db()
+        populate_db(testing=True)
         yield app
         
         db.session.remove()
