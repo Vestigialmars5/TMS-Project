@@ -11,8 +11,8 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isOnboarded, setIsOnboarded] = useState(false);
   const [user, setUser] = useState(null);
+  const [userStatus, setUserStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState([]);
 
@@ -25,14 +25,14 @@ export const AuthProvider = ({ children }) => {
       const decoded = decodeToken(token);
       setUser(decoded);
       setIsLoggedIn(true);
-      if (!decoded.isOnboardingCompleted) {
-        setIsOnboarded(false);
+      setUserStatus(decoded.status);
+    
+      // Using this casing to avoid renaming from the db
+      if (decoded.status == "not_onboarded") {
         navigate("/onboarding");
-      } else {
-        setIsOnboarded(true);
       }
     }
-
+    
     const delayTimeout = setTimeout(() => {
       setLoading(false);
     }, 0); // Modify timeout for smoothness
@@ -49,11 +49,11 @@ export const AuthProvider = ({ children }) => {
       const userData = await loginApi(credentials);
 
       const roleName = userData.roleName;
-      const isOnboardingCompleted = userData.isOnboardingCompleted;
+      const userStatus = userData.status;
       setUser(userData);
       setIsLoggedIn(true);
-      setIsOnboarded(isOnboardingCompleted);
-      if (!isOnboardingCompleted) {
+      setUserStatus(userStatus);
+      if (userStatus === "not_onboarded") {
         navigate("/onboarding");
       } else {
         navigateBasedOnRole(roleName, navigate);
@@ -93,8 +93,8 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         isLoggedIn,
-        isOnboarded,
         user,
+        userStatus,
         loading,
         roles,
         updateUser,

@@ -25,22 +25,29 @@ def login(email, password):
             create_audit_log("Login", email=email, details="Invalid Credentials")
             return {"success": False, "error": "Invalid Credentials", "description": "Email Or Password Incorrect"}
 
-        # Retrieve user details, if not found onboarding is not completed
+
         try:
             user = db.session.query(User).filter(User.email == email).first()
-            first_name, last_name = get_first_name_last_name(user.user_id)
+            if user.status == "not_onboarded":
+                first_name, last_name = "", ""
+            
+            elif user.status == "active":
+                return {"success": False, "error": "Action Not Allowed", "description": "User Already Logged In"}
+
+            else:
+                first_name, last_name = get_first_name_last_name(user.user_id)
+                user.status = "active"
+                db.session.commit()
+
         except Exception as e:
             raise DatabaseQueryError("Error Retrieving User Data")
 
-        if first_name and last_name:
-            is_onboarding_completed = True
-        else:
-            is_onboarding_completed = False
 
+        # TODO: Add to_dict_js maybe, depends if i want the created and updated at
         access_token = create_tokens(
             user.user_id,
             {
-                "isOnboardingCompleted": is_onboarding_completed,
+                "status": user.status,
                 "email": email,
                 "firstName": first_name,
                 "lastName": last_name,
@@ -65,7 +72,7 @@ def login(email, password):
         raise
 
 
-def logout(data):
+def logout(user_id):
     """
     Logout user.
 
@@ -76,11 +83,22 @@ def logout(data):
 
     try:
         # TODO: Add jti and blacklist for tokens
+
+        try:
+            user = db.session.query(User).filter(User.user_id == user_id).first()
+            user.status = "inactive"
+            db.session.commit()
+        except Exception as e:
+            raise DatabaseQueryError("Error Updating User Status")
+        
+        logger.info("Logout Attempt Successful: by %s", user_id)
+        create_audit_log("Logout", user_id=user_id, details="Success")
         return {"success": True}
+
     except Exception as e:
         # TODO: User info
         logger.error("Logout Attempt Failed: by %s", e)
-        create_audit_log("Logout", user_id=data.get("user_id"), details="Internal Server Error")
+        create_audit_log("Logout", user_id=user_id, details="Internal Server Error")
         raise
 
 
@@ -89,5 +107,5 @@ def get_first_name_last_name(user_id):
         UserDetails.user_id == user_id)
     res = db.session.execute(query).first()
     if not res:
-        return None, None
+        return "", ""
     return res.first_name, res.last_name

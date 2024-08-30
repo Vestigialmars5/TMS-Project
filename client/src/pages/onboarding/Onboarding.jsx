@@ -8,12 +8,12 @@ import { navigateBasedOnRole } from "../../utils/navigation";
 import { useNavigate } from "react-router-dom";
 
 const Onboarding = () => {
-  const { user, updateUser, updateLoginStatus } = useAuth();
+  const { user, updateUser } = useAuth();
   const { addAlert } = useAlert();
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
     email: user.email,
-    password: "********",
+    password: "",
     confirmation: "",
     firstName: "",
     lastName: "",
@@ -51,7 +51,7 @@ const Onboarding = () => {
             type="email"
             name="email"
             value={userData.email}
-            onChange={handleChange}
+            readOnly
           />
         </Form.Group>
 
@@ -99,6 +99,7 @@ const Onboarding = () => {
           <Form.Control
             type="tel"
             name="phoneNumber"
+            pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
             value={userData.phoneNumber}
             onChange={handleChange}
           />

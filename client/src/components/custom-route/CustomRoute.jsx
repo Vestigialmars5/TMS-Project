@@ -6,7 +6,7 @@ import Spinner from "react-bootstrap/esm/Spinner";
 import { useAlert } from "../../context/AlertProvider";
 
 const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
-  const { user, loading, isLoggedIn, isOnboarded, isAuthorized } = useAuth();
+  const { user, loading, isLoggedIn, userStatus, isAuthorized } = useAuth();
   const { addAlert } = useAlert();
   const navigate = useNavigate();
 
@@ -42,8 +42,8 @@ const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
           return <Navigate to="/" />;
         }
         break;
-      case "notOnboarded":
-        if (isOnboarded) {
+      case "not_onboarded":
+        if (userStatus != "not_onboarded") {
           addAlert("You Have Already Onboarded", "warning");
           return <Navigate to="/home" />;
         }

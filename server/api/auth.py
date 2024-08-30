@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, abort
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from server.services import auth_service
 from ..utils.data_cleanup import data_cleanup_login
 
@@ -34,6 +34,8 @@ def login():
             return jsonify(response), 200
         elif response["error"] == "Invalid Credentials":
             return jsonify(response), 401
+        elif response["error"] == "Action Not Allowed":
+            return jsonify(response), 403
         else:
             return jsonify(response), 500
 
@@ -52,8 +54,9 @@ def logout():
         # TODO: Check things with token and blacklist etc
         data = request.get_json()
         # Validations -> abort(400, description="Missing Data")
+        user_id = get_jwt_identity()
 
-        response = auth_service.logout(data)
+        response = auth_service.logout(user_id)
 
         if response["success"]:
             return jsonify(response), 200
