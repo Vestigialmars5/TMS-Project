@@ -5,12 +5,6 @@ from ..utils.data_cleanup import data_cleanup_login
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 
-# TODO: check auth libraries
-# TODO: Add role based access control
-
-# TODO: Complete login
-
-
 @auth_blueprint.route("/login", methods=["POST"])
 def login():
     """
