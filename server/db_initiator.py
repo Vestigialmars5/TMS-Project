@@ -6,6 +6,7 @@ from .models.base import Base1, Base2
 import click
 from werkzeug.security import generate_password_hash
 import tests.consts as consts
+from server.db_populator import *
 
 
 def init_db():
@@ -22,37 +23,15 @@ def init_db_command():
 
 def populate_db(development=False, testing=False):
     with current_app.app_context():
-        roles = ["Admin", "Transportation Manager", "Carrier",
-                 "Customer/Shipper", "Driver", "Finance/Accounting", "Warehouse Manager"]
-        for role in roles:
-            db.session.add(Role(role_name=role))
-        db.session.commit()
+        # Creates roles from admin to warehouse manager
+        add_roles()
 
         if development:
-            # Add admin
-            admin_password = generate_password_hash("asdfasdf")
-            admin = User(username="admin", email="admin@gmail.com", password=admin_password, role_id=1, status="inactive")
-            db.session.add(admin)
-            db.session.commit()
-
-            admin_details = UserDetails(user_id=admin.user_id, first_name="Admin",
-                                        last_name="Admin", phone_number="1234567890", address="123 Admin St.")
-            db.session.add(admin_details)
-            db.session.commit()
+            # Creates an admin for development
+            add_dev_admin()
         elif testing:
-            # Add a user with complete details
-            complete_user = User(username=consts.COMPLETE_USER_USERNAME, email=consts.COMPLETE_USER_EMAIL, password=generate_password_hash(consts.COMPLETE_USER_PASSWORD), role_id=consts.COMPLETE_USER_ROLE_ID, status="inactive")
-            db.session.add(complete_user)
-            db.session.commit()
-
-            complete_user_details = UserDetails(user_id=complete_user.user_id, first_name=consts.COMPLETE_USER_FIRST_NAME, last_name=consts.COMPLETE_USER_LAST_NAME, phone_number=consts.COMPLETE_USER_PHONE_NUMBER, address=consts.COMPLETE_USER_ADDRESS)
-            db.session.add(complete_user_details)
-            db.session.commit()
-
-            # Add an incomplete user
-            incomplete_user = User(username=consts.INCOMPLETE_USER_USERNAME, email=consts.INCOMPLETE_USER_EMAIL, password=generate_password_hash(consts.INCOMPLETE_USER_PASSWORD), role_id=consts.INCOMPLETE_USER_ROLE_ID, status="inactive")
-            db.session.add(incomplete_user)
-            db.session.commit()
+            # Creates a user for each role for testing plus some other users
+            add_all_roles()
         else:
             pass
 
