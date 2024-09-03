@@ -37,7 +37,6 @@ const UserCard = ({ user }) => {
     <>
       {isEditing && <EditUser user={user} cancelEdit={cancelEdit} />}
       <ListGroup horizontal>
-        <ListGroup.Item>{user.username}</ListGroup.Item>
         <ListGroup.Item>{user.userId}</ListGroup.Item>
         <ListGroup.Item>{user.email}</ListGroup.Item>
         <ListGroup.Item>{user.roleName}</ListGroup.Item>

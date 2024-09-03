@@ -12,7 +12,6 @@ const UsersTable = () => {
   return (
     <>
       <ListGroup horizontal>
-        <ListGroup.Item>Username</ListGroup.Item>
         <ListGroup.Item>Id</ListGroup.Item>
         <ListGroup.Item>Email</ListGroup.Item>
         <ListGroup.Item>Role</ListGroup.Item>

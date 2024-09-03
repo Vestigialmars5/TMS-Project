@@ -22,7 +22,6 @@ class User(Base1):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey(
@@ -37,7 +36,6 @@ class User(Base1):
     user_details = db.relationship("UserDetails", backref="UserDetails", uselist=False)
 
     __table_args__ = (
-        Index('ix_username', 'username'),
         Index('ix_email', 'email'),
         Index('ix_role_id', 'role_id'),
         Index('ix_user_status', 'status')
@@ -46,7 +44,6 @@ class User(Base1):
     def to_dict(self):
         return {
             "user_id": self.user_id,
-            "username": self.username,
             "email": self.email,
             "role_id": self.role_id,
             "role_name": self.role.role_name,
@@ -58,7 +55,6 @@ class User(Base1):
     def to_dict_js(self):
         return {
             "userId": self.user_id,
-            "username": self.username,
             "email": self.email,
             "roleId": self.role_id,
             "roleName": self.role.role_name,
@@ -68,7 +64,7 @@ class User(Base1):
         }
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.status}')"
+        return f"User(''{self.email}', '{self.status}')"
 
 
 class UserDetails(Base1):

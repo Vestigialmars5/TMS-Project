@@ -122,7 +122,7 @@ def delete_user(user_id):
 def update_user(user_id):
     """
     Update a user.
-    Expected data: (str) username, (str) email, (int) role.
+    Expected data: (str) email, (int) role.
 
     @param id (int): The user id.
     @return (dict, int): The response and status code.
@@ -135,13 +135,13 @@ def update_user(user_id):
         except:
             abort(400, description="Invalid JSON")
 
-        username, email, role_id = data_cleanup_update_user(data)
+        email, role_id = data_cleanup_update_user(data)
         user_id = clean_user_id(user_id)
 
         initiator_id = get_jwt_identity()
 
         response = user_service.update_user(
-            user_id, username, email, role_id, initiator_id)
+            user_id, email, role_id, initiator_id)
 
         if response["success"]:
             return jsonify(response), 200

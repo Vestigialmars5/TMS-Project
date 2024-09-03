@@ -13,7 +13,7 @@ const UserManagement = () => {
   const { getUsers, refresh } = useUserManagement();
   const [searchField, setSearchField] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
-  const [sortBy, setSortBy] = useState("username");
+  const [sortBy, setSortBy] = useState("email");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);

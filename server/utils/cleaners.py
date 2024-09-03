@@ -1,6 +1,6 @@
 import re
 from server.utils.exceptions import DataValidationError
-from server.utils.consts import MIN_NAME, MAX_NAME, MIN_USERNAME, MAX_USERNAME
+from server.utils.consts import MIN_NAME, MAX_NAME
 
 
 def clean_email(email):
@@ -94,12 +94,12 @@ def clean_sort_by(sort_by):
 
 def clean_sort_order_users(sort_order):
     if not sort_order or not isinstance(sort_order, str):
-        return "username"
+        return "email"
     
     sort_order = sort_order.strip().lower()
 
-    if sort_order not in ["username", "email", "role_name"]:
-        return "username"
+    if sort_order not in ["email", "role_name"]:
+        return "email"
     
     return sort_order
 
@@ -117,14 +117,3 @@ def clean_limit(limit):
         return 25
     
     return limit
-
-def clean_username(username):
-    if not username or not isinstance(username, str):
-        raise DataValidationError("Invalid Username")
-    
-    username = username.strip()
-    
-    if not MIN_USERNAME <= len(username) <= MAX_USERNAME:
-        raise DataValidationError("Invalid Username Length")
-    
-    return username

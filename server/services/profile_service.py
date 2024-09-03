@@ -31,7 +31,6 @@ class ProfileService:
                     "success": True,
                     "profile": {
                         "userId": user_row["user_id"],
-                        "username": user_row["username"],
                         "email": user_row["email"],
                         "roleId": user_row["role_id"],
                         "roleName": user_row["role_name"],

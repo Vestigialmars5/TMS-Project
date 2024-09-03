@@ -48,8 +48,7 @@ def data_cleanup_get_users(args):
     return search, sort_by, sort_order, page, limit
 
 def data_cleanup_update_user(data):
-    username = clean_username(data.get("username"))
     email = clean_email(data.get("email"))
     role_id = clean_role_id(data.get("roleId"))
 
-    return username, email, role_id
+    return email, role_id

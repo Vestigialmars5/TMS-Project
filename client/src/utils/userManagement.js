@@ -106,12 +106,11 @@ export const deleteUserApi = async (userId) => {
   }
 };
 
-export const updateUserApi = async ({ userId, username, email, roleId }) => {
+export const updateUserApi = async ({ userId, email, roleId }) => {
   /**
    * Updates a user
    * @param {Object} userData - The user's new data
    * @param {int} userData.userId - The user's id
-   * @param {string} userData.username - The user's username
    * @param {string} userData.email - The user's email
    * @param {int} userData.roleId - The user's role id
    * @returns {void}
@@ -125,7 +124,7 @@ export const updateUserApi = async ({ userId, username, email, roleId }) => {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, email, roleId }),
+      body: JSON.stringify({ email, roleId }),
     });
 
     const response = await res.json();

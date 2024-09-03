@@ -7,13 +7,11 @@ import { useAlert } from "../../../context/AlertProvider";
 
 const EditUser = ({ user, cancelEdit }) => {
   const { updateUser, refreshUsers } = useUserManagement();
-  const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [roleId, setRoleId] = useState(user.roleId);
   const [roleName, setRoleName] = useState(user.roleName);
   const [userId, setUserId] = useState(user.userId);
   const [emailError, setEmailError] = useState("");
-  const [usernameError, setUsernameError] = useState("");
   const [roleError, setRoleError] = useState("");
   const { getRoles, roles } = useAuth();
   const { addAlert } = useAlert();
@@ -34,14 +32,6 @@ const EditUser = ({ user, cancelEdit }) => {
     return role ? role.roleName : "Invalid role";
   };
 
-  const validateUsername = (username) => {
-    if (!username) {
-      return "Username is required";
-    }
-    // TODO: More validations
-    return "";
-  };
-
   const validateEmail = (email) => {
     if (!email) {
       return "Email is required";
@@ -60,11 +50,6 @@ const EditUser = ({ user, cancelEdit }) => {
     return "";
   };
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-    setUsernameError(validateUsername(e.target.value));
-    console.log("username", e.target.value);
-  };
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -81,17 +66,15 @@ const EditUser = ({ user, cancelEdit }) => {
   const handleEditUser = async (e) => {
     e.preventDefault();
     const emailErr = validateEmail(email);
-    const usernameErr = validateUsername(username);
     const roleErr = validateRole(roleId);
 
     // TODO: Validations
-    if (emailError || usernameError || roleError) {
+    if (emailError || roleError) {
       setEmailError(emailErr);
-      setUsernameError(usernameErr);
       setRoleError(roleErr);
     } else {
       try {
-        await updateUser({ userId, username, email, roleId });
+        await updateUser({ userId, email, roleId });
         await refreshUsers();
         addAlert("User Updated", "success");
         cancelEdit();
@@ -105,16 +88,6 @@ const EditUser = ({ user, cancelEdit }) => {
     <div>
       <h1>Edit User</h1>
       <Form onSubmit={handleEditUser}>
-        <Form.Group controlId="username">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            defaultValue={username}
-            onChange={handleUsernameChange}
-          />
-          {usernameError && <p>{usernameError}</p>}
-        </Form.Group>
-
         <Form.Group controlId="email">
           <Form.Label>Email</Form.Label>
           <Form.Control
