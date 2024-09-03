@@ -50,50 +50,34 @@ def test_create_user(client, token_fixture, email, password, role_id, expected_s
     return response
 
 
-def test_create_user(client, admin_token, carrier_token):
-    # Test case 1: Create user with valid inputs
-    create_user(client, admin_token, "new@gmail.com",
-                "newnewnew", 1, 201, True)
-
-    # Test case 2: Create user with existing email
-    create_user(client, admin_token, consts.ADMIN_EMAIL,
-                consts.ADMIN_PASSWORD, consts.ADMIN_ROLE_ID, 409, True)
-
-    # Test case 3: Create user with invalid email
-    create_user(client, admin_token, "invalid_email",
-                "password", 1, 400, False)
-
-    # Test case 4: Create user with invalid password
-    create_user(client, admin_token, "new@gmail.com", "short", 1, 400, False)
-
-    # Test case 5: Create user with invalid role_id
-    create_user(client, admin_token, "new@gmail.com",
-                "newnewnew", 100, 400, False)
-
-    # Test case 6: Create user with no inputs
-    create_user(client, admin_token, "", "", 0, 400, False)
-
-    # Test case 7: Create user with no email
-    create_user(client, admin_token, "", "password", 1, 400, False)
-
-    # Test case 8: Create user with no password
-    create_user(client, admin_token, "new@gmail.com", "", 1, 400, False)
-
-    # Test case 9: Create user with no role_id
-    create_user(client, admin_token, "new@gmail.com",
-                "newnewnew", 0, 400, False)
-
-    # Test case 10: Create user with no token
-    create_user(client, "", "new@gmail.com", "newnewnew", 1, 401, False)
-
-    # Test case 11: Create user with invalid token
-    create_user(client, carrier_token, "new@gmail.com",
-                "newnewnew", 1, 401, False)
+get_users_test_cases = [
+    # Test case 1: Get users with valid inputs
+    ("admin_token", "admin", "email", "asc", 1, 2, 200, True),
+    # Test case 2: Get users with no token
+    ("", "admin", "email", "asc", 1, 2, 401, False),
+    # Test case 3: Get users with invalid token
+    (carrier_token, "admin", "email", "asc", 1, 2, 401, False),
+    # Test case 4: Get users with invalid search
+    ("admin_token", 1, "email", "asc", 1, 2, 200, True),
+    # Test case 5: Get users with invalid sort_by
+    ("admin_token", "admin", "invalid_sort_by", "asc", 1, 2, 200, True),
+    # Test case 6: Get users with invalid sort_order
+    ("admin_token", "admin", "email", "invalid_sort_order", 1, 2, 200, True),
+    # Test case 7: Get users with invalid page
+    ("admin_token", "admin", "email", "asc", 0, 2, 200, True),
+    # Test case 8: Get users with invalid limit
+    ("admin_token", "admin", "email", "asc", 1, 0, 200, True),
+    # Test case 9: Get users with no search, sort_by, sort_order, page, limit
+    ("admin_token", "", "", "", 0, 0, 200, True),
+    # Test case 10: Get users with non-existing search
+    ("admin_token", "non_existing", "email", "asc", 1, 2, 200, True),
+]
 
 
-def get_users(client, token, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success):
+@pytest.mark.parametrize("token_fixture, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success", get_users_test_cases, ids=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], indirect=["token_fixture"])
+def test_get_users(client, token_fixture, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success):
     response = client.get(f"/api/admin/users?search={search_field}&sortBy={sort_by}&sortOrder={sort_order}&page={page}&limit={limit}", headers={
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"Bearer {token_fixture}",
         "Content-Type": "application/json"
     }, json={})
 
