@@ -1,12 +1,42 @@
-from tests.utilstest import admin_token, carrier_token
 from server.models.tms_models import User
+from tests.utilstest import admin_token, carrier_token, token_fixture
 from server.extensions import db
 import tests.consts as consts
+import pytest
+
+create_user_test_cases = [
+    # Test case 1: Create user with valid inputs
+    ("admin_token", "new@gmail.com", "newnewnew", 1, 201, True),
+    # Test case 2: Create user with existing email
+    ("admin_token", consts.ADMIN_EMAIL, consts.ADMIN_PASSWORD,
+     consts.ADMIN_ROLE_ID, 409, False),
+    # Test case 3: Create user with invalid email
+    ("admin_token",
+     consts.INVALID_EMAIL, "password", 1, 400, False),
+    # Test case 4: Create user with invalid password
+    ("admin_token", "new@gmail.com", "short", 1, 400, False),
+    # Test case 5: Create user with invalid role_id
+    ("admin_token", "new@gmail.com",
+     "newnewnew", 100, 400, False),
+    # Test case 6: Create user with no inputs
+    ("admin_token", "", "", 0, 400, False),
+    # Test case 7: Create user with no email
+    ("admin_token", "", "password", 1, 400, False),
+    # Test case 8: Create user with no password
+    ("admin_token", "new@gmail.com", "", 1, 400, False),
+    # Test case 9: Create user with no role_id
+    ("admin_token", "new@gmail.com", "newnewnew", 0, 400, False),
+    # Test case 10: Create user with no token
+    ("", "new@gmail.com", "newnewnew", 1, 401, False),
+    # Test case 11: Create user with invalid token
+    ("carrier_token", "new@gmail.com", "newnewnew", 1, 401, False)
+]
 
 
-def create_user(client, token, email, password, role_id, expected_status_code, expected_success):
+@pytest.mark.parametrize("token_fixture, email, password, role_id, expected_status_code, expected_success", create_user_test_cases, ids=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"], indirect=["token_fixture"])
+def test_create_user(client, token_fixture, email, password, role_id, expected_status_code, expected_success):
     response = client.post("/api/admin/users", headers={
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"Bearer {token_fixture}",
         "Content-Type": "application/json"
     }, json={
         "email": email,
