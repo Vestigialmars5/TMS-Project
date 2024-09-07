@@ -52,7 +52,9 @@ export const UserManagementProvider = ({ children }) => {
   const updateUser = async (userData) => {
     try {
       const response = await updateUserApi(userData);
-      return response
+      if (response) {
+        throw new Error(response)
+      }
     } catch (error) {
       throw new Error(error.message);
     }
