@@ -145,6 +145,8 @@ def update_user(user_id):
 
         if response["success"]:
             return jsonify(response), 200
+        elif response["error"] == "User Not Found":
+            return jsonify(response), 404
         elif response["error"] == "Unique Constraint Violation":
             return jsonify(response), 409
         else:
