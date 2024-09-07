@@ -31,9 +31,10 @@ def login(email, password):
             if user.status == "not_onboarded":
                 first_name, last_name = "", ""
             
-            elif user.status == "active":
-                return {"success": False, "error": "Action Not Allowed", "description": "User Already Logged In"}
-
+            # Until I figure out how to handle this
+            #elif user.status == "active":
+                #return {"success": False, "error": "Action Not Allowed", "description": "User Already Logged In"}
+            
             else:
                 first_name, last_name = get_first_name_last_name(user.user_id)
                 user.status = "active"
