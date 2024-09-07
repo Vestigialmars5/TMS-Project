@@ -111,12 +111,16 @@ def update_user(user_id, email, role_id, initiator_id):
     logger.info("Update User Attempt: by %s", initiator_id)
 
     try:
-        is_valid, user = validate_update_user(user_id, email, role_id)
+        is_valid, user = validate_update_user(user_id, email, role_id, initiator_id)
         if not is_valid:
             if user == "User Does Not Exist":
                 logger.error("Update User Attempt Failed: by %s | User Does Not Exist", initiator_id)
                 create_audit_log("Update User", user_id=initiator_id, details="User Does Not Exist")
                 return {"success": False, "error": "User Not Found", "description": "User Does Not Exist"}
+            elif user == "Cannot Update Self":
+                logger.error("Update User Attempt Failed: by %s | Cannot Update Self", initiator_id)
+                create_audit_log("Update User", user_id=initiator_id, details="Cannot Update Self")
+                return {"success": False, "error": "Forbidden", "description": "Cannot Update Self"}
             else:
                 logger.info("Update User Attempt Cancelled: by %s | No Changes Made", initiator_id)
                 create_audit_log("Update User", user_id=initiator_id, details="No Changes Made")

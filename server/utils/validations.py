@@ -63,7 +63,10 @@ def validate_delete_user(user_id, initiator_id):
     return True, ""
 
 
-def validate_update_user(user_id, email, role_id):
+def validate_update_user(user_id, email, role_id, initiator_id):
+    if user_id == initiator_id:
+        return False, "Cannot Update Self"
+
     user = get_user(user_id=user_id)
 
     if not user:
