@@ -74,9 +74,14 @@ const EditUser = ({ user, cancelEdit }) => {
       setRoleError(roleErr);
     } else {
       try {
-        await updateUser({ userId, email, roleId });
+        const response = await updateUser({ userId, email, roleId });
+        console.log(response);
         await refreshUsers();
-        addAlert("User Updated", "success");
+        if (response == "No Changes Made") {
+          addAlert("Update Cancelled: No Changes Made", "info");
+        } else {
+          addAlert("Update Successful", "success");
+        }
         cancelEdit();
       } catch (error) {
         addAlert(error.message, "danger");
