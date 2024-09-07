@@ -45,7 +45,6 @@ def validate_login_credentials(email, password):
     if not user:
         return False
 
-    print(user, password)
     # TODO: Uncomment -Ignores if password is wrong
     if not check_password_hash(user.password, password):
         return False
