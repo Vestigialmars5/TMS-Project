@@ -118,9 +118,9 @@ def update_user(user_id, email, role_id, initiator_id):
                 create_audit_log("Update User", user_id=initiator_id, details="User Does Not Exist")
                 return {"success": False, "error": "User Not Found", "description": "User Does Not Exist"}
             else:
-                logger.warning("Update User Attempt Failed: by %s | No Changes Made", initiator_id)
+                logger.info("Update User Attempt Cancelled: by %s | No Changes Made", initiator_id)
                 create_audit_log("Update User", user_id=initiator_id, details="No Changes Made")
-                return {"success": False, "error": "No Changes Made", "description": "No Changes Made"}
+                return {"success": True, "description": "No Changes Made"}
         
     
         try:
