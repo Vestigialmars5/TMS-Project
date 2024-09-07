@@ -50,7 +50,8 @@ export const UserManagementProvider = ({ children }) => {
 
   const updateUser = async (userData) => {
     try {
-      await updateUserApi(userData);
+      const response = await updateUserApi(userData);
+      return response
     } catch (error) {
       throw new Error(error.message);
     }

@@ -132,6 +132,12 @@ export const updateUserApi = async ({ userId, email, roleId }) => {
     if (!res.ok) {
       console.error(response.error);
       throw new Error(response.description);
+    } else {
+      if (response.description) {
+        return "No Changes Made";
+      } else {
+        return "";
+      }
     }
   } catch (error) {
     throw new Error(`Edit User Failed: ${error.message}`);
