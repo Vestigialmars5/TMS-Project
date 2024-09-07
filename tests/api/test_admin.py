@@ -119,9 +119,33 @@ def test_delete_user(client, token_fixture, user_id, expected_status_code, expec
     assert response.json["success"] == expected_success
 
 
-def update_user(client, token, user_id, email, role_id, expected_status_code, expected_success):
+update_user_test_cases = [
+    # Test case 1: Update user with valid inputs
+    ("admin_token", "complete_user_id", "updated@gmail.com", 2, 200, True),
+    # Test case 2: Update user with non-existing user_id
+    ("admin_token", 1000, "updated@gmail.com", 1, 404, False),
+    # Test case 3: Update user with invalid email
+    ("admin_token", "complete_user_id",
+     consts.INVALID_EMAIL, 1, 400, False),
+    # Test case 4: Update user with invalid role_id
+    ("admin_token", "complete_user_id", "updated@gmail.com", 100, 400, False),
+    # Test case 5: Update user with no token
+    ("", "complete_user_id", "updated@gmail.com", 1, 401, False),
+    # Test case 6: Update user with invalid token
+    ("carrier_token", "complete_user_id", "updated@gmail.com", 1, 401, False),
+    # Test case 7: No changes made
+    ("admin_token", "complete_user_id", consts.COMPLETE_USER_EMAIL, consts.COMPLETE_USER_ROLE_ID, 200, True)
+]
+
+
+@pytest.mark.parametrize("token_fixture, user_id, email, role_id, expected_status_code, expected_success", update_user_test_cases, ids=["1", "2", "3", "4", "5", "6", "7"], indirect=["token_fixture"])
+def test_update_user(client, token_fixture, user_id, email, role_id, expected_status_code, expected_success):
+    if user_id == "complete_user_id":
+        user_id = db.session.query(User).filter_by(email=consts.COMPLETE_USER_EMAIL).first().user_id
+
+
     response = client.put(f"/api/admin/users/{user_id}", headers={
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"Bearer {token_fixture}",
         "Content-Type": "application/json"
     }, json={
         "email": email,
@@ -130,34 +154,3 @@ def update_user(client, token, user_id, email, role_id, expected_status_code, ex
 
     assert response.status_code == expected_status_code
     assert response.json["success"] == expected_success
-
-
-def test_update_user(client, admin_token, carrier_token):
-    # Test case 1: Update user with valid inputs
-    update_user(client, admin_token, 1, "updated@gmail.com",
-                "updated2", 2, 200, True)
-
-    # Test case 2: Update user with non-existing user_id
-    update_user(client, admin_token, 1000,
-                "updated@gmail.com", "updated1", 1, 400, False)
-
-    # Test case 3: Update user with invalid email
-    update_user(client, admin_token, 1, consts.INVALID_EMAIL,
-                "updated1", 1, 400, False)
-
-    # Test case 4: Update user with invalid role_id
-    update_user(client, admin_token, 1, "updated@gmail.com",
-                "updated1", 100, 400, False)
-
-    # Test case 5: Update user with no token
-    update_user(client, "", 1, "updated@gmail.com", "updated1", 1, 401, False)
-
-    # Test case 6: Update user with invalid token
-    update_user(client, carrier_token, 1, "updated@gmail.com",
-                "updated1", 1, 401, False)
-
-    # Test case 7: No changes made
-    complete_user_id = db.session.query(User).filter_by(
-        email=consts.COMPLETE_USER_EMAIL).first().user_id
-    update_user(client, admin_token, complete_user_id,
-                consts.COMPLETE_USER_EMAIL, 1, 200, True)
