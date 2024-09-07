@@ -45,6 +45,7 @@ export const UserManagementProvider = ({ children }) => {
       await deleteUserApi(userId);
     } catch (error) {
       console.error(error.message);
+      throw new Error(error.message)
     }
   };
 
