@@ -1307,112 +1307,112 @@ The Transportation Management System (TMS) is designed to optimize and manage th
 
 ```mermaid
 erDiagram
-ORDER ||--o{ ORDER_ITEM : contains
-ORDER ||--o{ SHIPMENT : generates
-ORDER {
-int id
-int customer_id
-date order_date
-string status
-}
-ORDER_ITEM {
-int id
-int order_id
-int product_id
-int quantity
-}
-SHIPMENT ||--|| CARRIER : assigned_to
-SHIPMENT {
-int id
-int order_id
-int carrier_id
-string status
-string tracking_number
-}
-CARRIER {
-int id
-string name
-string contact_info
-}
-ROUTE ||--o{ SHIPMENT : includes
-ROUTE {
-int id
-string start_location
-string end_location
-float distance
-time estimated_duration
-}
-INVENTORY ||--o{ PRODUCT : contains
-INVENTORY {
-int id
-int product_id
-int warehouse_id
-int quantity
-}
-PRODUCT {
-int id
-string name
-float weight
-float volume
-}
-WAREHOUSE {
-int id
-string name
-string location
-}
+    ORDER ||--o{ ORDER_ITEM : contains
+    ORDER ||--o{ SHIPMENT : generates
+    ORDER {
+    int id
+    int customer_id
+    date order_date
+    string status
+    }
+    ORDER_ITEM {
+    int id
+    int order_id
+    int product_id
+    int quantity
+    }
+    SHIPMENT ||--|| CARRIER : assigned_to
+    SHIPMENT {
+    int id
+    int order_id
+    int carrier_id
+    string status
+    string tracking_number
+    }
+    CARRIER {
+    int id
+    string name
+    string contact_info
+    }
+    ROUTE ||--o{ SHIPMENT : includes
+    ROUTE {
+    int id
+    string start_location
+    string end_location
+    float distance
+    time estimated_duration
+    }
+    INVENTORY ||--o{ PRODUCT : contains
+    INVENTORY {
+    int id
+    int product_id
+    int warehouse_id
+    int quantity
+    }
+    PRODUCT {
+    int id
+    string name
+    float weight
+    float volume
+    }
+    WAREHOUSE {
+    int id
+    string name
+    string location
+    }
 ```
 
 ```mermaid
 graph LR
-Client[Client Applications]
-API[API Gateway]
-Client --> API
-subgraph TMS_API[TMS API]
-Orders[/orders/]
-Shipments[/shipments/]
-Carriers[/carriers/]
-Routes[/routes/]
-Inventory[/inventory/]
-Reports[/reports/]
-end
-API --> Orders
-API --> Shipments
-API --> Carriers
-API --> Routes
-API --> Inventory
-API --> Reports
-WMS[WMS Integration] --> |Inventory Sync| Inventory
-WMS --> |Order Status| Orders
-CarrierSystems[Carrier Systems] --> |Real-time Updates| Shipments
+    Client[Client Applications]
+    API[API Gateway]
+    Client --> API
+    subgraph TMS_API[TMS API]
+    Orders[/orders/]
+    Shipments[/shipments/]
+    Carriers[/carriers/]
+    Routes[/routes/]
+    Inventory[/inventory/]
+    Reports[/reports/]
+    end
+    API --> Orders
+    API --> Shipments
+    API --> Carriers
+    API --> Routes
+    API --> Inventory
+    API --> Reports
+    WMS[WMS Integration] --> |Inventory Sync| Inventory
+    WMS --> |Order Status| Orders
+    CarrierSystems[Carrier Systems] --> |Real-time Updates| Shipments
 ```
 
 ```mermaid
 stateDiagram-v2
-[*] --> OrderReceived
-OrderReceived --> ValidateOrder
-ValidateOrder --> CheckInventory : Valid
-ValidateOrder --> RejectOrder : Invalid
-CheckInventory --> AssignWarehouse : Sufficient Stock
-CheckInventory --> BackOrder : Insufficient Stock
-AssignWarehouse --> NotifyWMS
-NotifyWMS --> AwaitFulfillment
-AwaitFulfillment --> CreateShipment : Order Packed
-CreateShipment --> AssignCarrier
-AssignCarrier --> SchedulePickup
-SchedulePickup --> TrackShipment
-TrackShipment --> UpdateStatus
-UpdateStatus --> DeliveryComplete : Delivered
-DeliveryComplete --> [*]
-BackOrder --> CheckInventory : Stock Replenished
-RejectOrder --> [*]
+    [*] --> OrderReceived
+    OrderReceived --> ValidateOrder
+    ValidateOrder --> CheckInventory : Valid
+    ValidateOrder --> RejectOrder : Invalid
+    CheckInventory --> AssignWarehouse : Sufficient Stock
+    CheckInventory --> BackOrder : Insufficient Stock
+    AssignWarehouse --> NotifyWMS
+    NotifyWMS --> AwaitFulfillment
+    AwaitFulfillment --> CreateShipment : Order Packed
+    CreateShipment --> AssignCarrier
+    AssignCarrier --> SchedulePickup
+    SchedulePickup --> TrackShipment
+    TrackShipment --> UpdateStatus
+    UpdateStatus --> DeliveryComplete : Delivered
+    DeliveryComplete --> [*]
+    BackOrder --> CheckInventory : Stock Replenished
+    RejectOrder --> [*]
 ```
 
 ```mermaid
 graph TB
-subgraph Client_Layer
-Web[Web Application]
-Mobile[Mobile App]
-end
+    subgraph Client_Layer
+    Web[Web Application]
+    Mobile[Mobile App]
+    end
 
     subgraph API_Layer
         API[API Gateway]
@@ -1471,24 +1471,29 @@ end
 
 ```mermaid
 graph TD
-Customer[Customer] -->|Place Order| OrderService[Order Service]
-OrderService -->|Validate Order| InventoryService[Inventory Service]
-InventoryService -->|Check Stock| WMS[WMS]
-WMS -->|Confirm Availability| InventoryService
-InventoryService -->|Update Inventory| DB[(Database)]
-InventoryService -->|Confirm Stock| OrderService
-OrderService -->|Create Order| DB
-OrderService -->|Request Route| RouteService[Route Service]
-RouteService -->|Optimize Route| RouteService
-RouteService -->|Provide Route| OrderService
-OrderService -->|Assign Carrier| CarrierService[Carrier Service]
-CarrierService -->|Select Carrier| CarrierService
-CarrierService -->|Confirm Carrier| OrderService
-OrderService -->|Create Shipment| ShipmentService[Shipment Service]
-ShipmentService -->|Track Shipment| CarrierSystems[Carrier Systems]
-CarrierSystems -->|Update Status| ShipmentService
-ShipmentService -->|Update Shipment| DB
-ShipmentService -->|Notify Completion| OrderService
-OrderService -->|Update Order Status| DB
-ReportingService[Reporting Service] -->|Generate Reports| DB
+    Customer[Customer] -->|Place Order| OrderService[Order Service]
+    OrderService -->|Validate Order| InventoryService[Inventory Service]
+    InventoryService -->|Check Stock| WMS[WMS]
+    WMS -->|Confirm Availability| InventoryService
+    InventoryService -->|Update Inventory| DB[(Database)]
+    InventoryService -->|Confirm Stock| OrderService
+    OrderService -->|Create Order| DB
+    OrderService -->|Request Route| RouteService[Route Service]
+    RouteService --> RouteServiceInvisible[Optimize Route]
+    RouteServiceInvisible --> RouteService
+    RouteService -->|Provide Route| OrderService
+    OrderService -->|Assign Carrier| CarrierService[Carrier Service]
+    CarrierService --> CarrierServiceInvisible[Select Carrier]
+    CarrierServiceInvisible --> CarrierService
+    CarrierService -->|Confirm Carrier| OrderService
+    OrderService -->|Create Shipment| ShipmentService[Shipment Service]
+    ShipmentService -->|Track Shipment| CarrierSystems[Carrier Systems]
+    CarrierSystems -->|Update Status| ShipmentService
+    ShipmentService -->|Update Shipment| DB
+    ShipmentService -->|Notify Completion| OrderService
+    OrderService -->|Update Order Status| DB
+    ReportingService[Reporting Service] -->|Generate Reports| DB
+
+    style RouteServiceInvisible stroke-width:0;
+    style CarrierServiceInvisible stroke-width:0;
 ```
