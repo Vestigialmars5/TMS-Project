@@ -10,7 +10,7 @@ tm_blueprint = Blueprint(
 
 """ 
 Manages transportation operations, including planning and scheduling routes, selecting carriers, 
-tracking shipments, and optimizing transportation costs. 
+tracking shipments, and optimizing transportation costs and vehicle management.
 
 - **Dashboard**:
   Overview of transportation operations, key metrics, and notifications.
@@ -87,6 +87,36 @@ def delete_route(route_id):
 def get_route(route_id):
     response, status = route_service.get_route(route_id)
 
+
+
+# Vehicle Management
+"""
+This needs to include the following features:
+- Add new vehicles
+- Edit vehicle details
+- Delete vehicles
+- View vehicle details
+
+Each vehicle should have the following attributes:
+- Vehicle ID
+- Vehicle Type
+- Capacity
+- Availability
+- Maintenance Schedule
+- Performance Metrics
+- Rating
+- Cost
+- Status (Active, Inactive)
+"""
+
+@tm_blueprint.route("/vehicles", methods=["GET"])
+@jwt_required()
+@roles_required("Transportation Manager")
+def get_vehicles():
+    if request.method == "GET":
+      initiator_id = get_jwt_identity()
+
+      # search, sort_by, sort_order, page, limit = data_cleanup_get_vehicles(request.args)
 
 # Carrier Management
 """
