@@ -657,7 +657,7 @@ So the TMS should have a list of pending movements or deliveries, and from those
 
 I branched the repository, to try to catch some of the cases befoe calculating everything.
 
-## Design and prototyping
+# Road
 
 I'm going to start working on making something out of the OSMNX (Jan 17 2024), since I think based on what Find I'll be able to decipher things like the database and stuff.
 
@@ -846,3 +846,7 @@ I had an idea on how to improve the onboarding check. By adding a status column 
 
 Aug 29
 In order to improve the onboarding I need to do the following first: Update the database population (probably separating adding the roles from the users created), define the flow of the status in the auth token...
+
+Sep 8
+I was able to get a very good system design with the help of Claude. It is not refined but it has helped me clean some of my thoughts.
+And now I think I want to do something drastic again. I want to change from having it based on role, to based on core modules, this way I can keep 
