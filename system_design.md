@@ -1276,6 +1276,7 @@ The Transportation Management System (TMS) is designed to optimize and manage th
 
 # Diagrams
 
+## Requirements
 ```mermaid
     graph TD
         A[Transportation Management System] --> B[Order Management]
@@ -1285,7 +1286,6 @@ The Transportation Management System (TMS) is designed to optimize and manage th
         A --> F[Inventory Management]
         A --> G[Reporting and Analytics]
         A --> H[WMS Integration]
-        A --> I[Multi-company Support]
         B --> B1[Order Creation]
         B --> B2[Order Fulfillment]
         C --> C1[Optimal Route Generation]
@@ -1300,13 +1300,13 @@ The Transportation Management System (TMS) is designed to optimize and manage th
         G --> G2[Custom Reports]
         H --> H1[Inventory Sync]
         H --> H2[Order Status Updates]
-        I --> I1[Own Operations]
-        I --> I2[Suppliers]
-        I --> I3[Customers]
 ```
 
+## Core Entities
 ```mermaid
 erDiagram
+    USER ||--o{ USER_DETAIL : has
+    USER }o--|| ROLES : has
     ORDER ||--o{ ORDER_ITEM : contains
     ORDER ||--o{ SHIPMENT : generates
     ORDER {
@@ -1362,6 +1362,7 @@ erDiagram
     }
 ```
 
+## Api / Interface
 ```mermaid
 graph LR
     Client[Client Applications]
@@ -1386,6 +1387,7 @@ graph LR
     CarrierSystems[Carrier Systems] --> |Real-time Updates| Shipments
 ```
 
+## Data Flow
 ```mermaid
 stateDiagram-v2
     [*] --> OrderReceived
@@ -1407,6 +1409,7 @@ stateDiagram-v2
     RejectOrder --> [*]
 ```
 
+## High Level Design
 ```mermaid
 graph TB
     subgraph Client_Layer
@@ -1469,6 +1472,7 @@ graph TB
     OrderService <--> ERP
 ```
 
+## Deep Dive
 ```mermaid
 graph TD
     Customer[Customer] -->|Place Order| OrderService[Order Service]
