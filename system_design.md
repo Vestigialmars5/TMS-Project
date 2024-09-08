@@ -511,7 +511,6 @@ To support these interactions in our Flask and React-based TMS:
 
 5. **Integration Points**: Develop clear interfaces for WMS integration in the Inventory Management module.
 
-
 # Transportation Management System: Integration with Warehouse Management System
 
 ## 1. Overview of TMS-WMS Integration
@@ -521,21 +520,25 @@ The integration between the Transportation Management System (TMS) and the Wareh
 ## 2. Key Integration Points
 
 ### 2.1 Inventory Management
+
 - Real-time inventory levels
 - Stock location within warehouses
 - Inventory reservations and allocations
 
 ### 2.2 Order Fulfillment
+
 - Order details and status
 - Pick and pack information
 - Shipment readiness status
 
 ### 2.3 Inbound Shipments
+
 - Advanced Shipping Notices (ASN)
 - Receiving schedules
 - Dock door assignments
 
 ### 2.4 Outbound Shipments
+
 - Shipment details and documentation
 - Loading schedules
 - Carrier information
@@ -543,12 +546,14 @@ The integration between the Transportation Management System (TMS) and the Wareh
 ## 3. Data Flow Between TMS and WMS
 
 ### 3.1 TMS to WMS
+
 - New orders for fulfillment
 - Inbound shipment notifications
 - Carrier and transportation details
 - Estimated arrival times
 
 ### 3.2 WMS to TMS
+
 - Inventory levels and stock locations
 - Order status updates
 - Shipment readiness notifications
@@ -612,21 +617,21 @@ def order_status_change_webhook():
 def create_order(order_data):
     # Create order in TMS
     order = Order.create(order_data)
-    
+
     # Check inventory with WMS
     inventory_status = requests.get(f"{WMS_API_URL}/inventory", params={"items": order.items})
-    
+
     if inventory_status.is_sufficient():
         # Send order to WMS for fulfillment
         wms_response = requests.post(f"{WMS_API_URL}/orders", json=order.to_dict())
-        
+
         if wms_response.is_success():
             order.update(status="In Fulfillment")
         else:
             order.update(status="Fulfillment Error")
     else:
         order.update(status="Insufficient Inventory")
-    
+
     return order
 ```
 
@@ -640,18 +645,18 @@ def create_order(order_data):
 @app.route('/api/webhooks/inventory_update', methods=['POST'])
 def inventory_update_webhook():
     inventory_data = request.json
-    
+
     for item in inventory_data:
         Inventory.update_or_create(
             item_id=item['id'],
             quantity=item['quantity'],
             location=item['location']
         )
-    
+
     # Trigger any necessary actions based on inventory changes
     check_low_stock_alerts(inventory_data)
     update_order_fulfillment_status(inventory_data)
-    
+
     return jsonify({"status": "success"}), 200
 ```
 
@@ -667,31 +672,31 @@ def inventory_update_webhook():
 def create_shipment(order_id):
     order = Order.get(order_id)
     shipment = Shipment.create(order=order)
-    
+
     # Send shipment details to WMS
     wms_response = requests.post(f"{WMS_API_URL}/shipments", json=shipment.to_dict())
-    
+
     if wms_response.is_success():
         shipment.update(status="Preparing")
-        
+
         # Set up webhook to listen for shipment ready notification
         webhook_url = url_for('shipment_ready_webhook', shipment_id=shipment.id, _external=True)
         requests.post(f"{WMS_API_URL}/webhooks", json={"url": webhook_url, "event": "shipment_ready"})
     else:
         shipment.update(status="Preparation Error")
-    
+
     return shipment
 
 @app.route('/api/webhooks/shipment_ready', methods=['POST'])
 def shipment_ready_webhook():
     shipment_data = request.json
     shipment = Shipment.get(shipment_data['id'])
-    
+
     shipment.update(status="Ready for Pickup")
-    
+
     # Dispatch carrier for pickup
     dispatch_carrier(shipment)
-    
+
     return jsonify({"status": "success"}), 200
 ```
 
@@ -715,9 +720,6 @@ def shipment_ready_webhook():
 - Create integration tests simulating various scenarios (e.g., inventory changes, order status updates)
 - Perform regular end-to-end tests of the entire order-to-shipment process
 - Set up a staging environment that mimics the production setup for thorough testing
-
-
-
 
 # TMS-WMS Integration: Detailed Workflow and Multi-Company Scenarios
 
@@ -789,36 +791,45 @@ This schema allows us to track inventory across multiple warehouses, associate o
 Let's break down the workflow for processing an order:
 
 1. **Order Reception**:
+
    - Orders can be received from various sources (e-commerce platform, EDI, manual entry).
    - The Customer Service Representative or an automated system checks incoming orders.
 
 2. **Order Validation**:
+
    - The TMS validates the order (e.g., product availability, customer credit).
    - If valid, the order status is updated to "Validated".
 
 3. **Inventory Check**:
+
    - The TMS queries the relevant WMS for current inventory levels.
    - If sufficient inventory exists, the order moves to "Ready for Fulfillment".
 
 4. **Warehouse Assignment**:
+
    - The TMS assigns the order to a specific warehouse based on inventory availability and proximity to the customer.
 
 5. **WMS Notification**:
+
    - The TMS sends the order details to the assigned warehouse's WMS.
 
 6. **Pick and Pack**:
+
    - Warehouse staff receive picking instructions through their WMS.
    - Items are picked from their locations and brought to a packing station.
    - Packers prepare the items for shipment.
 
 7. **Shipment Creation**:
+
    - Once packed, the WMS notifies the TMS that the order is ready for shipment.
    - The TMS creates a shipment record and plans the transportation.
 
 8. **Carrier Assignment**:
+
    - The TMS assigns a carrier based on shipping requirements and contracts.
 
 9. **Shipment Pickup**:
+
    - The assigned carrier picks up the shipment from the warehouse.
 
 10. **Tracking and Delivery**:
@@ -848,18 +859,22 @@ Here, ESFTC is a supplier to companies like ETCL.
 ### How They Work Together
 
 1. **Inventory Management**:
+
    - ETCL's TMS regularly syncs inventory levels with its own WMS.
    - When inventory for a product falls below a threshold, the TMS triggers a reorder process.
 
 2. **Ordering from Supplier**:
+
    - ETCL's TMS creates a purchase order for ESFTC.
    - This order is sent to ESFTC's order management system, not directly to their WMS.
 
 3. **Supplier Processing**:
+
    - ESFTC receives the order in their system.
    - ESFTC's system communicates with their WMS to fulfill the order.
 
 4. **Shipment from Supplier**:
+
    - ESFTC's WMS manages the picking, packing, and shipping process.
    - ESFTC's system sends shipping information back to ETCL's TMS.
 
@@ -872,7 +887,8 @@ Here, ESFTC is a supplier to companies like ETCL.
 
 To handle these multi-company scenarios, consider the following in your TMS design:
 
-1. **Company Relationships**: 
+1. **Company Relationships**:
+
    ```python
    class Company(db.Model):
        id = db.Column(db.Integer, primary_key=True)
@@ -887,6 +903,7 @@ To handle these multi-company scenarios, consider the following in your TMS desi
    ```
 
 2. **Integration Points**:
+
    ```python
    class IntegrationPoint(db.Model):
        id = db.Column(db.Integer, primary_key=True)
@@ -901,10 +918,10 @@ To handle these multi-company scenarios, consider the following in your TMS desi
    def process_reorder(product_id, quantity):
        supplier = get_preferred_supplier(product_id)
        integration_point = IntegrationPoint.query.filter_by(
-           company_id=supplier.id, 
+           company_id=supplier.id,
            integration_type='oms'
        ).first()
-       
+
        if integration_point:
            send_purchase_order(integration_point, product_id, quantity)
        else:
@@ -958,30 +975,30 @@ graph TD
     APIGateway --> ReportingService[Reporting and Analytics]
     APIGateway --> UserService[User Management]
     APIGateway --> IntegrationService[Integration Service]
-    
+
     OrderService --> MessageQueue[Message Queue]
     InventoryService --> MessageQueue
     RouteService --> MessageQueue
     ShipmentService --> MessageQueue
-    
+
     OrderService --> Cache[Distributed Cache]
     InventoryService --> Cache
     RouteService --> Cache
     ShipmentService --> Cache
-    
+
     OrderService --> RDBMS[Relational DB]
     InventoryService --> RDBMS
     RouteService --> RDBMS
     ShipmentService --> RDBMS
     CarrierService --> RDBMS
     UserService --> RDBMS
-    
+
     ReportingService --> RDBMS
     ReportingService --> DocumentDB[Document Store]
     ReportingService --> TimeSeriesDB[Time Series DB]
-    
+
     IntegrationService --> ExternalSystems[External Systems]
-    
+
     LoggingService[Logging and Monitoring] --> TimeSeriesDB
 ```
 
@@ -992,7 +1009,7 @@ graph TD
 - **API Gateway**: Kong or AWS API Gateway
 - **Message Queue**: RabbitMQ
 - **Cache**: Redis
-- **Databases**: 
+- **Databases**:
   - PostgreSQL (Relational)
   - MongoDB (Document Store)
   - InfluxDB (Time Series)
@@ -1041,18 +1058,18 @@ spec:
         app: order-management
     spec:
       containers:
-      - name: order-management
-        image: our-registry/order-management:latest
-        ports:
-        - containerPort: 5000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: url
-        - name: REDIS_URL
-          value: "redis-master.default.svc.cluster.local"
+        - name: order-management
+          image: our-registry/order-management:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: url
+            - name: REDIS_URL
+              value: "redis-master.default.svc.cluster.local"
 ```
 
 ### 4.3 CI/CD Pipeline
@@ -1097,7 +1114,6 @@ For zero-downtime updates, we'll use a blue-green deployment strategy:
 - **Authentication**: Implement OAuth 2.0 and OpenID Connect for secure authentication
 - **Encryption**: Use TLS for all service-to-service communication
 - **Regular Audits**: Conduct regular security audits and penetration testing
-
 
 # Transportation Management System: Final Design Overview
 
@@ -1256,3 +1272,216 @@ The Transportation Management System (TMS) is designed to optimize and manage th
 - Pilot Testing: Consider a phased rollout, starting with a pilot group before full implementation
 - Feedback Loop: Establish mechanisms for continuous user feedback and system improvement
 - Documentation: Maintain thorough documentation for system architecture, APIs, and user guides
+
+# Diagrams
+
+´´´mermaid
+    info
+´´´
+
+´´´mermaid
+graph TD;
+A[Transportation Management System]-->B[Order Management];
+A-->C[Route Planning and Optimization];
+A-->D[Carrier Management];
+A-->E[Real-time Shipment Tracking];
+A-->F[Inventory Management];
+A-->G[Reporting and Analytics];
+A-->H[WMS Integration];
+A-->I[Multi-company Support];
+B-->B1[Order Creation];
+B-->B2[Order Fulfillment];
+C-->C1[Optimal Route Generation];
+C-->C2[Driver Assignment];
+D-->D1[Carrier Selection];
+D-->D2[Performance Tracking];
+E-->E1[GPS Integration];
+E-->E2[Status Updates];
+F-->F1[Stock Level Tracking];
+F-->F2[Reorder Management];
+G-->G1[KPI Dashboards];
+G-->G2[Custom Reports];
+H-->H1[Inventory Sync];
+H-->H2[Order Status Updates];
+I-->I1[Own Operations];
+I-->I2[Suppliers];
+I-->I3[Customers];
+´´´
+
+erDiagram
+ORDER ||--o{ ORDER_ITEM : contains
+ORDER ||--o{ SHIPMENT : generates
+ORDER {
+int id
+int customer_id
+date order_date
+string status
+}
+ORDER_ITEM {
+int id
+int order_id
+int product_id
+int quantity
+}
+SHIPMENT ||--|| CARRIER : assigned_to
+SHIPMENT {
+int id
+int order_id
+int carrier_id
+string status
+string tracking_number
+}
+CARRIER {
+int id
+string name
+string contact_info
+}
+ROUTE ||--o{ SHIPMENT : includes
+ROUTE {
+int id
+string start_location
+string end_location
+float distance
+time estimated_duration
+}
+INVENTORY ||--o{ PRODUCT : contains
+INVENTORY {
+int id
+int product_id
+int warehouse_id
+int quantity
+}
+PRODUCT {
+int id
+string name
+float weight
+float volume
+}
+WAREHOUSE {
+int id
+string name
+string location
+}
+
+graph LR
+Client[Client Applications]
+API[API Gateway]
+Client --> API
+subgraph TMS_API[TMS API]
+Orders[/orders/]
+Shipments[/shipments/]
+Carriers[/carriers/]
+Routes[/routes/]
+Inventory[/inventory/]
+Reports[/reports/]
+end
+API --> Orders
+API --> Shipments
+API --> Carriers
+API --> Routes
+API --> Inventory
+API --> Reports
+WMS[WMS Integration] --> |Inventory Sync| Inventory
+WMS --> |Order Status| Orders
+CarrierSystems[Carrier Systems] --> |Real-time Updates| Shipments
+
+stateDiagram-v2
+[*] --> OrderReceived
+OrderReceived --> ValidateOrder
+ValidateOrder --> CheckInventory : Valid
+ValidateOrder --> RejectOrder : Invalid
+CheckInventory --> AssignWarehouse : Sufficient Stock
+CheckInventory --> BackOrder : Insufficient Stock
+AssignWarehouse --> NotifyWMS
+NotifyWMS --> AwaitFulfillment
+AwaitFulfillment --> CreateShipment : Order Packed
+CreateShipment --> AssignCarrier
+AssignCarrier --> SchedulePickup
+SchedulePickup --> TrackShipment
+TrackShipment --> UpdateStatus
+UpdateStatus --> DeliveryComplete : Delivered
+DeliveryComplete --> [*]
+BackOrder --> CheckInventory : Stock Replenished
+RejectOrder --> [*]
+
+graph TB
+subgraph Client_Layer
+Web[Web Application]
+Mobile[Mobile App]
+end
+
+    subgraph API_Layer
+        API[API Gateway]
+    end
+
+    subgraph Service_Layer
+        OrderService[Order Management Service]
+        InventoryService[Inventory Management Service]
+        RouteService[Route Planning Service]
+        ShipmentService[Shipment Tracking Service]
+        CarrierService[Carrier Management Service]
+        ReportingService[Reporting and Analytics Service]
+    end
+
+    subgraph Data_Layer
+        DB[(Main Database)]
+        Cache[(Cache)]
+        Queue[(Message Queue)]
+    end
+
+    subgraph External_Systems
+        WMS[Warehouse Management System]
+        CarrierSystems[Carrier Systems]
+        ERP[ERP System]
+    end
+
+    Web --> API
+    Mobile --> API
+    API --> OrderService
+    API --> InventoryService
+    API --> RouteService
+    API --> ShipmentService
+    API --> CarrierService
+    API --> ReportingService
+
+    OrderService --> DB
+    InventoryService --> DB
+    RouteService --> DB
+    ShipmentService --> DB
+    CarrierService --> DB
+    ReportingService --> DB
+
+    OrderService --> Cache
+    InventoryService --> Cache
+    RouteService --> Cache
+    ShipmentService --> Cache
+
+    OrderService --> Queue
+    InventoryService --> Queue
+    ShipmentService --> Queue
+
+    InventoryService <--> WMS
+    ShipmentService <--> CarrierSystems
+    OrderService <--> ERP
+
+graph TD
+Customer[Customer] -->|Place Order| OrderService[Order Service]
+OrderService -->|Validate Order| InventoryService[Inventory Service]
+InventoryService -->|Check Stock| WMS[WMS]
+WMS -->|Confirm Availability| InventoryService
+InventoryService -->|Update Inventory| DB[(Database)]
+InventoryService -->|Confirm Stock| OrderService
+OrderService -->|Create Order| DB
+OrderService -->|Request Route| RouteService[Route Service]
+RouteService -->|Optimize Route| RouteService
+RouteService -->|Provide Route| OrderService
+OrderService -->|Assign Carrier| CarrierService[Carrier Service]
+CarrierService -->|Select Carrier| CarrierService
+CarrierService -->|Confirm Carrier| OrderService
+OrderService -->|Create Shipment| ShipmentService[Shipment Service]
+ShipmentService -->|Track Shipment| CarrierSystems[Carrier Systems]
+CarrierSystems -->|Update Status| ShipmentService
+ShipmentService -->|Update Shipment| DB
+ShipmentService -->|Notify Completion| OrderService
+OrderService -->|Update Order Status| DB
+ReportingService[Reporting Service] -->|Generate Reports| DB
