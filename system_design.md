@@ -914,6 +914,7 @@ To handle these multi-company scenarios, consider the following in your TMS desi
    ```
 
 3. **Order Processing**:
+
    ```python
    def process_reorder(product_id, quantity):
        supplier = get_preferred_supplier(product_id)
@@ -1275,39 +1276,36 @@ The Transportation Management System (TMS) is designed to optimize and manage th
 
 # Diagrams
 
-´´´mermaid
-    info
-´´´
+```mermaid
+    graph TD
+        A[Transportation Management System] --> B[Order Management]
+        A --> C[Route Planning and Optimization]
+        A --> D[Carrier Management]
+        A --> E[Real-time Shipment Tracking]
+        A --> F[Inventory Management]
+        A --> G[Reporting and Analytics]
+        A --> H[WMS Integration]
+        A --> I[Multi-company Support]
+        B --> B1[Order Creation]
+        B --> B2[Order Fulfillment]
+        C --> C1[Optimal Route Generation]
+        C --> C2[Driver Assignment]
+        D --> D1[Carrier Selection]
+        D --> D2[Performance Tracking]
+        E --> E1[GPS Integration]
+        E --> E2[Status Updates]
+        F --> F1[Stock Level Tracking]
+        F --> F2[Reorder Management]
+        G --> G1[KPI Dashboards]
+        G --> G2[Custom Reports]
+        H --> H1[Inventory Sync]
+        H --> H2[Order Status Updates]
+        I --> I1[Own Operations]
+        I --> I2[Suppliers]
+        I --> I3[Customers]
+```
 
-´´´mermaid
-graph TD;
-A[Transportation Management System]-->B[Order Management];
-A-->C[Route Planning and Optimization];
-A-->D[Carrier Management];
-A-->E[Real-time Shipment Tracking];
-A-->F[Inventory Management];
-A-->G[Reporting and Analytics];
-A-->H[WMS Integration];
-A-->I[Multi-company Support];
-B-->B1[Order Creation];
-B-->B2[Order Fulfillment];
-C-->C1[Optimal Route Generation];
-C-->C2[Driver Assignment];
-D-->D1[Carrier Selection];
-D-->D2[Performance Tracking];
-E-->E1[GPS Integration];
-E-->E2[Status Updates];
-F-->F1[Stock Level Tracking];
-F-->F2[Reorder Management];
-G-->G1[KPI Dashboards];
-G-->G2[Custom Reports];
-H-->H1[Inventory Sync];
-H-->H2[Order Status Updates];
-I-->I1[Own Operations];
-I-->I2[Suppliers];
-I-->I3[Customers];
-´´´
-
+```mermaid
 erDiagram
 ORDER ||--o{ ORDER_ITEM : contains
 ORDER ||--o{ SHIPMENT : generates
@@ -1362,7 +1360,9 @@ int id
 string name
 string location
 }
+```
 
+```mermaid
 graph LR
 Client[Client Applications]
 API[API Gateway]
@@ -1384,7 +1384,9 @@ API --> Reports
 WMS[WMS Integration] --> |Inventory Sync| Inventory
 WMS --> |Order Status| Orders
 CarrierSystems[Carrier Systems] --> |Real-time Updates| Shipments
+```
 
+```mermaid
 stateDiagram-v2
 [*] --> OrderReceived
 OrderReceived --> ValidateOrder
@@ -1403,7 +1405,9 @@ UpdateStatus --> DeliveryComplete : Delivered
 DeliveryComplete --> [*]
 BackOrder --> CheckInventory : Stock Replenished
 RejectOrder --> [*]
+```
 
+```mermaid
 graph TB
 subgraph Client_Layer
 Web[Web Application]
@@ -1463,7 +1467,9 @@ end
     InventoryService <--> WMS
     ShipmentService <--> CarrierSystems
     OrderService <--> ERP
+```
 
+```mermaid
 graph TD
 Customer[Customer] -->|Place Order| OrderService[Order Service]
 OrderService -->|Validate Order| InventoryService[Inventory Service]
@@ -1485,3 +1491,4 @@ ShipmentService -->|Update Shipment| DB
 ShipmentService -->|Notify Completion| OrderService
 OrderService -->|Update Order Status| DB
 ReportingService[Reporting Service] -->|Generate Reports| DB
+```
