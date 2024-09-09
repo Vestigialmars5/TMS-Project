@@ -155,32 +155,43 @@ CREATE TABLE inventory (
 );
 ```
 
-## 7. API Endpoints (Main Routes)
+## 7. API Endpoints
 
 ```python
+# Auth
+@app.route("/api/auth/login", methods=["POST"])
+@app.route("/api/auth/logout", methods=["POST"])
+
+# Onboard
+@app.route("/api/onboarding/details", methods=["POST"])
+
+# Users
+@app.route("/api/users", methods=["GET", "POST"])
+@app.route("/api/users/<int:user_id>", methods=["GET", "PUT", "DELETE"])
+
 # Orders
-@app.route('/api/orders', methods=['GET', 'POST'])
-@app.route('/api/orders/<int:order_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route("/api/orders", methods=["GET", "POST"])
+@app.route("/api/orders/<int:order_id>", methods=["GET", "PUT", "DELETE"])
 
 # Shipments
-@app.route('/api/shipments', methods=['GET', 'POST'])
-@app.route('/api/shipments/<int:shipment_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route("/api/shipments", methods=["GET", "POST"])
+@app.route("/api/shipments/<int:shipment_id>", methods=["GET", "PUT", "DELETE"])
 
 # Carriers
-@app.route('/api/carriers', methods=['GET', 'POST'])
-@app.route('/api/carriers/<int:carrier_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route("/api/carriers", methods=["GET", "POST"])
+@app.route("/api/carriers/<int:carrier_id>", methods=["GET", "PUT", "DELETE"])
 
 # Routes
-@app.route('/api/routes', methods=['GET', 'POST'])
-@app.route('/api/routes/<int:route_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route("/api/routes", methods=["GET", "POST"])
+@app.route("/api/routes/<int:route_id>", methods=["GET", "PUT", "DELETE"])
 
 # Inventory (WMS integration)
-@app.route('/api/inventory', methods=['GET'])
-@app.route('/api/inventory/<int:product_id>', methods=['GET'])
+@app.route("/api/inventory", methods=["GET"])
+@app.route("/api/inventory/<int:product_id>", methods=["GET"])
 
 # WMS Integration
-@app.route('/api/wms/sync-inventory', methods=['POST'])
-@app.route('/api/wms/order-fulfillment', methods=['POST'])
+@app.route("/api/wms/sync-inventory", methods=["POST"])
+@app.route("/api/wms/order-fulfillment", methods=["POST"])
 ```
 
 ## 8. Scalability and Performance
