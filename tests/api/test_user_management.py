@@ -35,7 +35,7 @@ create_user_test_cases = [
 
 @pytest.mark.parametrize("token_fixture, email, password, role_id, expected_status_code, expected_success", create_user_test_cases, ids=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"], indirect=["token_fixture"])
 def test_create_user(client, token_fixture, email, password, role_id, expected_status_code, expected_success):
-    response = client.post("/api/admin/users", headers={
+    response = client.post("/api/users", headers={
         "Authorization": f"Bearer {token_fixture}",
         "Content-Type": "application/json"
     }, json={
@@ -74,7 +74,7 @@ get_users_test_cases = [
 
 @pytest.mark.parametrize("token_fixture, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success", get_users_test_cases, ids=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], indirect=["token_fixture"])
 def test_get_users(client, token_fixture, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success):
-    response = client.get(f"/api/admin/users?search={search_field}&sortBy={sort_by}&sortOrder={sort_order}&page={page}&limit={limit}", headers={
+    response = client.get(f"/api/users?search={search_field}&sortBy={sort_by}&sortOrder={sort_order}&page={page}&limit={limit}", headers={
         "Authorization": f"Bearer {token_fixture}",
         "Content-Type": "application/json"
     }, json={})
@@ -110,7 +110,7 @@ def test_delete_user(client, token_fixture, user_id, expected_status_code, expec
         user_id = db.session.query(User).filter_by(
             email=consts.COMPLETE_USER_EMAIL).first().user_id
 
-    response = client.delete(f"/api/admin/users/{user_id}", headers={
+    response = client.delete(f"/api/users/{user_id}", headers={
         "Authorization": f"Bearer {token_fixture}",
         "Content-Type": "application/json"
     }, json={})
@@ -144,7 +144,7 @@ def test_update_user(client, token_fixture, user_id, email, role_id, expected_st
         user_id = db.session.query(User).filter_by(email=consts.COMPLETE_USER_EMAIL).first().user_id
 
 
-    response = client.put(f"/api/admin/users/{user_id}", headers={
+    response = client.put(f"/api/users/{user_id}", headers={
         "Authorization": f"Bearer {token_fixture}",
         "Content-Type": "application/json"
     }, json={

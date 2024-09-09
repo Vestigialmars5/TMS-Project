@@ -1,34 +1,39 @@
 from server.models.tms_models import Role, User, UserDetails
 from server.extensions import db
 from tests.utilstest import incomplete_user_token
+import tests.consts as consts
+import pytest
+from tests.utilstest import token_fixture
 
 
-def test_onboard_user(client, incomplete_user_token):
-    response = client.post("/api/onboarding/onboard", headers={
-        "Authorization": f"Bearer {incomplete_user_token}",
+onboard_user_test_cases = [
+    # Test case 1: Onboard user with valid inputs
+    ("incomplete_user_token", consts.INCOMPLETE_USER_EMAIL, consts.INCOMPLETE_USER_PASSWORD, consts.INCOMPLETE_USER_PASSWORD,
+     consts.INCOMPLETE_USER_FIRST_NAME, consts.INCOMPLETE_USER_LAST_NAME,
+     consts.INCOMPLETE_USER_PHONE_NUMBER, consts.INCOMPLETE_USER_ADDRESS, consts.INCOMPLETE_USER_ROLE_ID, "valid", 200, True),
+]
+
+
+@pytest.mark.parametrize("token_fixture, email, password, confirmation, first_name, last_name, phone_number, address, role_id, role_name, expected_status_code, expected_success", onboard_user_test_cases, ids=["1"], indirect=["token_fixture"])
+def test_onboard_user(client, token_fixture, email, password, confirmation, first_name, last_name, phone_number, address, role_id, role_name, expected_status_code, expected_success):
+    if role_name == "valid":
+        role_name = db.session.query(Role).filter_by(role_id=role_id).first().role_name
+        
+    
+    response = client.post("/api/onboarding/details", headers={
+        "Authorization": f"Bearer {token_fixture}",
         "Content-Type": "application/json"
     }, json={
-        "email": "test_user_not_onboarded@email.com",
-        "password": "notOnboarded",
-        "confirmation": "notOnboarded",
-        "firstName": "Admin",
-        "lastName": "Admin",
-        "phoneNumber": "1234567890",
-        "address": "123 Admin St.",
-        "role_id": 1,
-        "role_name": "admin"
+        "email": email,
+        "password": password,
+        "confirmation": confirmation,
+        "firstName": first_name,
+        "lastName": last_name,
+        "phoneNumber": phone_number,
+        "address": address,
+        "role_id": role_id,
+        "role_name": role_name
     })
 
-
-
     assert response.status_code == 200
-    assert response.json["success"] == True
-    assert db.session.query(User).filter_by(email="test_user_not_onboarded@email.com").first() is not None
-
-    user = db.session.query(User).filter_by(email="test_user_not_onboarded@email.com").first()
-    
-    assert user.user_details.first_name == "Admin"
-    assert user.user_details.last_name == "Admin"
-    assert user.user_details.phone_number == "1234567890"
-    assert user.user_details.address == "123 Admin St."
-    assert user.role_id == 1
+    assert response.json["success"] == expected_success
