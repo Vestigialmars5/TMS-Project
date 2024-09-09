@@ -5,7 +5,7 @@ const SERVER_URL = "http://localhost:5000";
 export const onboardUserApi = async ({userData}) => {
     const token = getToken();
     try {
-        const res = await fetch(`${SERVER_URL}/api/onboarding/onboard`, {
+        const res = await fetch(`${SERVER_URL}/api/onboarding/details`, {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,

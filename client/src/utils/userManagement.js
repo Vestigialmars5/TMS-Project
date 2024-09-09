@@ -13,7 +13,7 @@ export const createUserApi = async ({ email, password, roleId }) => {
 
   const token = getToken();
   try {
-    const res = await fetch(`${SERVER_URL}/api/admin/users`, {
+    const res = await fetch(`${SERVER_URL}/api/users`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ export const getUsersApi = async ({
   const token = getToken();
   try {
     const res = await fetch(
-      `${SERVER_URL}/api/admin/users?search=${searchField}&sortBy=${sortBy}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`,
+      `${SERVER_URL}/api/users?search=${searchField}&sortBy=${sortBy}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers: {
@@ -86,7 +86,7 @@ export const deleteUserApi = async (userId) => {
 
   const token = getToken();
   try {
-    const res = await fetch(`${SERVER_URL}/api/admin/users/${userId}`, {
+    const res = await fetch(`${SERVER_URL}/api/users/${userId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -118,7 +118,7 @@ export const updateUserApi = async ({ userId, email, roleId }) => {
 
   const token = getToken();
   try {
-    const res = await fetch(`${SERVER_URL}/api/admin/users/${userId}`, {
+    const res = await fetch(`${SERVER_URL}/api/users/${userId}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -1,13 +1,13 @@
 from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from server.services import onboarding_service
+from server.api.onboarding import services
 from server.utils.data_cleanup import data_cleanup_onboarding
 
 onboarding_blueprint = Blueprint(
     "onboarding", __name__, url_prefix="/api/onboarding")
 
 
-@onboarding_blueprint.route("/onboard", methods=["POST"])
+@onboarding_blueprint.route("/details", methods=["POST"])
 @jwt_required()
 def onboard_user():
     try:
@@ -25,7 +25,7 @@ def onboard_user():
 
     email, password, confirmation, first_name, last_name, phone_number, address = data_cleanup_onboarding(data)
 
-    response = onboarding_service.onboard_user(
+    response = services.onboard_user(
         user_id,
         email,
         password,

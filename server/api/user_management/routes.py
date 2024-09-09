@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, request, abort
-from server.services import user_service
+from server.api.user_management import services
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from server.utils.data_cleanup import data_cleanup_create_user, data_cleanup_get_users, clean_user_id, data_cleanup_update_user
 from server.utils.authorization_decorators import roles_required
 
-admin_blueprint = Blueprint("admin", __name__, url_prefix="/api/admin")
+user_management_bp = Blueprint("users", __name__, url_prefix="/api")
 
 
 """ 
@@ -36,7 +36,7 @@ This needs to include the following features:
 """
 
 
-@admin_blueprint.route("/users", methods=["POST"])
+@user_management_bp.route("/users", methods=["POST"])
 @jwt_required()
 @roles_required("Admin")
 def create_user():
@@ -57,7 +57,7 @@ def create_user():
 
         email, password, role_id = data_cleanup_create_user(data)
 
-        response = user_service.create_user(
+        response = services.create_user(
             email, password, role_id, initiator_id)
 
         if response["success"]:
@@ -68,7 +68,7 @@ def create_user():
             return jsonify(response), 500
 
 
-@admin_blueprint.route("/users", methods=["GET"])
+@user_management_bp.route("/users", methods=["GET"])
 @jwt_required()
 @roles_required("Admin")
 def get_users():
@@ -79,7 +79,7 @@ def get_users():
 
         initiator_id = get_jwt_identity()
 
-        response = user_service.get_users(
+        response = services.get_users(
             search, sort_by, sort_order, page, limit, initiator_id)
 
         if response["success"]:
@@ -88,7 +88,7 @@ def get_users():
             return jsonify(response), 500
 
 
-@admin_blueprint.route("/users/<int:user_id>", methods=["DELETE"])
+@user_management_bp.route("/users/<int:user_id>", methods=["DELETE"])
 @jwt_required()
 @roles_required("Admin")
 def delete_user(user_id):
@@ -104,7 +104,7 @@ def delete_user(user_id):
 
         user_id = clean_user_id(user_id)
 
-        response = user_service.delete_user(user_id, initiator_id)
+        response = services.delete_user(user_id, initiator_id)
 
         if response["success"]:
             return jsonify(response), 200
@@ -116,7 +116,7 @@ def delete_user(user_id):
             return jsonify(response), 500
 
 
-@admin_blueprint.route("/users/<int:user_id>", methods=["PUT"])
+@user_management_bp.route("/users/<int:user_id>", methods=["PUT"])
 @jwt_required()
 @roles_required("Admin")
 def update_user(user_id):
@@ -140,7 +140,7 @@ def update_user(user_id):
 
         initiator_id = get_jwt_identity()
 
-        response = user_service.update_user(
+        response = services.update_user(
             user_id, email, role_id, initiator_id)
 
         if response["success"]:

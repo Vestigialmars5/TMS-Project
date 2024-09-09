@@ -1,8 +1,8 @@
 from server.utils.validations import validate_login_credentials
 from server.utils.token import create_tokens
 from server.utils.logging import create_audit_log
-from ..extensions import db
-from ..models.tms_models import User, UserDetails, Role
+from ...extensions import db
+from ...models.tms_models import User, UserDetails, Role
 from server.utils.exceptions import DatabaseQueryError
 import logging
 

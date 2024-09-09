@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from server.services import auth_service
-from ..utils.data_cleanup import data_cleanup_login
+from server.api.auth import services
+from server.utils.data_cleanup import data_cleanup_login
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/api/auth")
 
@@ -22,7 +22,7 @@ def login():
 
         email, password = data_cleanup_login(data)
     
-        response = auth_service.login(email, password)
+        response = services.login(email, password)
 
         if response["success"]:
             return jsonify(response), 200
@@ -50,7 +50,7 @@ def logout():
         # Validations -> abort(400, description="Missing Data")
         user_id = get_jwt_identity()
 
-        response = auth_service.logout(user_id)
+        response = services.logout(user_id)
 
         if response["success"]:
             return jsonify(response), 200
