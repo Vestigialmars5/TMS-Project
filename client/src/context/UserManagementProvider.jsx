@@ -1,8 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { createUserApi } from "../utils/userManagement";
-import { getUsersApi } from "../utils/userManagement";
-import { deleteUserApi } from "../utils/userManagement";
-import { updateUserApi } from "../utils/userManagement";
+import {
+  createUserApi,
+  getUsersApi,
+  deleteUserApi,
+  updateUserApi,
+  getRolesApi,
+} from "../utils/userManagement";
 
 const UserManagementContext = createContext();
 
@@ -12,6 +15,7 @@ export const UserManagementProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
     const delayTimeout = setTimeout(() => {
@@ -45,7 +49,7 @@ export const UserManagementProvider = ({ children }) => {
       await deleteUserApi(userId);
     } catch (error) {
       console.error(error.message);
-      throw new Error(error.message)
+      throw new Error(error.message);
     }
   };
 
@@ -53,7 +57,7 @@ export const UserManagementProvider = ({ children }) => {
     try {
       const response = await updateUserApi(userData);
       if (response) {
-        throw new Error(response)
+        throw new Error(response);
       }
     } catch (error) {
       throw new Error(error.message);
@@ -64,9 +68,32 @@ export const UserManagementProvider = ({ children }) => {
     setRefresh(!refresh);
   };
 
+  // Including getRoles in auth context to not cluster the app with too many contexts
+  // If there are more functions added to common, then a common context will be necessary
+  // For now just manage it from here
+  const getRoles = async () => {
+    try {
+      const roles = await getRolesApi();
+      setRoles(roles);
+    } catch (error) {
+      console.error("Error retrieving roles", error.message);
+    }
+  };
+
   return (
     <UserManagementContext.Provider
-      value={{ createUser, getUsers, deleteUser, updateUser, refreshUsers, users, loading, refresh }}
+      value={{
+        createUser,
+        getUsers,
+        deleteUser,
+        updateUser,
+        refreshUsers,
+        getRoles,
+        roles,
+        users,
+        loading,
+        refresh,
+      }}
     >
       {children}
     </UserManagementContext.Provider>

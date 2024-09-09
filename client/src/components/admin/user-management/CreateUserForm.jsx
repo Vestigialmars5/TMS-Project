@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../../context/AuthProvider";
+import { useUserManagement } from "../../../context/UserManagementProvider";
 
 const CreateUserForm = ({ onSubmit, errorMessage }) => {
   const [email, setEmail] = useState("");
@@ -9,7 +9,7 @@ const CreateUserForm = ({ onSubmit, errorMessage }) => {
   const [passwordError, setPasswordError] = useState("");
   const [roleError, setRoleError] = useState("");
   const [selected, setSelected] = useState("Select Role");
-  const { getRoles, roles } = useAuth();
+  const { getRoles, roles } = useUserManagement();
 
   useEffect(() => {
     if (roles.length === 0) {

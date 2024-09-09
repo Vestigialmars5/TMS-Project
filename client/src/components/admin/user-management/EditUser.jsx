@@ -2,18 +2,16 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useUserManagement } from "../../../context/UserManagementProvider";
 import { useState, useEffect } from "react";
-import { useAuth } from "../../../context/AuthProvider";
 import { useAlert } from "../../../context/AlertProvider";
 
 const EditUser = ({ user, cancelEdit }) => {
-  const { updateUser, refreshUsers } = useUserManagement();
+  const { updateUser, refreshUsers, getRoles, roles } = useUserManagement();
   const [email, setEmail] = useState(user.email);
   const [roleId, setRoleId] = useState(user.roleId);
   const [roleName, setRoleName] = useState(user.roleName);
   const [userId, setUserId] = useState(user.userId);
   const [emailError, setEmailError] = useState("");
   const [roleError, setRoleError] = useState("");
-  const { getRoles, roles } = useAuth();
   const { addAlert } = useAlert();
 
   useEffect(() => {
