@@ -3,7 +3,7 @@ from server.extensions import jwt
 from server.utils.exceptions import *
 import logging
 
-errors_blueprint = Blueprint("errors", __name__, url_prefix="/api/errors")
+errors_blueprint = Blueprint("errors", __name__)
 
 logger = logging.getLogger(__name__)
 
