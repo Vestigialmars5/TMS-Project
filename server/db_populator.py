@@ -13,7 +13,7 @@ def add_roles():
 
 def add_all_roles():
     add_admin()
-    add_transportation_manager()
+    # add_transportation_manager()
     add_carrier()
     add_complete_user()
     add_incomplete_user()
