@@ -155,6 +155,24 @@ def update_user(user_id):
             return jsonify(response), 500
 
 
+@user_management_bp.route("/roles", methods=["GET"])
+@jwt_required()
+def get_roles():
+    """
+    Get all roles.
+
+    @return (dict, int): The response and status code.
+    """
+    if request.method == "GET":
+
+        response = services.get_roles()
+
+        if response["success"]:
+            return jsonify(response), 200
+        else:
+            return jsonify(response), 500
+
+
 # System settings
 """
 This needs to include the following features:

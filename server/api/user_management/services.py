@@ -191,3 +191,28 @@ def construct_query_users(search, sort_by, sort_order, page, limit):
     user_list = [user.to_dict_js() for user in users]
 
     return user_list
+
+
+def get_roles():
+    """
+    Get all roles.
+
+    @return (dict, int): The response and status code.
+    """
+
+    try:
+        # Get all roles from db
+        roles_res = db.session.query(Role).all()
+        roles = []
+        for role in roles_res:
+            roles.append(
+                {
+                    "roleId": role.role_id,
+                    "roleName": role.role_name
+                }
+            )
+
+        return {"success": True, "roles": roles}
+    except Exception as e:
+        logger.error("Error Fetching Roles: %s", e)
+        raise DatabaseQueryError("Error Fetching Roles")

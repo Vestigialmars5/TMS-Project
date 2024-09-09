@@ -134,15 +134,16 @@ update_user_test_cases = [
     # Test case 6: Update user with invalid token
     ("carrier_token", "complete_user_id", "updated@gmail.com", 1, 401, False),
     # Test case 7: No changes made
-    ("admin_token", "complete_user_id", consts.COMPLETE_USER_EMAIL, consts.COMPLETE_USER_ROLE_ID, 200, True)
+    ("admin_token", "complete_user_id", consts.COMPLETE_USER_EMAIL,
+     consts.COMPLETE_USER_ROLE_ID, 200, True)
 ]
 
 
 @pytest.mark.parametrize("token_fixture, user_id, email, role_id, expected_status_code, expected_success", update_user_test_cases, ids=["1", "2", "3", "4", "5", "6", "7"], indirect=["token_fixture"])
 def test_update_user(client, token_fixture, user_id, email, role_id, expected_status_code, expected_success):
     if user_id == "complete_user_id":
-        user_id = db.session.query(User).filter_by(email=consts.COMPLETE_USER_EMAIL).first().user_id
-
+        user_id = db.session.query(User).filter_by(
+            email=consts.COMPLETE_USER_EMAIL).first().user_id
 
     response = client.put(f"/api/users/{user_id}", headers={
         "Authorization": f"Bearer {token_fixture}",
@@ -151,6 +152,25 @@ def test_update_user(client, token_fixture, user_id, email, role_id, expected_st
         "email": email,
         "roleId": role_id
     })
+
+    assert response.status_code == expected_status_code
+    assert response.json["success"] == expected_success
+
+
+get_roles_test_cases = [
+    # Test case 1: Get roles with valid token
+    ("admin_token", 200, True),
+    # Test case 2: Get roles with no token
+    ("", 401, False)
+]
+
+
+@pytest.mark.parametrize("token_fixture, expected_status_code, expected_success", get_roles_test_cases, ids=["1", "2"], indirect=["token_fixture"])
+def test_get_roles(client, token_fixture, expected_status_code, expected_success):
+    response = client.get("/api/roles", headers={
+        "Authorization": f"Bearer {token_fixture}",
+        "Content-Type": "application/json"
+    }, json={})
 
     assert response.status_code == expected_status_code
     assert response.json["success"] == expected_success

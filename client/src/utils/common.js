@@ -4,12 +4,12 @@ const SERVER_URL = "http://localhost:5000";
 export const getRolesApi = async () => {
   /**
    * Retrieves the roles
-   * @returns {Array} - The roles, an array of dics with id and name
+   * @returns {Array} - The roles, an array of dicts with id and name
    **/
 
   const token = getToken();
   try {
-    const res = await fetch(`${SERVER_URL}/api/common/roles`, {
+    const res = await fetch(`${SERVER_URL}/api/roles`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
