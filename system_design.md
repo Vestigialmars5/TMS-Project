@@ -1288,12 +1288,26 @@ The Transportation Management System (TMS) is designed to optimize and manage th
 ```
 src/
 │
-├── components/
+├── components/ -- Reusable UI components
 │   ├── common/
 │   │   ├── Header.js
 │   │   ├── Footer.js
 │   │   ├── Sidebar.js
+|   |   └── SearchBar.js
 │   │   └── ...
+│   ├── auth/
+│   │   ├── LoginForm.js -- Use api hook, use validation function
+│   │   └── LogoutButton.js
+|   |   └── ...
+|   ├── onboarding/
+|   │   ├── Welcome.js
+|   │   ├── DetailsForm.js
+|   │   └── ...
+|   ├── user-management/ -- User management components
+|   │   ├── UserList.js
+|   │   ├── UserForm.js
+|   │   └── UserDetails.js
+|   │   └── ...
 │   ├── orders/
 │   │   ├── OrderList.js
 │   │   ├── OrderDetails.js
@@ -1309,13 +1323,14 @@ src/
 │   └── ...
 │
 ├── contexts/
-│   ├── AuthContext.js
-│   ├── RouteContext.js
+|   ├── AlertContext.js -- Manage alert messages
+│   ├── AuthContext.js -- Manage user authentication state
+│   ├── RouteContext.js -- Manage private routes
 │   └── ...
 │
 ├── hooks/
-│   ├── useAuth.js
-│   ├── useRoute.js
+│   ├── useAuth.js -- Hook for using authentication context
+│   ├── useRoute.js -- 
 │   └── ...
 │
 ├── layouts/
