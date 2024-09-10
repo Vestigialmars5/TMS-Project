@@ -1285,6 +1285,83 @@ The Transportation Management System (TMS) is designed to optimize and manage th
 - Feedback Loop: Establish mechanisms for continuous user feedback and system improvement
 - Documentation: Maintain thorough documentation for system architecture, APIs, and user guides
 
+```
+src/
+│
+├── components/
+│   ├── common/
+│   │   ├── Header.js
+│   │   ├── Footer.js
+│   │   ├── Sidebar.js
+│   │   └── ...
+│   ├── orders/
+│   │   ├── OrderList.js
+│   │   ├── OrderDetails.js
+│   │   └── ...
+│   ├── shipments/
+│   │   ├── ShipmentList.js
+│   │   ├── ShipmentDetails.js
+│   │   └── ...
+│   ├── routes/
+│   │   ├── RouteList.js
+│   │   ├── RouteDetails.js
+│   │   └── ...
+│   └── ...
+│
+├── contexts/
+│   ├── AuthContext.js
+│   ├── RouteContext.js
+│   └── ...
+│
+├── hooks/
+│   ├── useAuth.js
+│   ├── useRoute.js
+│   └── ...
+│
+├── layouts/
+│   ├── AdminLayout.js
+│   ├── DriverLayout.js
+│   ├── CustomerLayout.js
+│   └── ...
+│
+├── pages/
+│   ├── admin/
+│   │   ├── Dashboard.js
+│   │   ├── UserManagement.js
+│   │   └── ...
+│   ├── driver/
+│   │   ├── CurrentRoute.js
+│   │   ├── DeliveryHistory.js
+│   │   └── ...
+│   ├── customer/
+│   │   ├── PlaceOrder.js
+│   │   ├── TrackShipment.js
+│   │   └── ...
+│   └── ...
+│
+├── routes/
+│   ├── PrivateRoute.js
+│   ├── AdminRoute.js
+│   ├── DriverRoute.js
+│   ├── CustomerRoute.js
+│   └── ...
+│
+├── services/
+│   ├── api.js
+│   ├── auth.js
+│   ├── orders.js
+│   ├── shipments.js
+│   └── ...
+│
+├── utils/
+│   ├── formatters.js
+│   ├── validators.js
+│   └── ...
+│
+├── App.js
+└── index.js
+```
+
 # Diagrams
 
 ## Requirements
