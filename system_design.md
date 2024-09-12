@@ -38,6 +38,20 @@ coordination between transportation and warehousing operations.
 - Data encryption
 - Audit logging
 
+### 2.6 Other Modules
+
+- User Management Module
+- Notification and Alert System
+- Document Management
+- Compliance and Regulatory Management
+- Customer Management
+- Financial Management
+- Equipment and Asset Management
+- Business Intelligence and Analytics
+- Integration Management
+- Audit Trail and Logging
+- Help and Support System
+
 ## 3. Technical Architecture
 
 ### 3.1 Frontend
@@ -1285,6 +1299,10 @@ The Transportation Management System (TMS) is designed to optimize and manage th
 - Feedback Loop: Establish mechanisms for continuous user feedback and system improvement
 - Documentation: Maintain thorough documentation for system architecture, APIs, and user guides
 
+# Transportation Management System: React Structure
+
+## 1. Overview
+
 ```
 src/
 │
@@ -1294,6 +1312,7 @@ src/
 │   │   ├── Footer.js
 │   │   ├── Sidebar.js
 |   |   └── SearchBar.js
+|   |   └── PrivateRoute.js -- Logic for routes
 │   │   └── ...
 │   ├── auth/
 │   │   ├── LoginForm.js -- Use api hook, use validation function
@@ -1325,12 +1344,14 @@ src/
 ├── contexts/
 |   ├── AlertContext.js -- Manage alert messages
 │   ├── AuthContext.js -- Manage user authentication state
-│   ├── RouteContext.js -- Manage private routes
+|   ├── UserContext.js -- Manage user data
+│   ├── RouteContext.js -- Context for route data
+|   ├── OrderContext.js -- Context for order data
 │   └── ...
 │
 ├── hooks/
 │   ├── useAuth.js -- Hook for using authentication context
-│   ├── useRoute.js -- 
+│   ├── useRoute.js --
 │   └── ...
 │
 ├── layouts/
@@ -1356,9 +1377,9 @@ src/
 │
 ├── routes/
 │   ├── PrivateRoute.js
-│   ├── AdminRoute.js
-│   ├── DriverRoute.js
-│   ├── CustomerRoute.js
+│   ├── AdminRoute.js -- Maybe not needed
+│   ├── DriverRoute.js -- Maybe not needed
+│   ├── CustomerRoute.js -- Maybe not needed
 │   └── ...
 │
 ├── services/
@@ -1377,9 +1398,62 @@ src/
 └── index.js
 ```
 
+## 2. State Management Design for TMS Modules
+
+### 2.1 Global State (Redux)
+
+Redux will be used for managing global state that needs to be accessed across multiple components and modules.
+
+- Core Modules in Redux:
+
+  - Order Management
+  - Shipment Tracking
+  - Inventory Management
+  - User Management
+  - Customer Management
+  - Financial Management
+
+- Redux Slices:
+
+  - ordersSlice
+  - shipmentsSlice
+  - inventorySlice
+  - usersSlice
+  - customersSlice
+  - financialsSlice
+
+### 2.2 Local State (React useState and useReducer)
+
+For module-specific state that doesn't need to be shared globally:
+
+- Route Planning and Optimization
+- Carrier Management
+- Reporting and Analytics
+- Notification and Alert System
+- Document Management
+- Equipment and Asset Management
+- Help and Support System
+
+### 2.3 React Context API
+
+For state that needs to be shared among a group of components but not globally:
+
+- Compliance and Regulatory Management
+- Business Intelligence and Analytics
+- Integration Management
+- Audit Trail and Logging
+
+### 2.4 Server State (React Query)
+
+For managing server state, caching, and synchronization:
+
+- All API calls using Axios
+- Implement React Query for efficient data fetching, caching, and synchronization
+
 # Diagrams
 
 ## Requirements
+
 ```mermaid
     graph TD
         A[Transportation Management System] --> B[Order Management]
@@ -1406,6 +1480,7 @@ src/
 ```
 
 ## Core Entities
+
 ```mermaid
 erDiagram
     USER ||--o{ USER_DETAIL : has
@@ -1466,6 +1541,7 @@ erDiagram
 ```
 
 ## Api / Interface
+
 ```mermaid
 graph LR
     Client[Client Applications]
@@ -1491,6 +1567,7 @@ graph LR
 ```
 
 ## Data Flow
+
 ```mermaid
 stateDiagram-v2
     [*] --> OrderReceived
@@ -1513,6 +1590,7 @@ stateDiagram-v2
 ```
 
 ## High Level Design
+
 ```mermaid
 graph TB
     subgraph Client_Layer
@@ -1576,6 +1654,7 @@ graph TB
 ```
 
 ## Deep Dive
+
 ```mermaid
 graph TD
     Customer[Customer] -->|Place Order| OrderService[Order Service]
