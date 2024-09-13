@@ -59,7 +59,7 @@ def login(email, password):
 
         logger.info("Login Attempt Successful: by %s", user.user_id)
         create_audit_log("Login", user_id=user.user_id, details="Success")
-        return {"success": True, "access_token": access_token}
+        return {"success": True, "accessToken": access_token}
 
     except DatabaseQueryError as e:
         logger.error("Login Attempt Failed: by %s | %s", email, e)
