@@ -67,7 +67,7 @@ def onboard_user(
 
         logger.info("Onboard Attempt Successful: by %s", user_id)
         create_audit_log("Onboard", user_id=user_id, details="Success")
-        return {"success": True, "access_token": access_token}
+        return {"success": True, "accessToken": access_token}
 
     except DatabaseQueryError as e:
         logger.error("Onboard Attempt Failed: by %s | %s", user_id, e)

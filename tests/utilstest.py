@@ -20,7 +20,7 @@ def admin_token(client):
         "password": consts.ADMIN_PASSWORD
     })
     assert response.status_code == 200
-    return response.json["access_token"]
+    return response.json["accessToken"]
 
 
 @pytest.fixture()
@@ -31,7 +31,7 @@ def carrier_token(client):
     })
 
     assert response.status_code == 200
-    return response.json["access_token"]
+    return response.json["accessToken"]
 
 
 @pytest.fixture()
@@ -42,7 +42,7 @@ def user_complete_token(client):
     })
 
     assert response.status_code == 200
-    return response.json["access_token"]
+    return response.json["accessToken"]
 
 
 @pytest.fixture()
@@ -53,4 +53,4 @@ def incomplete_user_token(client):
     })
 
     assert response.status_code == 200
-    return response.json["access_token"]
+    return response.json["accessToken"]
