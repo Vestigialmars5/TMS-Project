@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "../../context/AuthProvider";
 
 const Home = () => {
-  const { isLoggedIn, user } = useAuth();
+  // const { isLoggedIn, user } = useAuth()
 
   return (
     // TODO: Make a component for this
@@ -11,10 +11,10 @@ const Home = () => {
         <div>Welcome!</div>
       </div>
       <div>This is the home page.</div>
-      <div className={"buttonContainer"}>
+      {/*       <div className={"buttonContainer"}>
         {isLoggedIn ? <div>Your email address is {user.email}</div> : <div />}
         {isLoggedIn ? <div>Your role is {user.roleName}</div> : <div />}
-      </div>
+      </div> */}
     </div>
   );
 };
