@@ -1,19 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as authService from "../../services/authService";
-import { decodeToken, storeToken } from "../../utils/tokenFunctions";
+import tokenService from "../../services/tokenService";
 
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await authService.login(credentials);
-      console.log("action", response);
-      storeToken(response.accessToken); // Store the token after successful login
+      tokenService.setTokens(response.accessToken); // Store tokens -> TODO: response.refreshToken
       // Add alert here
-      return decodeToken(response.accessToken);
-
+      return tokenService.decodeToken(response.accessToken);
     } catch (error) {
-      console.error("Login error", error);
       return rejectWithValue({
         error: error.response?.data?.error,
         message: error.response?.data?.description,
