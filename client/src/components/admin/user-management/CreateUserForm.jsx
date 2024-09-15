@@ -37,7 +37,7 @@ const CreateUserForm = ({ onSubmit, errorMessage }) => {
 
   // TODO: Validate role
   const validateRole = (roleId) => {
-    if (!roles.some(role => role.roleId === roleId)) {
+    if (!roles.some((role) => role.roleId === roleId)) {
       return "Invalid role";
     }
     return "";
