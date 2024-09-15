@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { navigateBasedOnRole} from "../../utils/navigation"
 
-const LoginForm = ({ onSubmit, errorMessage }) => {
+const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+
+  const { login, loading } = useAuth();
 
   const validateEmail = (email) => {
     if (!email) {
       return "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      return "Email addres is invalid";
+      return "Email address is invalid";
     }
     return "";
   };
@@ -43,7 +50,8 @@ const LoginForm = ({ onSubmit, errorMessage }) => {
       setEmailError(emailErr);
       setPasswordError(passwordErr);
     } else {
-      onSubmit({ email, password });
+      login({ email, password });
+      console.log("LoginForm.jsx");
     }
   };
 
@@ -66,7 +74,9 @@ const LoginForm = ({ onSubmit, errorMessage }) => {
         </div>
         <div className="inputContainer">
           {errorMessage && <p>{errorMessage}</p>}
-          <button type="submit">Login</button>
+          <button type="submit" disabled={loading === "loading"}>
+            {loading === "loading" ? "Logging In..." : "Login"}
+          </button>
         </div>
       </form>
     </div>
