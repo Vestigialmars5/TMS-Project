@@ -6,12 +6,12 @@ import AlertComponent from "../shared/AlertComponent";
 
 const Layout = () => {
   // TODO: Finish this
-  const { isLoggedIn, user } = useAuth();
+  // const { isLoggedIn, user } = useAuth();
 
   return (
     <div>
       <header>
-        <nav>
+        {/* <nav>
           <ul>
             {isLoggedIn ? (
               <li>
@@ -27,7 +27,7 @@ const Layout = () => {
               </li>
             )}
           </ul>
-        </nav>
+        </nav> */}
         <AlertComponent />
       </header>
       <main>
