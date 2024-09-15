@@ -34,7 +34,7 @@ const EditUser = ({ user, cancelEdit }) => {
     if (!email) {
       return "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      return "Email addres is invalid";
+      return "Email address is invalid";
     }
     return "";
   };
@@ -47,7 +47,6 @@ const EditUser = ({ user, cancelEdit }) => {
     setRoleName(getRoleName(roleId));
     return "";
   };
-
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -81,7 +80,7 @@ const EditUser = ({ user, cancelEdit }) => {
           addAlert("Update Cancelled: No Changes Made", "info");
           cancelEdit();
         } else {
-        addAlert(error.message, "danger");
+          addAlert(error.message, "danger");
         }
       }
     }
