@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import LoginForm from "../../components/login/LoginForm";
+import LoginForm from "../../components-new/auth/LoginForm";
 import { useAuth } from "../../context/AuthProvider";
 import { useAlert } from "../../context/AlertProvider";
 
@@ -15,6 +15,7 @@ const Login = () => {
       setLoginError(res.error);
     } else {
       // TODO: Display success
+      console.log("login");
       addAlert("Login Successful", "success");
     }
   };
