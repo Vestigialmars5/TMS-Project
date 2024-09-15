@@ -1,7 +1,7 @@
 from server.extensions import db
 from server.models.tms_models import User, UserDetails
 from werkzeug.security import generate_password_hash
-from server.utils.token import create_tokens
+from flask_jwt_extended import create_access_token
 from server.utils.exceptions import *
 from server.utils.logging import create_audit_log
 import logging
@@ -42,7 +42,8 @@ def onboard_user(
             return {"success": False, "error": "Passwords Do Not Match", "description": "Password and Confirmation Do Not Match"}
 
         try:
-            update_password(user_id, password)
+            status = "active"
+            update_user(user_id, password, status)
         except Exception as e:
             raise DatabaseQueryError("Error Updating Password")
 
@@ -53,10 +54,10 @@ def onboard_user(
         except Exception as e:
             raise DatabaseQueryError("Error Adding User Details")
 
-        access_token = create_tokens(
+        access_token = create_access_token(
             user_id,
             {
-                "isOnboardingCompleted": True,
+                "status": status,
                 "email": email,
                 "firstName": first_name,
                 "lastName": last_name,
@@ -65,9 +66,19 @@ def onboard_user(
             },
         )
 
+        user_info = {
+            "userId": user_id,
+            "status": status,
+            "email": email,
+            "firstName": first_name,
+            "lastName": last_name,
+            "roleName": role_name,
+            "roleId": role_id,
+        }
+
         logger.info("Onboard Attempt Successful: by %s", user_id)
         create_audit_log("Onboard", user_id=user_id, details="Success")
-        return {"success": True, "accessToken": access_token}
+        return {"success": True, "accessToken": access_token, "user": user_info}
 
     except DatabaseQueryError as e:
         logger.error("Onboard Attempt Failed: by %s | %s", user_id, e)
@@ -91,9 +102,10 @@ def is_onboarded(user_id):
         return True
 
 
-def update_password(user_id, password):
+def update_user(user_id, password, status):
     user = db.session.query(User).filter(User.user_id == user_id).first()
     user.password = generate_password_hash(password)
+    user.status = status
     db.session.commit()
 
 
