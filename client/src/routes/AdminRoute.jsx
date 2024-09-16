@@ -7,14 +7,14 @@ import { useSelector } from "react-redux";
 
 const AdminRoute = () => {
   const required = 1;
-  const auth = useSelector((state) => state.auth);
+  const authState = useSelector((state) => state.auth);
 
-  if (!auth.isAuthenticated) {
+  if (!authState.isAuthenticated) {
     console.log("Not Authenticated, Redirecting To Login");
     return <Navigate to="/login" />;
   }
 
-  if (auth.user.roleId !== required) {
+  if (authState.user.roleId !== required) {
     console.log("User not authorized, redirecting to home");
     return <Navigate to="/home" />;
   }

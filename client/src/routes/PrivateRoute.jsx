@@ -4,14 +4,14 @@ import { Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function PrivateRoute({ required }) {
-  const auth = useSelector((state) => state.auth);
+  const authState = useSelector((state) => state.auth);
 
-  if (!auth.isAuthenticated) {
+  if (!authState.isAuthenticated) {
     console.log("Not Authenticated, Redirecting To Login");
     return <Navigate to="/login" />;
   }
 
-  if (required && !required.includes(auth.user.status)) {
+  if (required && !required.includes(authState.user.status)) {
     return <Navigate to="/home" />;
   }
 
