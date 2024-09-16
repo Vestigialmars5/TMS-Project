@@ -1,16 +1,17 @@
 import React from "react";
-import { useAuth } from "../context/AuthProvider";
 import { Navigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function PrivateRoute({ required }) {
-  const { user, userStatus } = useAuth();
+  const auth = useSelector((state) => state.auth);
 
-  if (!user) {
+  if (!auth.isAuthenticated) {
+    console.log("Not Authenticated, Redirecting To Login");
     return <Navigate to="/login" />;
   }
 
-  if (required && !required.includes(userStatus)) {
+  if (required && !required.includes(auth.user.status)) {
     return <Navigate to="/home" />;
   }
 

@@ -2,13 +2,13 @@
 
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
 import { Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const PublicRoute = () => {
-  const { user } = useAuth();
+  const auth = useSelector((state) => state.auth);
 
-  if (user) {
+  if (auth.isAuthenticated) {
     return <Navigate to="/home" />;
   }
 
