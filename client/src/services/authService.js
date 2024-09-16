@@ -6,10 +6,5 @@ export const login = async (credentials) => {
 };
 
 export const logout = async () => {
-  try {
-    await api.post("/auth/logout");
-  } catch (error) {
-    console.error(error);
-    throw new Error(error.response?.data?.description || "Logout failed");
-  }
+  await api.post("/auth/logout", {});
 };

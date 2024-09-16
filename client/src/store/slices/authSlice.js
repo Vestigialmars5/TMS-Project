@@ -20,9 +20,22 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const logoutUser = createAsyncThunk("auth/logout", async () => {
-  await authService.logout();
-});
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      await authService.logout();
+      tokenService.removeTokens();
+      return ;
+    } catch {
+      return rejectWithValue({
+        error: error.response?.data?.error,
+        message: error.response?.data?.description,
+        status: error.response?.status,
+      });
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "AUTH",
@@ -55,9 +68,19 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
-        state.token = null;
         state.isAuthenticated = false;
         state.status = "idle";
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.error = {
+          error: action.payload.error,
+          message: action.payload.message,
+          status: action.payload.status,
+        };
+        state.status = "failed";
       });
   },
 });
