@@ -7,9 +7,9 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await authService.login(credentials);
-      tokenService.setTokens(response.accessToken); // Store tokens -> TODO: response.refreshToken
+      tokenService.setTokens(response.accessToken, response.refreshToken); // Store tokens -> TODO: response.refreshToken
       // Add alert here
-      return tokenService.decodeToken(response.accessToken);
+      return response.user;
     } catch (error) {
       return rejectWithValue({
         error: error.response?.data?.error,

@@ -1,14 +1,11 @@
 import { jwtDecode } from "jwt-decode";
 
 export const tokenService = {
-  setTokens: (accessToken) => {
-    localStorage.setItem("authTokens", JSON.stringify({ accessToken }));
-
-    /* TODO:  setTokens: (accessToken, refreshToken) => {
+  setTokens: (accessToken, refreshToken) => {
     localStorage.setItem(
       "authTokens",
       JSON.stringify({ accessToken, refreshToken })
-    ); */
+    );
   },
   getTokens: () => {
     const tokens = localStorage.getItem("authTokens");
@@ -31,7 +28,7 @@ export const tokenService = {
     } catch (error) {
       return null;
     }
-  }
+  },
 };
 
 export default tokenService;
