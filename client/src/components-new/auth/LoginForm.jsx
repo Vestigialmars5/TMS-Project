@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { navigateBasedOnRole} from "../../utils/navigation"
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -9,7 +7,6 @@ const LoginForm = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
 
   const { login, loading } = useAuth();
 
@@ -51,7 +48,6 @@ const LoginForm = () => {
       setPasswordError(passwordErr);
     } else {
       login({ email, password });
-      console.log("LoginForm.jsx");
     }
   };
 
