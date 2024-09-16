@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
-import LoginButton from "../login/LoginButton";
-import LogoutButton from "../logout/LogoutButton";
+// import LoginButton from "../login/LoginButton";
+// import LogoutButton from "../logout/LogoutButton";
 import AlertComponent from "../shared/AlertComponent";
 
 const Layout = () => {
