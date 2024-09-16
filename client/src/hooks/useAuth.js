@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../store/slices/authSlice";
+import { loginUser, logoutUser } from "../store/slices/authSlice";
 import { useRoleBasedNavigation } from "../hooks/useRoleBasedNavigation";
 import { useNavigate } from "react-router-dom";
 
