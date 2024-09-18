@@ -1,9 +1,16 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import LogoutButton from "../../components-new/auth/LogoutButton";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const authState = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  const handleLoginRedirect = () => {
+    navigate("/login");
+  };
+
 
   return (
     // TODO: Make a component for this
@@ -12,6 +19,8 @@ const Home = () => {
         <div>Welcome!</div>
       </div>
       <div>This is the home page.</div>
+
+
       {authState.isAuthenticated ? (
         <div className={"buttonContainer"}>
           <div>Your email address is {authState.user.email}</div>
@@ -19,7 +28,7 @@ const Home = () => {
           <LogoutButton />
         </div>
       ) : (
-        <div></div>
+        <button onClick={handleLoginRedirect}>Go To Login</button>
       )}
     </div>
   );
