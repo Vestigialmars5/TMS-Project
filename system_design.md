@@ -1521,25 +1521,24 @@ stateDiagram-v2
     }
     UseCustomHook --> CustomHook
     state CustomHook {
-        [*] --> DispatchAction : Request
-        [*] --> Redirects : Response
+        [*] --> Action
+        Action --> DispatchAction : Request
+        Action --> Redirects : Response
     }
     DispatchAction --> ReduxSlice
     state ReduxSlice {
         [*] --> ReduxAction
-        ReduxAction --> ApiHook : Request
+        ReduxAction --> AwaitService : Request
         ReduxAction --> ReturnData : Response
         ReturnData --> UpdateStore
     }
-    ApiHook --> UseApi
-    state UseApi {
-        [*] --> AwaitService
-        AwaitService --> DispatchAlert
-    }
+    ReduxAction --> Action : Return Data
     AwaitService --> ModuleService
     state ModuleService {
         [*] --> ApiCall
         ApiCall --> ThrowError : Error
+        ApiCall --> DispatchAlert : Success
+        ThrowError --> DispatchAlert
     }
     ApiCall --> ApiService
     ApiService --> ApiCall
@@ -1563,18 +1562,16 @@ stateDiagram-v2
     }
     UseCustomHook --> CustomHook
     state CustomHook {
-        [*] --> ApiHook : Request
-        [*] --> Redirects : Response
-    }
-    ApiHook --> UseApi
-    state UseApi {
-        [*] --> AwaitService
-        AwaitService --> DispatchAlert
+        [*] --> Action
+        Action --> AwaitService : Request
+        Action --> Redirects : Response
     }
     AwaitService --> ModuleService
     state ModuleService {
         [*] --> ApiCall
         ApiCall --> ThrowError : Error
+        ThrowError --> DispatchAlert
+        ApiCall --> DispatchAlert : Success
     }
     ApiCall --> ApiService
     ApiService --> ApiCall
@@ -1582,8 +1579,7 @@ stateDiagram-v2
         Interceptor --> SetToken : Request
         Interceptor --> DoSomething : Response
     }
-    ApiCall --> AwaitService : Success
-    AwaitService --> CustomHook : Return Data
+    ApiCall --> Action : Return Data
 ```
 
 # Diagrams
