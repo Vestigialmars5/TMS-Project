@@ -8,7 +8,6 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await authService.login(credentials);
       tokenService.setTokens(response.accessToken, response.refreshToken); // Store tokens -> TODO: response.refreshToken
-      // Add alert here
       return response.user;
     } catch (error) {
       return rejectWithValue({
@@ -45,7 +44,15 @@ const authSlice = createSlice({
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setAccessToken: (state, token) => {
+      state.accessToken = token;
+      tokenService.setAccessToken(token);
+    },
+    setUser: (state, user) => {
+      state.user = user;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.fulfilled, (state, action) => {

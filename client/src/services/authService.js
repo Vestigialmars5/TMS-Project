@@ -1,10 +1,22 @@
 import api from "./apiService";
 
 export const login = async (credentials) => {
-  const response = await api.post("/auth/login", credentials);
-  return response.data;
+  try {
+    const response = await api.post("/auth/login", credentials);
+    // Add alert here
+    return response.data;
+  } catch (error) {
+    // Add alert here
+    throw error;
+  }
 };
 
 export const logout = async () => {
-  await api.post("/auth/logout", {});
+  try {
+    await api.post("/auth/logout", {});
+    // Add alert here
+  } catch (error) {
+    // Add alert here
+    throw error;
+  }
 };
