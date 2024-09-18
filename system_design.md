@@ -40,6 +40,7 @@ coordination between transportation and warehousing operations.
 
 ### 2.6 Other Modules
 
+- Authentication and Authorization Module
 - User Management Module
 - Notification and Alert System
 - Document Management
@@ -403,7 +404,7 @@ Let's first recap the core modules of our TMS:
 
 ## 2. Role Interactions with Core Modules
 
-### 2.1 Order Management Module
+### 2.1.1 Order Management Module
 
 - **Customer/Shipper**: Creates new shipping orders, views order status, modifies or cancels orders.
 - **Customer Service Representative**: Assists customers with order creation, handles order inquiries and modifications.
@@ -412,7 +413,7 @@ Let's first recap the core modules of our TMS:
 - **Warehouse Manager**: Receives order details, prepares inventory for shipment.
 - **Finance/Accounting**: Generates invoices based on order details, tracks order-related financial transactions.
 
-### 2.2 Route Planning and Optimization Module
+### 2.1.2 Route Planning and Optimization Module
 
 - **Dispatcher**: Creates and optimizes routes, assigns drivers to routes.
 - **Transportation Manager**: Reviews and approves proposed routes, analyzes route efficiency.
@@ -420,7 +421,7 @@ Let's first recap the core modules of our TMS:
 - **Carrier**: Provides input on vehicle availability and capabilities for route planning.
 - **Admin**: Configures route optimization parameters and constraints.
 
-### 2.3 Carrier Management Module
+### 2.1.3 Carrier Management Module
 
 - **Transportation Manager**: Manages carrier relationships, negotiates contracts, evaluates carrier performance.
 - **Carrier**: Updates company information, manages fleet details, sets availability.
@@ -428,7 +429,7 @@ Let's first recap the core modules of our TMS:
 - **Finance/Accounting**: Manages carrier payments and financial agreements.
 - **Admin**: Sets up new carrier accounts, manages carrier access to the system.
 
-### 2.4 Shipment Tracking Module
+### 2.1.4 Shipment Tracking Module
 
 - **Customer/Shipper**: Tracks shipment status in real-time, receives notifications on shipment progress.
 - **Driver**: Updates shipment status and location information.
@@ -436,20 +437,38 @@ Let's first recap the core modules of our TMS:
 - **Customer Service Representative**: Provides shipment status updates to customers, handles tracking-related inquiries.
 - **Warehouse Manager**: Tracks inbound shipments for resource planning.
 
-### 2.5 Inventory Management Module (with WMS integration)
+### 2.1.5 Inventory Management Module (with WMS integration)
 
 - **Warehouse Manager**: Manages inventory levels, coordinates with WMS for accurate stock information.
 - **Transportation Manager**: Views inventory levels for shipment planning.
 - **Customer Service Representative**: Checks inventory availability for customer inquiries.
 - **Admin**: Manages WMS integration, ensures data synchronization.
 
-### 2.6 Reporting and Analytics Module
+### 2.1.6 Reporting and Analytics Module
 
 - **Admin**: Configures system-wide reports, manages access to analytics.
 - **Transportation Manager**: Analyzes performance metrics, generates strategic reports.
 - **Finance/Accounting**: Generates financial reports, analyzes cost and revenue data.
 - **Carrier**: Views performance reports related to their shipments.
 - **Customer/Shipper**: Accesses reports on their shipping history and performance.
+
+### 2.2 Other Modules
+
+- **Authentication and Authorization Module**: All roles authenticate and manage their access.
+- **User Management Module**: Admin manages user accounts and roles.
+- **Notification and Alert System**: All roles receive relevant notifications based on their responsibilities.
+- **Document Management**: All roles can access relevant documents based on permissions.
+- **Compliance and Regulatory Management**: Admin and Transportation Manager ensure compliance with regulations.
+- **Customer Management**: Customer Service Representatives manage customer accounts and inquiries.
+- **Financial Management**: Finance/Accounting manages all financial transactions and reporting.
+- **Equipment and Asset Management**: Transportation Manager oversees fleet and equipment.
+- **Business Intelligence and Analytics**: Admin and Transportation Manager analyze data for decision-making.
+- **Integration Management**: Admin manages integrations with WMS and other systems.
+- **Audit Trail and Logging**: Admin monitors system activity and compliance.
+- **Help and Support System**: All roles can access support resources.
+
+### 2.3 Module State Discussions
+Here I want to get a better understanding of how I will handle state management for the modules. Meaning, I want to clarify what will need a redux slice and why, 
 
 ## 3. Cross-Module Interactions
 
@@ -479,9 +498,14 @@ To illustrate how these modules and roles interact in a typical workflow, let's 
    - The Customer/Shipper receives updates and can track the shipment's progress.
 
 5. **Completion and Reporting**:
+
    - Upon delivery, the Driver confirms completion in the Shipment Tracking module.
    - The Finance/Accounting role generates an invoice through the Order Management module.
    - The Transportation Manager reviews performance data in the Reporting and Analytics module.
+
+6. **Feedback Loop**:
+   - The Transportation Manager analyzes the entire process for efficiency and areas of improvement.
+   - Feedback is provided to the Dispatcher, Carrier, and Warehouse Manager for future optimizations.
 
 ## 4. Implementation Considerations
 
@@ -1467,6 +1491,99 @@ src/
 │
 ├── App.js -- Setup routes and layout
 └── index.js -- Entry point
+```
+
+## 3. Steps to Implement
+### 3.1 Authentication and Authorization
+
+Authentication and Authorization will be handled using JWT tokens. The `authSlice` will manage the authentication state, and the "Role Route" component will protect routes that require authentication.
+
+- **Login Form**: The `LoginForm.js` component will handle client side validation, display validation errors using local state, useAuth to make the dispatch call, apiService handles interceptors for token management, the action sets tokens and sets user data in redux state, as well as making the dispatch call to add global alert. Errors that happen during request are stored in the store.
+
+### 3.2 Onboarding
+
+Onboarding is just to finish up details for the user. This page requires a "not_onboarded" state in the authState.user.status. Onboarding will be managed only locally, and will not be stored in redux. But it will dispatch an action to update both the token and the user state. So the flow will be, once the user tries to redirect to the dashboard, it will check if the user is onboarded, if not, it will redirect to the onboarding page. The onboarding form will use useOnboardingService to make the api call and then dispatch the action to update the user state.
+
+### 3.3 User Management
+
+The "UsersList" component displays a list of all users, the "NewUserForm" component allows for creating new users, and the "EditUserForm" component allows for editing existing users. There will be a usersSlice that manages the state of users
+
+## 4. Data Flow Frontend
+### 4.1 With Redux
+Api calls that are using Redux and Axios. The flow will be as follows:
+
+```mermaid
+stateDiagram-v2
+    state Form {
+        [*] --> Validating
+        Validating --> UseCustomHook : Valid
+        Validating --> Error : Invalid
+    }
+    UseCustomHook --> CustomHook
+    state CustomHook {
+        [*] --> DispatchAction : Request
+        [*] --> Redirects : Response
+    }
+    DispatchAction --> ReduxSlice
+    state ReduxSlice {
+        [*] --> ReduxAction
+        ReduxAction --> ApiHook : Request
+        ReduxAction --> ReturnData : Response
+        ReturnData --> UpdateStore
+    }
+    ApiHook --> UseApi
+    state UseApi {
+        [*] --> AwaitService
+        AwaitService --> DispatchAlert
+    }
+    AwaitService --> ModuleService
+    state ModuleService {
+        [*] --> ApiCall
+        ApiCall --> ThrowError : Error
+    }
+    ApiCall --> ApiService
+    ApiService --> ApiCall
+    state ApiService {
+        Interceptor --> SetToken : Request
+        Interceptor --> DoSomething : Response
+    }
+    ApiCall --> ReduxAction
+
+```
+
+### 4.2 Without Redux
+Api calls that aren't using Redux. The flow will be as follows:
+
+```mermaid
+stateDiagram-v2
+    state Form {
+        [*] --> Validating
+        Validating --> UseCustomHook : Valid
+        Validating --> Error : Invalid
+    }
+    UseCustomHook --> CustomHook
+    state CustomHook {
+        [*] --> ApiHook : Request
+        [*] --> Redirects : Response
+    }
+    ApiHook --> UseApi
+    state UseApi {
+        [*] --> AwaitService
+        AwaitService --> DispatchAlert
+    }
+    AwaitService --> ModuleService
+    state ModuleService {
+        [*] --> ApiCall
+        ApiCall --> ThrowError : Error
+    }
+    ApiCall --> ApiService
+    ApiService --> ApiCall
+    state ApiService {
+        Interceptor --> SetToken : Request
+        Interceptor --> DoSomething : Response
+    }
+    ApiCall --> AwaitService : Success
+    AwaitService --> CustomHook : Return Data
 ```
 
 # Diagrams
