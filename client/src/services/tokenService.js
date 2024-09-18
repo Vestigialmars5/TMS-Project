@@ -7,6 +7,20 @@ export const tokenService = {
       JSON.stringify({ accessToken, refreshToken })
     );
   },
+  setAccessToken: (accessToken) => {
+    const tokens = tokenService.getTokens();
+    if (tokens) {
+      tokens.accessToken = accessToken;
+      tokenService.setTokens(tokens.accessToken, tokens.refreshToken);
+    }
+  },
+  setRefreshToken: (refreshToken) => {
+    const tokens = tokenService.getTokens();
+    if (tokens) {
+      tokens.refreshToken = refreshToken;
+      tokenService.setTokens(tokens.accessToken, tokens.refreshToken);
+    }
+  },
   getTokens: () => {
     const tokens = localStorage.getItem("authTokens");
     return tokens ? JSON.parse(tokens) : null;
