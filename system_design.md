@@ -1582,6 +1582,28 @@ stateDiagram-v2
     ApiCall --> Action : Return Data
 ```
 
+### 4.3 No Api Call, With Redux
+```mermaid
+stateDiagram-v2
+    state Component {
+        [*] --> Validating
+        Validating --> UseCustomHook : Valid
+        Validating --> Error : Invalid
+    }
+    UseCustomHook --> CustomHook
+    state CustomHook {
+        [*] --> Action
+        Action --> DispatchAction : Request
+    }
+    DispatchAction --> ReduxSlice
+    state ReduxSlice {
+        [*] --> ReduxAction
+        ReduxAction --> ReturnData : Response
+        ReturnData --> UpdateStore
+    }
+
+```
+
 # Diagrams
 
 ## Requirements
