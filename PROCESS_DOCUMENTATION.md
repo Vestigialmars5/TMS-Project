@@ -849,4 +849,7 @@ In order to improve the onboarding I need to do the following first: Update the 
 
 Sep 8
 I was able to get a very good system design with the help of Claude. It is not refined but it has helped me clean some of my thoughts.
-And now I think I want to do something drastic again. I want to change from having it based on role, to based on core modules, this way I can keep 
+And now I think I want to do something drastic again. I want to change from having it based on role, to based on core modules, this way I can keep (Forgot what I was adding here).
+
+Sep 17
+I'm in the middle of refactoring, I have already done the backend. Refactoring the frontend has been harder since I'm having to implement Redux, Axios, and other things.
