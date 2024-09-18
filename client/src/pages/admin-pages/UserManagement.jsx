@@ -17,7 +17,7 @@ const UserManagement = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
-  const { addAlert } = useAlert();
+  const { addAlertOld } = useAlert();
 
   useEffect(() => {
     fetchUsers();
@@ -27,7 +27,7 @@ const UserManagement = () => {
     try {
       await getUsers({ searchField, sortBy, sortOrder, page, limit });
     } catch (error) {
-      addAlert(error.message, "danger");
+      addAlertOld(error.message, "danger");
     }
   };
 

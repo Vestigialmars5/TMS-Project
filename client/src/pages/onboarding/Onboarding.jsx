@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const Onboarding = () => {
   const { user, updateUser } = useAuth();
-  const { addAlert } = useAlert();
+  const { addAlertOld } = useAlert();
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
     email: user.email,
@@ -34,10 +34,10 @@ const Onboarding = () => {
       console.log(userData);
       const updatedUserData = await onboardUserApi({ userData });
       updateUser(updatedUserData);
-      addAlert("Onboarding successful", "success");
+      addAlertOld("Onboarding successful", "success");
       navigateBasedOnRole(user.roleName, navigate); // Onboarding does't modify role, safe to use from original user
     } catch (error) {
-      addAlert(error.message, "danger");
+      addAlertOld(error.message, "danger");
       // TODO: Logout
     }
   };

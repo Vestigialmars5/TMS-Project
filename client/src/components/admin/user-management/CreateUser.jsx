@@ -6,15 +6,15 @@ import { useAlert } from "../../../context/AlertProvider";
 const CreateUser = () => {
   const [createUserError, setCreateUserError] = useState("");
   const { createUser, refreshUsers } = useUserManagement();
-  const { addAlert } = useAlert();
+  const { addAlertOld } = useAlert();
 
   const handleCreateUser = async (userData) => {
     try {
       await createUser(userData);
-      addAlert("User Created Successfully", "success");
+      addAlertOld("User Created Successfully", "success");
       await refreshUsers();
     } catch (error) {
-      addAlert(error.message, "danger");
+      addAlertOld(error.message, "danger");
     }
   };
 

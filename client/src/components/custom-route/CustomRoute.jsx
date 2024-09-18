@@ -7,7 +7,7 @@ import { useAlert } from "../../context/AlertProvider";
 
 const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
   const { user, loading, isLoggedIn, userStatus, isAuthorized } = useAuth();
-  const { addAlert } = useAlert();
+  const { addAlertOld } = useAlert();
   const navigate = useNavigate();
 
   if (loading) {
@@ -17,12 +17,12 @@ const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
   // Based on a required role
   if (requiredRoleId) {
     if (!isLoggedIn) {
-      addAlert("You Need To Be Logged In To Access This Page", "warning");
+      addAlertOld("You Need To Be Logged In To Access This Page", "warning");
       return <Navigate to="/login" replace />;
     }
 
     if (!isAuthorized(requiredRoleId)) {
-      addAlert("You Are Not Authorized To Access This Page", "warning");
+      addAlertOld("You Are Not Authorized To Access This Page", "warning");
       return <Navigate to="/home" replace />;
     }
   }
@@ -32,24 +32,27 @@ const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
     switch (restriction) {
       case "loggedIn":
         if (!isLoggedIn) {
-          addAlert("You Need To Be Logged In To Access This Page", "warning");
+          addAlertOld(
+            "You Need To Be Logged In To Access This Page",
+            "warning"
+          );
           return <Navigate to="/login" />;
         }
         break;
       case "loggedOut":
         if (isLoggedIn) {
-          addAlert("You Are Already Logged In", "warning");
+          addAlertOld("You Are Already Logged In", "warning");
           return <Navigate to="/" />;
         }
         break;
       case "not_onboarded":
         if (userStatus != "not_onboarded") {
-          addAlert("You Have Already Onboarded", "warning");
+          addAlertOld("You Have Already Onboarded", "warning");
           return <Navigate to="/home" />;
         }
         break;
       default:
-        addAlert("Something Went Wrong (Restriction)", "warning");
+        addAlertOld("Something Went Wrong (Restriction)", "warning");
         return navigateBasedOnRole(user?.role, navigate);
     }
   }

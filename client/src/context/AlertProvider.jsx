@@ -8,7 +8,7 @@ export const useAlert = () => useContext(AlertProviderContext);
 export const AlertProvider = ({ children }) => {
   const [alert, setAlert] = useState(null);
 
-  const addAlert = (message, variant) => {
+  const addAlertOld = (message, variant) => {
     setAlert({ message, variant });
   };
 
@@ -17,7 +17,7 @@ export const AlertProvider = ({ children }) => {
   };
 
   return (
-    <AlertProviderContext.Provider value={{ alert, addAlert, removeAlert }}>
+    <AlertProviderContext.Provider value={{ alert, addAlertOld, removeAlert }}>
       {children}
     </AlertProviderContext.Provider>
   );

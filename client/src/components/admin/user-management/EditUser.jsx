@@ -12,7 +12,7 @@ const EditUser = ({ user, cancelEdit }) => {
   const [userId, setUserId] = useState(user.userId);
   const [emailError, setEmailError] = useState("");
   const [roleError, setRoleError] = useState("");
-  const { addAlert } = useAlert();
+  const { addAlertOld } = useAlert();
 
   useEffect(() => {
     if (roles.length === 0) {
@@ -22,7 +22,7 @@ const EditUser = ({ user, cancelEdit }) => {
 
   const handleCancelEdit = () => {
     cancelEdit();
-    addAlert("Edit Cancelled", "info");
+    addAlertOld("Edit Cancelled", "info");
   };
 
   const getRoleName = (roleId) => {
@@ -73,14 +73,14 @@ const EditUser = ({ user, cancelEdit }) => {
       try {
         await updateUser({ userId, email, roleId });
         await refreshUsers();
-        addAlert("Update Successful", "success");
+        addAlertOld("Update Successful", "success");
         cancelEdit();
       } catch (error) {
         if (error.message == "No Changes Made") {
-          addAlert("Update Cancelled: No Changes Made", "info");
+          addAlertOld("Update Cancelled: No Changes Made", "info");
           cancelEdit();
         } else {
-          addAlert(error.message, "danger");
+          addAlertOld(error.message, "danger");
         }
       }
     }

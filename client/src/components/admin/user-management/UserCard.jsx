@@ -7,7 +7,7 @@ import { useAlert } from "../../../context/AlertProvider";
 const UserCard = ({ user }) => {
   const { deleteUser, refreshUsers } = useUserManagement();
   const [isEditing, setIsEditing] = useState(false);
-  const { addAlert } = useAlert();
+  const { addAlertOld } = useAlert();
 
   const handleDeleteUser = async () => {
     // TODO: Make it better Confirm dialog Modal Bootstrap
@@ -17,10 +17,10 @@ const UserCard = ({ user }) => {
     if (confirmDelete) {
       try {
         await deleteUser(user.userId);
-        addAlert("User Deleted", "success");
+        addAlertOld("User Deleted", "success");
         await refreshUsers();
       } catch (error) {
-        addAlert(error.message, "danger");
+        addAlertOld(error.message, "danger");
       }
     }
   };
