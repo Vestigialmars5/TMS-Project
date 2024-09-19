@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+/* import { Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 // import LoginButton from "../login/LoginButton";
 // import LogoutButton from "../logout/LogoutButton";
@@ -11,7 +11,7 @@ const Layout = () => {
   return (
     <div>
       <header>
-        {/* <nav>
+        <nav>
           <ul>
             {isLoggedIn ? (
               <li>
@@ -27,7 +27,7 @@ const Layout = () => {
               </li>
             )}
           </ul>
-        </nav> */}
+        </nav>
         <AlertComponent />
       </header>
       <main>
@@ -38,3 +38,4 @@ const Layout = () => {
 };
 
 export default Layout;
+ */

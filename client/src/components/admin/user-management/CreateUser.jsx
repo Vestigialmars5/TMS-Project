@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import CreateUserForm from "./CreateUserForm";
 import { useUserManagement } from "../../../context/UserManagementProvider";
-import { useAlert } from "../../../context/AlertProvider";
+import { useAlertOld } from "../../../context/AlertProvider";
 
 const CreateUser = () => {
   const [createUserError, setCreateUserError] = useState("");
   const { createUser, refreshUsers } = useUserManagement();
-  const { addAlertOld } = useAlert();
+  const { addAlertOld } = useAlertOld();
 
   const handleCreateUser = async (userData) => {
     try {

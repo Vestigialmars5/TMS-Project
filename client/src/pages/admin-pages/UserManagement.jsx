@@ -7,7 +7,7 @@ import { useUserManagement } from "../../context/UserManagementProvider";
 import UsersTable from "../../components/admin/user-management/UsersTable";
 import CreateUser from "../../components/admin/user-management/CreateUser";
 import { debounce } from "../../utils/utils";
-import { useAlert } from "../../context/AlertProvider";
+import { useAlertOld } from "../../context/AlertProvider";
 
 const UserManagement = () => {
   const { getUsers, refresh } = useUserManagement();
@@ -17,7 +17,7 @@ const UserManagement = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
-  const { addAlertOld } = useAlert();
+  const { addAlertOld } = useAlertOld();
 
   useEffect(() => {
     fetchUsers();

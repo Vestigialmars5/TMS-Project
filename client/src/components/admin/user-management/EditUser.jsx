@@ -2,7 +2,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useUserManagement } from "../../../context/UserManagementProvider";
 import { useState, useEffect } from "react";
-import { useAlert } from "../../../context/AlertProvider";
+import { useAlertOld } from "../../../context/AlertProvider";
 
 const EditUser = ({ user, cancelEdit }) => {
   const { updateUser, refreshUsers, getRoles, roles } = useUserManagement();
@@ -12,7 +12,7 @@ const EditUser = ({ user, cancelEdit }) => {
   const [userId, setUserId] = useState(user.userId);
   const [emailError, setEmailError] = useState("");
   const [roleError, setRoleError] = useState("");
-  const { addAlertOld } = useAlert();
+  const { addAlertOld } = useAlertOld();
 
   useEffect(() => {
     if (roles.length === 0) {

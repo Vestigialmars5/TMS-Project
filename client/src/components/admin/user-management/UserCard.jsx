@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import EditUser from "./EditUser";
 import { useUserManagement } from "../../../context/UserManagementProvider";
-import { useAlert } from "../../../context/AlertProvider";
+import { useAlertOld } from "../../../context/AlertProvider";
 
 const UserCard = ({ user }) => {
   const { deleteUser, refreshUsers } = useUserManagement();
   const [isEditing, setIsEditing] = useState(false);
-  const { addAlertOld } = useAlert();
+  const { addAlertOld } = useAlertOld();
 
   const handleDeleteUser = async () => {
     // TODO: Make it better Confirm dialog Modal Bootstrap

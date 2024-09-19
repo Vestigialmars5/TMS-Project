@@ -3,11 +3,11 @@ import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 import { navigateBasedOnRole } from "../../utils/navigation";
 import Spinner from "react-bootstrap/esm/Spinner";
-import { useAlert } from "../../context/AlertProvider";
+import { useAlertOld } from "../../context/AlertProvider";
 
 const CustomRoute = ({ requiredRoleId, requiredRestrictions = [] }) => {
   const { user, loading, isLoggedIn, userStatus, isAuthorized } = useAuth();
-  const { addAlertOld } = useAlert();
+  const { addAlertOld } = useAlertOld();
   const navigate = useNavigate();
 
   if (loading) {

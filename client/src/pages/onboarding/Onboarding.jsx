@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useAuth } from "../../context/AuthProvider";
-import { useAlert } from "../../context/AlertProvider";
+import { useAlertOld } from "../../context/AlertProvider";
 import { Form, Button, Spinner } from "react-bootstrap";
 import { onboardUserApi } from "../../utils/onboarding";
 import { navigateBasedOnRole } from "../../utils/navigation";
@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const Onboarding = () => {
   const { user, updateUser } = useAuth();
-  const { addAlertOld } = useAlert();
+  const { addAlertOld } = useAlertOld();
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
     email: user.email,

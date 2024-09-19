@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import LoginForm from "../../components-new/auth/LoginForm";
-import { useAuth } from "../../context/AuthProvider";
-import { useAlert } from "../../context/AlertProvider";
+import { useAuth } from "../../hooks/useAuth"
 
 const Login = () => {
   const { login } = useAuth();
   const [loginError, setLoginError] = useState("");
-  const { addAlertOldOld } = useAlert();
 
   const handleLogin = async ({ email, password }) => {
     setLoginError("");
@@ -16,7 +14,6 @@ const Login = () => {
     } else {
       // TODO: Display success
       console.log("login");
-      addAlertOldOld("Login Successful", "success");
     }
   };
 

@@ -1,9 +1,9 @@
-import React from "react";
+/* import React from "react";
 import Alert from "react-bootstrap/Alert";
-import { useAlert } from "../../context/AlertProvider";
+import { useAlertOld } from "../../context/AlertProvider";
 
 const AlertComponent = () => {
-  const { alert, removeAlert } = useAlert();
+  const { alert, removeAlert } = useAlertOld();
 
   if (!alert) {
     return null;
@@ -17,3 +17,4 @@ const AlertComponent = () => {
 };
 
 export default AlertComponent;
+ */
