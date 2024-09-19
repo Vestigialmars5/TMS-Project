@@ -1428,7 +1428,7 @@ src/
 │   ├── AuditTrailContext.js
 │   └── ...
 │
-├── hooks/ -- Custom React Hooks (for api calls and using context)
+├── hooks/ -- Custom React Hooks
 |   ├── useRoute.js -- Custom hook for route planning
 │   ├── useCompliance.js
 │   ├── useBusinessIntelligence.js
@@ -1465,10 +1465,10 @@ src/
 │   └── ...
 │
 ├── services/ -- API services
-│   ├── api.js -- Create axios instance
-│   ├── auth.js -- Use api hook for authentication
-│   ├── orders.js
-│   ├── shipments.js
+│   ├── apiService.js -- Create axios instance
+│   ├── authService.js -- Use api hook for authentication
+│   ├── ordersService.js
+│   ├── shipmentsService.js
 │   └── ...
 │
 ├── store/
