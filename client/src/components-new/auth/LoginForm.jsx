@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import Spinner from "react-bootstrap/Spinner";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -8,7 +9,7 @@ const LoginForm = () => {
   const [passwordError, setPasswordError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const { login, loading } = useAuth();
+  const { login, status } = useAuth();
 
   const validateEmail = (email) => {
     if (!email) {
@@ -69,10 +70,13 @@ const LoginForm = () => {
           {passwordError && <p>{passwordError}</p>}
         </div>
         <div className="inputContainer">
-          {errorMessage && <p>{errorMessage}</p>}
-          <button type="submit" disabled={loading === "loading"}>
-            {loading === "loading" ? "Logging In..." : "Login"}
-          </button>
+          {status !== "loading" ? (
+            <button type="submit" disabled={status === "loading"}>
+              Login
+            </button>
+          ) : (
+            <Spinner animation="border" role="status" />
+          )}
         </div>
       </form>
     </div>
