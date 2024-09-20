@@ -16,7 +16,7 @@ export const loginUser = createAsyncThunk(
       showAlert(message, "danger");
       return rejectWithValue({
         error: error.response?.data?.error,
-        message: error.response?.data?.description,
+        message: message,
         status: error.response?.status,
       });
     }
@@ -29,11 +29,14 @@ export const logoutUser = createAsyncThunk(
     try {
       await authService.logout();
       tokenService.removeTokens();
+      showAlert("Logout Successful", "success");
       return ;
     } catch {
+      const message = error.response?.data?.description || error.response?.data?.error || "An Unknown Error Occurred";
+      showAlert(message, "danger");
       return rejectWithValue({
         error: error.response?.data?.error,
-        message: error.response?.data?.description,
+        message: message,
         status: error.response?.status,
       });
     }
