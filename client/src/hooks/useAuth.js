@@ -14,14 +14,17 @@ export const useAuth = () => {
       const user = await dispatch(loginUser(credentials)).unwrap();
       goToDashboard(user.roleId);
     } catch (error) {
-      // Do nothing
-      console.log();
+      // pass
     }
   };
 
   const logout = () => {
-    dispatch(logoutUser());
-    navigate("/login");
+    try {
+      dispatch(logoutUser());
+      navigate("/login");
+    } catch (error) {
+      // pass
+    }
   };
 
   return {
