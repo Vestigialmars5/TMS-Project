@@ -16,12 +16,12 @@ coordination between transportation and warehousing operations.
 
 ### 2.2 Core Modules
 
-- Order Management
-- Route Planning and Optimization
-- Carrier Management
-- Shipment Tracking
-- Inventory Management (with WMS integration)
-- Reporting and Analytics
+- Order Management (Redux + React Query)
+- Route Planning and Optimization (Redux + React Query)
+- Carrier Management (Redux + React Query)
+- Shipment Tracking (React Query + local Context)
+- Inventory Management (with WMS integration) (Redux + React Query)
+- Reporting and Analytics (React Query + local Context)
 
 ### 2.3 Integration Layer
 
@@ -40,18 +40,18 @@ coordination between transportation and warehousing operations.
 
 ### 2.6 Other Modules
 
-- Authentication and Authorization Module
-- User Management Module
-- Notification and Alert System
-- Document Management
-- Compliance and Regulatory Management
-- Customer Management
-- Financial Management
-- Equipment and Asset Management
-- Business Intelligence and Analytics
-- Integration Management
-- Audit Trail and Logging
-- Help and Support System
+- Authentication and Authorization Module (Redux slice/Redux persist/custom hook/service)
+- User Management Module (Redux + React Query)
+- Notification and Alert System (Alerts: Redux slice/Redux persist/actions file)
+- Document Management (React Query + local Context)
+- Compliance and Regulatory Management (Redux + React Query)
+- Customer Management (Redux + React Query)
+- Financial Management (Redux + React Query)
+- Equipment and Asset Management (Redux + React Query)
+- Business Intelligence and Analytics (React Query + local Context)
+- Integration Management (Redux + React Query)
+- Audit Trail and Logging (React Query)
+- Help and Support System (React Query + local Context)
 
 ## 3. Technical Architecture
 
@@ -468,7 +468,8 @@ Let's first recap the core modules of our TMS:
 - **Help and Support System**: All roles can access support resources.
 
 ### 2.3 Module State Discussions
-Here I want to get a better understanding of how I will handle state management for the modules. Meaning, I want to clarify what will need a redux slice and why, 
+
+Here I want to get a better understanding of how I will handle state management for the modules. Meaning, I want to clarify what will need a redux slice and why,
 
 ## 3. Cross-Module Interactions
 
@@ -1396,44 +1397,79 @@ src/
 │   │   └── ...
 │   ├── auth/
 │   │   ├── LoginForm.js -- Use api hook, use validation function
-│   │   └── LogoutButton.js
-|   |   └── ...
-|   ├── onboarding/
-|   │   ├── Welcome.js
-|   │   ├── DetailsForm.js
-|   │   └── ...
-|   ├── user-management/ -- User management components
-|   │   ├── UserList.js
-|   │   ├── UserForm.js
-|   │   └── UserDetails.js
-|   │   └── ...
+│   │   ├── LogoutButton.js
+│   │   └── ...
+│   ├── onboarding/
+│   │   ├── Welcome.js
+│   │   ├── DetailsForm.js
+│   │   └── ...
+│   ├── user-management/
+│   │   ├── UserList.js
+│   │   ├── UserForm.js
+│   │   ├── UserDetails.js
+│   │   └── ...
 │   ├── orders/
 │   │   ├── OrderList.js
 │   │   ├── OrderDetails.js
+│   │   ├── OrderForm.js
+│   │   └── ...
+│   ├── carriers/
+│   │   ├── CarrierList.js
+│   │   ├── CarrierDetails.js
+│   │   ├── CarrierForm.js
 │   │   └── ...
 │   ├── shipments/
 │   │   ├── ShipmentList.js
 │   │   ├── ShipmentDetails.js
+│   │   ├── ShipmentTracking.js
 │   │   └── ...
 │   ├── routes/
 │   │   ├── RouteList.js
 │   │   ├── RouteDetails.js
+│   │   ├── RouteMap.js
+│   │   ├── RouteOptimizationForm.js
+│   │   └── ...
+│   ├── inventory/
+│   │   ├── InventoryList.js
+│   │   ├── InventoryDetails.js
+│   │   ├── StockUpdateForm.js
+│   │   └── ...
+│   ├── reporting/
+│   │   ├── Dashboard.js
+│   │   ├── ReportGenerator.js
+│   │   ├── ChartComponents/
+│   │   │   ├── BarChart.js
+│   │   │   ├── LineChart.js
+│   │   │   └── ...
 │   │   └── ...
 │   └── ...
 │
 ├── contexts/ -- React Context API
-│   ├── ComplianceContext.js
+│   ├── TrackingContext.js
+│   ├── ReportContext.js
+│   ├── DocumentContext.js
 │   ├── BusinessIntelligenceContext.js
-│   ├── IntegrationContext.js
-│   ├── AuditTrailContext.js
+│   ├── SupportContext.js
 │   └── ...
 │
 ├── hooks/ -- Custom React Hooks
-|   ├── useRoute.js -- Custom hook for route planning
+│   ├── useAuth.js
+│   ├── useOrders.js
+│   ├── useRoutes.js
+│   ├── useCarriers.js
+│   ├── useShipments.js
+│   ├── useInventory.js
+│   ├── useReporting.js
+│   ├── useNotifications.js
+│   ├── useDocuments.js
 │   ├── useCompliance.js
+│   ├── useCustomers.js
+│   ├── useFinancials.js
+│   ├── useEquipment.js
 │   ├── useBusinessIntelligence.js
 │   ├── useIntegration.js
 │   ├── useAuditTrail.js
+│   ├── useSupport.js
 │   └── ...
 │
 ├── layouts/
@@ -1446,6 +1482,11 @@ src/
 │   ├── admin/
 │   │   ├── Dashboard.js
 │   │   ├── UserManagement.js
+│   │   ├── OrderManagement.js
+│   │   ├── RouteManagement.js
+│   │   ├── CarrierManagement.js
+│   │   ├── InventoryManagement.js
+│   │   ├── ReportingAnalytics.js
 │   │   └── ...
 │   ├── driver/
 │   │   ├── CurrentRoute.js
@@ -1466,21 +1507,42 @@ src/
 │
 ├── services/ -- API services
 │   ├── apiService.js -- Create axios instance
-│   ├── authService.js -- Use api hook for authentication
-│   ├── ordersService.js
-│   ├── shipmentsService.js
+│   ├── authService.js
+│   ├── orderService.js
+│   ├── routeService.js
+│   ├── carrierService.js
+│   ├── shipmentService.js
+│   ├── inventoryService.js
+│   ├── reportingService.js
+│   ├── userService.js
+│   ├── notificationService.js
+│   ├── documentService.js
+│   ├── complianceService.js
+│   ├── customerService.js
+│   ├── financialService.js
+│   ├── equipmentService.js
+│   ├── integrationService.js
+│   ├── auditService.js
+│   ├── supportService.js
 │   └── ...
 │
 ├── store/
 │   ├── slices/ -- Redux slices
-|   │   ├── authSlice.js
-|   │   ├── alertsSlice.js
+│   │   ├── authSlice.js
+│   │   ├── alertsSlice.js
 │   │   ├── ordersSlice.js
+│   │   ├── routesSlice.js
+│   │   ├── carriersSlice.js
 │   │   ├── shipmentsSlice.js
 │   │   ├── inventorySlice.js
 │   │   ├── usersSlice.js
 │   │   ├── customersSlice.js
-│   │   └── financialsSlice.js
+│   │   ├── financialsSlice.js
+│   │   ├── equipmentSlice.js
+│   │   └── ...
+│   ├── actions/ -- For things that need a separate file for actions
+│   │   ├── alertsActions.js
+│   │   └── ...
 │   ├── index.js -- Configure store
 │   └── rootReducer.js -- Combine all slices
 │
@@ -1494,6 +1556,7 @@ src/
 ```
 
 ## 3. Steps to Implement
+
 ### 3.1 Authentication and Authorization
 
 Authentication and Authorization will be handled using JWT tokens. The `authSlice` will manage the authentication state, and the "Role Route" component will protect routes that require authentication.
@@ -1509,7 +1572,9 @@ Onboarding is just to finish up details for the user. This page requires a "not_
 The "UsersList" component displays a list of all users, the "NewUserForm" component allows for creating new users, and the "EditUserForm" component allows for editing existing users. There will be a usersSlice that manages the state of users
 
 ## 4. Data Flow Frontend
+
 ### 4.1 With Redux
+
 Api calls that are using Redux and Axios. The flow will be as follows:
 
 ```mermaid
@@ -1551,6 +1616,7 @@ stateDiagram-v2
 ```
 
 ### 4.2 Without Redux
+
 Api calls that aren't using Redux. The flow will be as follows:
 
 ```mermaid
@@ -1583,6 +1649,7 @@ stateDiagram-v2
 ```
 
 ### 4.3 No Api Call, With Redux
+
 ```mermaid
 stateDiagram-v2
     state Component {
