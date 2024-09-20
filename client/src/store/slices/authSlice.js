@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as authService from "../../services/authService";
 import tokenService from "../../services/tokenService";
+import { showAlert } from "../actions/alertsActions";
 
 export const loginUser = createAsyncThunk(
   "auth/login",
@@ -8,8 +9,11 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await authService.login(credentials);
       tokenService.setTokens(response.accessToken, response.refreshToken); // Store tokens -> TODO: response.refreshToken
+      showAlert("Login Successful", "success");
       return response.user;
     } catch (error) {
+      const message = error.response?.data?.description || error.response?.data?.error || "An Unknown Error Occurred";
+      showAlert(message, "danger");
       return rejectWithValue({
         error: error.response?.data?.error,
         message: error.response?.data?.description,
