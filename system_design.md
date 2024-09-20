@@ -1335,52 +1335,80 @@ Redux will be used for managing global state that needs to be accessed across mu
 - Core Modules in Redux:
 
   - Authorization and Authentication
-  - Application Alerts
+  - Notifications and Alerts
   - Order Management
-  - Shipment Tracking
+  - Route Planning and Optimization
+  - Carrier Management
   - Inventory Management
   - User Management
+  - Compliance and Regulatory Management
   - Customer Management
   - Financial Management
+  - Equipment and Asset Management
+  - Integration Management
 
 - Redux Slices:
+  - `authSlice`: Reducer for authentication and authorization state
+  - `alertSlice`: Reducer for alert, error, and notification state
+  - `orderSlice`: Reducer for order-related state
+  - `routeSlice`: Reducer for route planning state
+  - `carrierSlice`: Reducer for carrier management state
+  - `inventorySlice`: Reducer for inventory management state
+  - `userSlice`: Reducer for user management state
+  - `complianceSlice`: Reducer for compliance and regulatory state
+  - `customerSlice`: Reducer for customer management state
+  - `financialSlice`: Reducer for financial management state
+  - `equipmentSlice`: Reducer for equipment and asset management state
+  - `integrationSlice`: Reducer for integration management state
 
-  - authSlice
-  - alertsSlice
-  - ordersSlice
-  - shipmentsSlice
-  - inventorySlice
-  - usersSlice
-  - customersSlice
-  - financialsSlice
 
-### 1.2 Local State (React useState and useReducer)
-
-For module-specific state that doesn't need to be shared globally:
-
-- Route Planning and Optimization
-- Carrier Management
-- Reporting and Analytics
-- Notification and Alert System
-- Document Management
-- Equipment and Asset Management
-- Help and Support System
-
-### 1.3 React Context API
+### 1.2 React Context
 
 For state that needs to be shared among a group of components but not globally:
 
-- Compliance and Regulatory Management
-- Business Intelligence and Analytics
-- Integration Management
-- Audit Trail and Logging
+- Shipment Tracking Context
+- Report and Analytics Context
+- Document Management Context
+- Business Intelligence and Analytics Context
+- Help and Support Context
 
-### 1.4 Server State (React Query)
+- Context Providers:
+  - `TrackingContextProvider`: Provides state and actions related to shipment tracking
+  - `ReportContextProvider`: Provides state and actions for reporting and analytics
+  - `DocumentContextProvider`: Provides state and actions for document management
+  - `BusinessIntelligenceContextProvider`: Provides state and actions for business intelligence
+  - `SupportContextProvider`: Provides state and actions for support resources
+
+### 1.3 Server State (React Query)
 
 For managing server state, caching, and synchronization:
 
 - All API calls using Axios
 - Implement React Query for efficient data fetching, caching, and synchronization
+
+### 1.4 Custom Hooks / Actions
+Define what will need custom hooks, and what will need a separate action file. A separate action file will be needed if the logic needs to be able to be called outside of a component. Whereas a custom hook is used within a component.
+
+- Custom Hooks:
+  - `useAuth`: Hook for handling authentication and user state
+  - `useOrders`: Hook for managing order-related data
+  - `useRoutes`: Hook for managing route planning and optimization
+  - `useCarriers`: Hook for managing carrier-related data
+  - `useShipments`: Hook for managing shipment tracking data
+  - `useInventory`: Hook for managing inventory data
+  - `useReporting`: Hook for reporting and analytics data
+  - `useDocuments`: Hook for document management
+  - `useCompliance`: Hook for compliance and regulatory data
+  - `useCustomers`: Hook for customer management data
+  - `useFinancials`: Hook for financial management data
+  - `useEquipment`: Hook for equipment and asset management data
+  - `useBusinessIntelligence`: Hook for business intelligence and analytics data
+  - `useIntegration`: Hook for integration management data
+  - `useAuditTrail`: Hook for tracking user actions and audit trail
+  - `useSupport`: Hook for accessing support resources
+
+- Action Files:
+  - `alertActions`: Actions for managing alerts and notifications
 
 ## 2. Structure
 
