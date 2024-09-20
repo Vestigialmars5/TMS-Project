@@ -11,6 +11,7 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import rootReducer from "./rootReducer";
+import { initializeAlertActions } from "./actions/alertsActions";
 
 const persistConfig = {
   key: "root",
@@ -31,6 +32,13 @@ const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
 });
 
+
+// Actions initialization
+initializeAlertActions(store);
+
+
+
+// Persistor
 const persistor = persistStore(store);
 
 export { store, persistor };
