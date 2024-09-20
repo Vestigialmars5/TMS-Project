@@ -1,22 +1,11 @@
-import api from "./apiService";
+import api from "./apiService"; 
+
 
 export const login = async (credentials) => {
-  try {
-    const response = await api.post("/auth/login", credentials);
-    // Add alert here
-    return response.data;
-  } catch (error) {
-    // Add alert here
-    throw error;
-  }
+  const response = await api.post("/auth/login", credentials);
+  return response.data;
 };
 
 export const logout = async () => {
-  try {
-    await api.post("/auth/logout", {});
-    // Add alert here
-  } catch (error) {
-    // Add alert here
-    throw error;
-  }
+  await api.post("/auth/logout", {});
 };
