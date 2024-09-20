@@ -1,10 +1,9 @@
 import React, {useEffect } from "react";
-import { useAlerts } from "../../hooks/useAlerts";
+import { closeAlert } from "../../store/actions/alertsActions";
 import Alert from "react-bootstrap/Alert";
 
 
 const AlertComponent = ({ id, message, type }) => {
-  const { closeAlert } = useAlerts();
 
   return (
     <Alert variant={type} onClose={() => closeAlert(id)} dismissible>
