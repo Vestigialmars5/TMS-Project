@@ -1603,7 +1603,7 @@ The "UsersList" component displays a list of all users, the "NewUserForm" compon
 
 ### 4.1 With Redux
 
-Api calls that are using Redux and Axios. The flow will be as follows:
+Api calls that are using Redux, React Query and Axios. The flow will be as follows:
 
 ```mermaid
 stateDiagram-v2
@@ -1614,24 +1614,26 @@ stateDiagram-v2
     }
     UseCustomHook --> CustomHook
     state CustomHook {
-        [*] --> Action
-        Action --> DispatchAction : Request
-        Action --> Redirects : Response
+        [*] --> MutationAction
+        MutationAction --> Mutations
+        state Mutations {
+            [*] --> AwaitService : Request
+            AwaitService --> OnSuccess
+            OnSuccess --> DispatchAction
+            OnSuccess --> Redirects
+            OnSuccess --> DispatchAlert
+            AwaitService --> OnError
+            OnError --> DispatchAlert
+        }
     }
     DispatchAction --> ReduxSlice
     state ReduxSlice {
-        [*] --> ReduxAction
-        ReduxAction --> AwaitService : Request
-        ReduxAction --> ReturnData : Response
-        ReturnData --> UpdateStore
+        [*] --> ReduxReducer
+        ReduxReducer --> UpdateStore
     }
-    ReduxAction --> Action : Return Data
     AwaitService --> ModuleService
     state ModuleService {
         [*] --> ApiCall
-        ApiCall --> ThrowError : Error
-        ApiCall --> DispatchAlert : Success
-        ThrowError --> DispatchAlert
     }
     ApiCall --> ApiService
     ApiService --> ApiCall
@@ -1639,7 +1641,7 @@ stateDiagram-v2
         Interceptor --> SetToken : Request
         Interceptor --> DoSomething : Response
     }
-    ApiCall --> ReduxAction
+    ApiCall --> AwaitService : ResponseData/ThrowError
 
 ```
 
