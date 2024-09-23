@@ -1658,16 +1658,21 @@ stateDiagram-v2
     }
     UseCustomHook --> CustomHook
     state CustomHook {
-        [*] --> Action
-        Action --> AwaitService : Request
-        Action --> Redirects : Response
+        [*] --> MutationAction
+        MutationAction --> Mutations
+        state Mutations {
+            [*] --> AwaitService : Request
+            AwaitService --> OnSuccess
+            OnSuccess --> DispatchAction
+            OnSuccess --> Redirects
+            OnSuccess --> DispatchAlert
+            AwaitService --> OnError
+            OnError --> DispatchAlert
+        }
     }
     AwaitService --> ModuleService
     state ModuleService {
         [*] --> ApiCall
-        ApiCall --> ThrowError : Error
-        ThrowError --> DispatchAlert
-        ApiCall --> DispatchAlert : Success
     }
     ApiCall --> ApiService
     ApiService --> ApiCall
@@ -1675,7 +1680,7 @@ stateDiagram-v2
         Interceptor --> SetToken : Request
         Interceptor --> DoSomething : Response
     }
-    ApiCall --> Action : Return Data
+    ApiCall --> AwaitService : ResponseData/ThrowError
 ```
 
 ### 4.3 No Api Call, With Redux
