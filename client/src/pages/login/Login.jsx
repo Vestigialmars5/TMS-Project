@@ -1,26 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import LoginForm from "../../components-new/auth/LoginForm";
-import { useAuth } from "../../hooks/useAuth"
 
 const Login = () => {
-  const { login } = useAuth();
-  const [loginError, setLoginError] = useState("");
-
-  const handleLogin = async ({ email, password }) => {
-    setLoginError("");
-    const res = await login({ email, password });
-    if (res?.error) {
-      setLoginError(res.error);
-    } else {
-      // TODO: Display success
-      console.log("login");
-    }
-  };
-
   return (
     <div>
       <h2>Login</h2>
-      <LoginForm onSubmit={handleLogin} errorMessage={loginError} />
+      <LoginForm />
     </div>
   );
 };
