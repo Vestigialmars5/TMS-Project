@@ -853,3 +853,6 @@ And now I think I want to do something drastic again. I want to change from havi
 
 Sep 17
 I'm in the middle of refactoring, I have already done the backend. Refactoring the frontend has been harder since I'm having to implement Redux, Axios, and other things.
+
+Sep 23
+I'm currently working on fixing a race condition again. The PublicRoute checks if authenticated and redirects before the roleBasedNavigation can redirect. When commenting out the PublicRoute's check, the order of things still firstly goes to the PublicRoute and only after that is done it redirects based on the navigate in the roleBasedNavigation. I have some options, adding a loading state, adding a delay, checking why useNavigate doesn't immediately redirect.
