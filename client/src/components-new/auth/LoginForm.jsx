@@ -7,9 +7,8 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
-  const { login, status } = useAuth();
+  const { login, loginStatus } = useAuth();
 
   const validateEmail = (email) => {
     if (!email) {
@@ -70,12 +69,12 @@ const LoginForm = () => {
           {passwordError && <p>{passwordError}</p>}
         </div>
         <div className="inputContainer">
-          {status !== "loading" ? (
-            <button type="submit" disabled={status === "loading"}>
+          {loginStatus !== "loading" ? (
+            <button type="submit" disabled={loginStatus === "loading"}>
               Login
             </button>
           ) : (
-            <Spinner animation="border" role="status" />
+            <Spinner animation="border" role="loginStatus" />
           )}
         </div>
       </form>
