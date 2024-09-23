@@ -69,8 +69,8 @@ const LoginForm = () => {
           {passwordError && <p>{passwordError}</p>}
         </div>
         <div className="inputContainer">
-          {loginStatus !== "loading" ? (
-            <button type="submit" disabled={loginStatus === "loading"}>
+          {loginStatus !== "pending" ? (
+            <button type="submit" disabled={loginStatus === "pending"}>
               Login
             </button>
           ) : (
