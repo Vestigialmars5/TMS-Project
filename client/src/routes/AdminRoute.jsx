@@ -1,24 +1,36 @@
-import { Route } from "react-router-dom";
-import AdminDashboard from "../pages-new/admin/AdminDashboard";
 import { Outlet } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useRoleBasedNavigation } from "../hooks/useRoleBasedNavigation";
+import { useEffect } from "react";
+import { showAlert } from "../store/actions/alertsActions";
+import Spinner from "react-bootstrap/Spinner";
+import { useNavigate } from "react-router-dom";
 
 const AdminRoute = () => {
   const required = 1;
-  const authState = useSelector((state) => state.auth);
+  const { user, isAuthenticated, isAuthenticating } = useSelector(
+    (state) => state.auth
+  );
+  const { goToDashboard } = useRoleBasedNavigation();
+  const navigate = useNavigate();
 
-  if (!authState.isAuthenticated) {
-    console.log("Not Authenticated, Redirecting To Login");
-    return <Navigate to="/login" />;
+  useEffect(() => {
+    if (!isAuthenticating && !isAuthenticated) {
+      showAlert("You Must Be Logged In To Access This Page", "warning");
+      navigate("/login");
+    }
+
+    if (!isAuthenticating && isAuthenticated && required !== user.roleId) {
+      showAlert("You Are Not Authorized To Access This Page", "danger");
+      goToDashboard(user.roleId);
+    }
+  }, [isAuthenticating, isAuthenticated, user, goToDashboard]);
+
+  if (isAuthenticating || !isAuthenticated) {
+    return <Spinner />;
   }
-
-  if (authState.user.roleId !== required) {
-    console.log("User not authorized, redirecting to home");
-    return <Navigate to="/home" />;
-  }
-
+  
   return <Outlet />;
 };
 
