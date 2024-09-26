@@ -1,5 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { setUser, clearUser } from "../store/slices/authSlice";
+import {
+  setUser,
+  clearUser,
+  startAuthenticating,
+  stopAuthenticating,
+} from "../store/slices/authSlice";
 import { useRoleBasedNavigation } from "../hooks/useRoleBasedNavigation";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -10,18 +15,19 @@ import { showAlert } from "../store/actions/alertsActions";
 export const useAuth = () => {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const user = useSelector((state) => state.auth.user);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const { goToDashboard } = useRoleBasedNavigation();
 
   const loginMutation = useMutation({
-    mutationFn: (credentials) => authService.login(credentials),
+    mutationFn: (credentials) => {
+      dispatch(startAuthenticating());
+      return authService.login(credentials);
+    },
     onSuccess: (data) => {
       tokenService.setTokens(data.accessToken, data.refreshToken);
-      dispatch(setUser(data.user));
       queryClient.setQueryData("user", data.user);
+      dispatch(setUser(data.user));
       showAlert("Login Successful", "success");
-      goToDashboard(data.user.roleId);
     },
     onError: (error) => {
       const message =
@@ -29,6 +35,7 @@ export const useAuth = () => {
         error.response?.data?.error ||
         "An Unknown Error Occurred";
       showAlert(message, "danger");
+      dispatch(stopAuthenticating());
     },
   });
 
@@ -55,7 +62,7 @@ export const useAuth = () => {
 
   return {
     user,
-    isAuthenticated: !!user,
+    isAuthenticated: isAuthenticated,
     login,
     logout,
     loginStatus: loginMutation.status,
