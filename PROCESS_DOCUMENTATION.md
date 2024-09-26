@@ -856,3 +856,12 @@ I'm in the middle of refactoring, I have already done the backend. Refactoring t
 
 Sep 23
 I'm currently working on fixing a race condition again. The PublicRoute checks if authenticated and redirects before the roleBasedNavigation can redirect. When commenting out the PublicRoute's check, the order of things still firstly goes to the PublicRoute and only after that is done it redirects based on the navigate in the roleBasedNavigation. I have some options, adding a loading state, adding a delay, checking why useNavigate doesn't immediately redirect.
+
+Sep 25
+I'm going to break down the problem into separate parts to be able to brainstorm solutions.
+Problem: roleBasedNavigation code runs, PublicRoute then checks, PublicRoute redirects, roleBasedNavigation never redirects.
+Details: roleBasedNavigation is a hook that uses useNavigate to redirect, PublicRoute is a component that checks if authenticated from the authState, it uses useNavigate to redirect.
+The useAuth hook dispatches the setUser and other set functions for auth.
+The authState changes to isAuthenticated therefore the PublicRoute's check is being triggered.
+I don't understand why if I run the useNavigate in the roleBasedNavigation it doesn't redirect immediately. But instead if continues running the code until eventually the PublicRoute's useNavigate is triggered.
+Ideas: So, what we don't want is the check to run. The check is running because the authState is being updated. I need to
