@@ -10,7 +10,7 @@ import { AuthProvider } from "./context/AuthProvider";
 import { UserManagementProvider } from "./context/UserManagementProvider";
 import { AlertProvider } from "./context/AlertProvider";
 import "./App.css";
-import Onboarding from "./pages/onboarding/Onboarding";
+import Onboarding from "./pages-new/onboarding/Onboarding";
 import PrivateRoute from "./routes/PrivateRoute";
 import AdminRoute from "./routes/AdminRoute";
 import PublicRoute from "./routes/PublicRoute";
