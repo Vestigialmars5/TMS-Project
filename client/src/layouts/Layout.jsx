@@ -8,7 +8,8 @@ const Layout = () => {
       <header>
         <AlertsContainer key="alerts-container" />
         <div>
-          <h1>Title Here</h1>
+          <h1>Transportation Management System</h1>
+          <h6>By: Jorge Emilio Peña De La Canal</h6>
         </div>
       </header>
       <main>
