@@ -15,7 +15,7 @@ export const getUsers = async ({
   const response = await api.get("/users", {
     params: { search: searchField, sortBy, sortOrder, page, limit },
   });
-  return response.data;
+  return response.data.users;
 };
 
 export const createUser = async (user) => {
