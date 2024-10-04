@@ -1,11 +1,11 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import Home from "./pages/home/Home";
-import Login from "./pages/login/Login";
+import Login from "./pages-new/login/Login";
 import NoPage from "./pages/no-page/NoPage";
 import AdminDashboard from "./pages-new/admin/AdminDashboard";
 import CustomRoute from "./components/custom-route/CustomRoute";
-import UserManagement from "./pages/admin-pages/UserManagement";
+import UserManagement from "./pages-new/admin/UserManagement";
 import { AuthProvider } from "./context/AuthProvider";
 import { UserManagementProvider } from "./context/UserManagementProvider";
 import { AlertProvider } from "./context/AlertProvider";
