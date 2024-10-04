@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import { useQuery, QueryClient } from "@tanstack/react-query";
-import getRoles from "../../services/userService";
+import { getRoles } from "../../services/usersService";
 import { useUsers } from "../../hooks/useUsers";
 import Button from "react-bootstrap/Button";
 
@@ -13,13 +13,12 @@ const UsersForm = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [roleError, setRoleError] = useState("");
-  const [selected, setSelected] = useState("Select Role");
 
   const {
     data: roles,
     isLoading: rolesLoading,
     error: rolesError,
-  } = useQuery("roles", getRoles);
+  } = useQuery({ queryKey: ["roles"], queryFn: getRoles });
   const { createUser, createUserStatus } = useUsers();
 
   const validateEmail = (email) => {
@@ -74,7 +73,9 @@ const UsersForm = () => {
       setEmailError(emailErr);
       setPasswordError(passwordErr);
       setRoleError(roleErr);
+      console.log("Error");
     } else {
+      console.log("Create User");
       createUser({ email, password, roleId });
     }
   };
@@ -116,12 +117,8 @@ const UsersForm = () => {
         </Form.Group>
         <Form.Group controlId="role">
           <Form.Label>Role</Form.Label>
-          <Form.Control
-            as="select"
-            value={selected}
-            onChange={handleRoleChange}
-          >
-            <option>Select Role</option>
+          <Form.Control as="select" value={roleId} onChange={handleRoleChange}>
+            <option value={0}>Select a Role</option>
             {roles.map((role) => (
               <option key={role.roleId} value={role.roleId}>
                 {role.roleName}
@@ -131,11 +128,15 @@ const UsersForm = () => {
           {roleError && <p>{roleError}</p>}
         </Form.Group>
         <Form.Group>
-          <Button variant="primary" type="submit" disabled={createUserStatus === "pending"}>
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={createUserStatus === "pending"}
+          >
             {createUserStatus !== "pending" ? (
-              <Spinner animation="border" role="createUserStatus" />
-            ) : (
               "Create User"
+            ) : (
+              <Spinner animation="border" role="createUserStatus" />
             )}
           </Button>
         </Form.Group>
@@ -143,3 +144,5 @@ const UsersForm = () => {
     </div>
   );
 };
+
+export default UsersForm;
