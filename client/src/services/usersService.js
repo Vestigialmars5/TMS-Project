@@ -2,7 +2,7 @@ import api from "./apiService";
 
 export const getRoles = async () => {
   const response = await api.get("/roles");
-  return response.data;
+  return response.data.roles;
 };
 
 export const getUsers = async ({
