@@ -41,7 +41,7 @@ coordination between transportation and warehousing operations.
 ### 2.6 Other Modules
 
 - Authentication and Authorization Module (Redux slice/Redux persist/custom hook/service)
-- User Management Module (Redux + React Query)
+- User Management Module (React Query + Local Context)
 - Notification and Alert System (Alerts: Redux slice/Redux persist/actions file)
 - Document Management (React Query + local Context)
 - Compliance and Regulatory Management (Redux + React Query)
@@ -1354,7 +1354,6 @@ Redux will be used for managing global state that needs to be accessed across mu
   - `routeSlice`: Reducer for route planning state
   - `carrierSlice`: Reducer for carrier management state
   - `inventorySlice`: Reducer for inventory management state
-  - `userSlice`: Reducer for user management state
   - `complianceSlice`: Reducer for compliance and regulatory state
   - `customerSlice`: Reducer for customer management state
   - `financialSlice`: Reducer for financial management state
@@ -1391,6 +1390,7 @@ Define what will need custom hooks, and what will need a separate action file. A
 
 - Custom Hooks:
   - `useAuth`: Hook for handling authentication and user state
+  - `useUsers`: Hook for managing user-management data
   - `useOrders`: Hook for managing order-related data
   - `useRoutes`: Hook for managing route planning and optimization
   - `useCarriers`: Hook for managing carrier-related data
