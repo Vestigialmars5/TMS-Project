@@ -20,12 +20,11 @@ export const useUsers = () => {
       showAlert(`Error Creating User: ${message}`, "danger");
     },
   });
-};
 
+  const createUser = (user) => createUserMutation.mutate(user);
 
-const createUser = (user) => createUserMutation.mutate(user);
-
-return {
-  createUser,
-  createUserStatus: createUserMutation.status,
+  return {
+    createUser,
+    createUserStatus: createUserMutation.status,
+  };
 };
