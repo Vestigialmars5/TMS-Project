@@ -21,10 +21,29 @@ export const useUsers = () => {
     },
   });
 
+  const updateUserMutation = useMutation({
+    mutationFn: (user) => usersService.updateUser(user),
+    onSuccess: () => {
+      queryClient.invalidateQueries("users");
+      showAlert("User Updated Successfully", "success");
+    },
+    onError: (error) => {
+      const message =
+        error.response?.data?.description ||
+        error.response?.data?.error ||
+        "An Unknown Error Occurred";
+      showAlert(`Error Updating User: ${message}`, "danger");
+    },
+  });
+
   const createUser = (user) => createUserMutation.mutate(user);
+  const updateUser = (user) => updateUserMutation.mutate(user);
+
 
   return {
     createUser,
+    updateUser,
     createUserStatus: createUserMutation.status,
+    updateUserStatus: updateUserMutation.status,
   };
 };
