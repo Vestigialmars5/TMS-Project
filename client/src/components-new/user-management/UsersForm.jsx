@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
-import { useQuery, QueryClient } from "@tanstack/react-query";
-import { getRoles } from "../../services/usersService";
 import { useUsers } from "../../hooks/useUsers";
+import { useRoles } from "../../hooks/useRoles";
 import Button from "react-bootstrap/Button";
 
 const UsersForm = () => {
@@ -18,7 +17,7 @@ const UsersForm = () => {
     data: roles,
     isLoading: rolesLoading,
     error: rolesError,
-  } = useQuery({ queryKey: ["roles"], queryFn: getRoles });
+  } = useRoles();
   const { createUser, createUserStatus } = useUsers();
 
   const validateEmail = (email) => {
@@ -75,7 +74,6 @@ const UsersForm = () => {
       setRoleError(roleErr);
       console.log("Error");
     } else {
-      console.log("Create User");
       createUser({ email, password, roleId });
     }
   };
