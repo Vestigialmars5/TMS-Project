@@ -3,6 +3,8 @@ from server.models.tms_models import User, UserDetails
 from werkzeug.security import generate_password_hash
 from flask_jwt_extended import create_access_token
 from server.utils.exceptions import *
+from datetime import timedelta
+from flask import current_app
 from server.utils.logging import create_audit_log
 import logging
 
@@ -54,16 +56,17 @@ def onboard_user(
         except Exception as e:
             raise DatabaseQueryError("Error Adding User Details")
 
+        access_exp_hours = current_app.config['JWT_ACCESS_TOKEN_EXPIRES'] / 3600
+
         access_token = create_access_token(
-            user_id,
-            {
+            user_id, additional_claims={
                 "status": status,
                 "email": email,
                 "firstName": first_name,
                 "lastName": last_name,
                 "roleName": role_name,
                 "roleId": role_id,
-            },
+            }, expires_delta=timedelta(hours=access_exp_hours)
         )
 
         user_info = {
