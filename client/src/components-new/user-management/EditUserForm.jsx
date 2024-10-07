@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import { useRoles } from "../../hooks/useRoles";
 import { useUsers } from "../../hooks/useUsers";
 import { showAlert } from "../../store/actions/alertsActions";
+import Spinner from "react-bootstrap/Spinner";
 
 const EditUserForm = ({ user, cancelEdit }) => {
   const {
@@ -73,6 +74,10 @@ const EditUserForm = ({ user, cancelEdit }) => {
       updateUser({ userId, email, roleId });
     }
   };
+
+  if (updateUserStatus === "success") {
+    cancelEdit();
+  }
 
   return (
     <>
