@@ -17,7 +17,7 @@ const EditUserForm = ({ user, cancelEdit }) => {
   const [email, setEmail] = useState(user.email);
   const [roleId, setRoleId] = useState(user.roleId);
   const [roleName, setRoleName] = useState(user.roleName);
-  const [userId, setUserId] = useState(user.userId);
+  const userId = user.userId;
   const [emailError, setEmailError] = useState("");
   const [roleError, setRoleError] = useState("");
 
@@ -107,6 +107,9 @@ const EditUserForm = ({ user, cancelEdit }) => {
         </Form.Group>
 
         <Form.Group>
+          <Button variant="secondary" onClick={handleCancelEdit}>
+            Cancel
+          </Button>
           <Button
             variant="primary"
             type="submit"
@@ -117,9 +120,6 @@ const EditUserForm = ({ user, cancelEdit }) => {
             ) : (
               <Spinner animation="border" role="updateUserStatus" />
             )}
-          </Button>
-          <Button variant="secondary" onClick={handleCancelEdit}>
-            Cancel
           </Button>
         </Form.Group>
       </Form>
