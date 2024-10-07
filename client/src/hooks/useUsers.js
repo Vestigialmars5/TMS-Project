@@ -36,14 +36,32 @@ export const useUsers = () => {
     },
   });
 
+  const deleteUserMutation = useMutation({
+    mutationFn: (userId) => usersService.deleteUser(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries("users");
+      showAlert("User Deleted Successfully", "success");
+    },
+    onError: (error) => {
+      const message =
+        error.response?.data?.description ||
+        error.response?.data?.error ||
+        "An Unknown Error Occurred";
+      showAlert(`Error Deleting User: ${message}`, "danger");
+    },
+  });
+
   const createUser = (user) => createUserMutation.mutate(user);
   const updateUser = (user) => updateUserMutation.mutate(user);
+  const deleteUser = (userId) => deleteUserMutation.mutate(userId);
 
 
   return {
     createUser,
     updateUser,
+    deleteUser,
     createUserStatus: createUserMutation.status,
     updateUserStatus: updateUserMutation.status,
+    deleteUserStatus: deleteUserMutation.status,
   };
 };
