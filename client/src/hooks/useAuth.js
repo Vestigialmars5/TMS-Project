@@ -5,7 +5,6 @@ import {
   startAuthenticating,
   stopAuthenticating,
 } from "../store/slices/authSlice";
-import { useRoleBasedNavigation } from "../hooks/useRoleBasedNavigation";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as authService from "../services/authService";
@@ -20,7 +19,7 @@ export const useAuth = () => {
 
   const loginMutation = useMutation({
     mutationFn: (credentials) => {
-      dispatch(startAuthenticating());
+      dispatch(startAuthenticating()); // Set user stops authenticating automatically
       return authService.login(credentials);
     },
     onSuccess: (data) => {
