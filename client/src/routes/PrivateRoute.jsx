@@ -19,7 +19,10 @@ function PrivateRoute({ required }) {
     }
 
     if (!isAuthenticating && required && !required.includes(user.status)) {
-      showAlert("You Are Not Authorized To Access This Page", "danger");
+      // if user didn't come from login display alert
+      if (location.pathname !== "/onboarding") {
+        showAlert("You Are Not Authorized To Access This Page", "danger");
+      }
       goToDashboard(user.roleId);
     }
   }, [isAuthenticating, isAuthenticated, user.roleId, goToDashboard]);

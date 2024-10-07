@@ -21,10 +21,16 @@ const AdminRoute = () => {
       navigate("/login");
     }
 
+    if (!isAuthenticating && isAuthenticated && user.status === "not_onboarded") {
+      showAlert("Please Complete Your Onboarding", "warning");
+      navigate("/onboarding");
+    }
+
     if (!isAuthenticating && isAuthenticated && required !== user.roleId) {
       showAlert("You Are Not Authorized To Access This Page", "danger");
       goToDashboard(user.roleId);
     }
+
   }, [isAuthenticating, isAuthenticated, user, goToDashboard]);
 
   if (isAuthenticating || !isAuthenticated) {
