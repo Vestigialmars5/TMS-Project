@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import LogoutButton from "../../components-new/auth/LogoutButton";
+import LogoutButton from "../../components/auth/LogoutButton";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
