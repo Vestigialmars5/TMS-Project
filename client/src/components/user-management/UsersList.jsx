@@ -7,8 +7,8 @@ import Tab from "react-bootstrap/Tab";
 import { debounce } from "../../utils/utils";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
-import SearchBox from "../../components/shared/SearchBox";
-import UserCard from "../../components-new/user-management/UserCard";
+import SearchBox from "../../components/common/SearchBox";
+import UserCard from "./UserCard";
 
 const UsersList = () => {
   const [searchField, setSearchField] = useState("");
@@ -38,13 +38,12 @@ const UsersList = () => {
     []
   );
 
-
   if (error) {
     const message =
       error.response?.data?.description ||
       error.response?.data?.error ||
       "An Unknown Error Occurred";
-      console.error(error)
+    console.error(error);
     showAlert(`Error Retrieving Users: ${message}`, "danger");
   }
 
@@ -55,10 +54,18 @@ const UsersList = () => {
       <SearchBox searchChange={handleSearchChange} />
       <Tab.Container id="users-list" defaultActiveKey="#Id">
         <ListGroup horizontal>
-          <ListGroup.Item action href="#Id">Id</ListGroup.Item>
-          <ListGroup.Item action href="#Email">Email</ListGroup.Item>
-          <ListGroup.Item action href="#Role">Role</ListGroup.Item>
-          <ListGroup.Item action href="#Actions">Actions</ListGroup.Item>
+          <ListGroup.Item action href="#Id">
+            Id
+          </ListGroup.Item>
+          <ListGroup.Item action href="#Email">
+            Email
+          </ListGroup.Item>
+          <ListGroup.Item action href="#Role">
+            Role
+          </ListGroup.Item>
+          <ListGroup.Item action href="#Actions">
+            Actions
+          </ListGroup.Item>
         </ListGroup>
         <Tab.Content>
           <Tab.Pane eventKey="#Id"></Tab.Pane>

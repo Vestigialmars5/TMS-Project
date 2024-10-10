@@ -1,6 +1,6 @@
 import React from "react";
-import UsersForm from "../../components-new/user-management/UsersForm";
-import UsersList from "../../components-new/user-management/UsersList";
+import UsersForm from "../../components/user-management/UsersForm";
+import UsersList from "../../components/user-management/UsersList";
 
 const UserManagement = () => {
   return (

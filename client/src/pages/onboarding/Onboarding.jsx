@@ -1,8 +1,7 @@
 import React from "react";
-import UserDetailsForm from "../../components-new/onboarding/userDetailsForm";
+import UserDetailsForm from "../../components/onboarding/userDetailsForm";
 
 const Onboarding = () => {
-
   return (
     <div>
       <h1>Onboarding</h1>
