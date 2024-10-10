@@ -849,4 +849,19 @@ In order to improve the onboarding I need to do the following first: Update the 
 
 Sep 8
 I was able to get a very good system design with the help of Claude. It is not refined but it has helped me clean some of my thoughts.
-And now I think I want to do something drastic again. I want to change from having it based on role, to based on core modules, this way I can keep 
+And now I think I want to do something drastic again. I want to change from having it based on role, to based on core modules, this way I can keep (Forgot what I was adding here).
+
+Sep 17
+I'm in the middle of refactoring, I have already done the backend. Refactoring the frontend has been harder since I'm having to implement Redux, Axios, and other things.
+
+Sep 23
+I'm currently working on fixing a race condition again. The PublicRoute checks if authenticated and redirects before the roleBasedNavigation can redirect. When commenting out the PublicRoute's check, the order of things still firstly goes to the PublicRoute and only after that is done it redirects based on the navigate in the roleBasedNavigation. I have some options, adding a loading state, adding a delay, checking why useNavigate doesn't immediately redirect.
+
+Sep 25
+I'm going to break down the problem into separate parts to be able to brainstorm solutions.
+Problem: roleBasedNavigation code runs, PublicRoute then checks, PublicRoute redirects, roleBasedNavigation never redirects.
+Details: roleBasedNavigation is a hook that uses useNavigate to redirect, PublicRoute is a component that checks if authenticated from the authState, it uses useNavigate to redirect.
+The useAuth hook dispatches the setUser and other set functions for auth.
+The authState changes to isAuthenticated therefore the PublicRoute's check is being triggered.
+I don't understand why if I run the useNavigate in the roleBasedNavigation it doesn't redirect immediately. But instead if continues running the code until eventually the PublicRoute's useNavigate is triggered.
+Ideas: So, what we don't want is the check to run. The check is running because the authState is being updated. I need to

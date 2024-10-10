@@ -1,24 +1,14 @@
 from flask_jwt_extended import create_access_token, create_refresh_token, decode_token
-from datetime import timedelta
+from flask import current_app
 
-# TODO: Implement token expiry Configuration for token expiry
-# ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
+JWT_ACCESS_EXPIRES = current_app.config.get("JWT_ACCESS_TOKEN_EXPIRES")
+JWT_REFRESH_EXPIRES = current_app.config.get("JWT_REFRESH_TOKEN_EXPIRES")
 
 
 def create_tokens(identity, additional_claims):
-    """
-    Create JWT access token.
-
-    :param identity (int): The user id.
-    :param additional_claims (dict): Data that will be passed for easy access to the client, like email and role.
-    :return (str): Access token.
-    """
-    access_token = create_access_token(
-        identity=identity, additional_claims=additional_claims
-    )
-    # TODO: Implement refresh token
-
-    return access_token
+    access_token = create_access_token(identity=identity, additional_claims=additional_claims, expires_delta=JWT_ACCESS_EXPIRES)
+    refresh_token = create_refresh_token(identity=identity, expires_delta=JWT_REFRESH_EXPIRES)
+    return access_token, refresh_token
 
 
 def decode_jwt(token):

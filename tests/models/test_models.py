@@ -18,7 +18,7 @@ def test_tms_models(client):
     assert AuditLog.__tablename__ == "audit_logs"
     assert Report.__tablename__ == "reports"
     assert db.session.query(Role).count() == 7
-    assert db.session.query(User).count() == 1
+    assert db.session.query(User).count() == 4
 
 
 def test_wms_models(client):

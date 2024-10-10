@@ -42,15 +42,13 @@ def create_app(config_class=Development):
         from .models import wms_models
 
     # Register blueprints
-    from .api.auth import auth_blueprint
-    from .api.onboarding import onboarding_blueprint
-    from .api.admin import admin_blueprint
-    from .api.common import common_blueprint
+    from .api.auth.routes import auth_blueprint
+    from .api.onboarding.routes import onboarding_blueprint
+    from .api.user_management.routes import user_management_bp
     from .api.errors_handler import errors_blueprint
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(onboarding_blueprint)
-    app.register_blueprint(admin_blueprint)
-    app.register_blueprint(common_blueprint)
+    app.register_blueprint(user_management_bp)
     app.register_blueprint(errors_blueprint)
     """
     from .wms.wms import wms_blueprint

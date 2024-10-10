@@ -16,12 +16,12 @@ coordination between transportation and warehousing operations.
 
 ### 2.2 Core Modules
 
-- Order Management
-- Route Planning and Optimization
-- Carrier Management
-- Shipment Tracking
-- Inventory Management (with WMS integration)
-- Reporting and Analytics
+- Order Management (Redux + React Query)
+- Route Planning and Optimization (Redux + React Query)
+- Carrier Management (Redux + React Query)
+- Shipment Tracking (React Query + local Context)
+- Inventory Management (with WMS integration) (Redux + React Query)
+- Reporting and Analytics (React Query + local Context)
 
 ### 2.3 Integration Layer
 
@@ -37,6 +37,21 @@ coordination between transportation and warehousing operations.
 - Authentication and authorization
 - Data encryption
 - Audit logging
+
+### 2.6 Other Modules
+
+- Authentication and Authorization Module (Redux slice/Redux persist/custom hook/service)
+- User Management Module (React Query + Local Context)
+- Notification and Alert System (Alerts: Redux slice/Redux persist/actions file)
+- Document Management (React Query + local Context)
+- Compliance and Regulatory Management (Redux + React Query)
+- Customer Management (Redux + React Query)
+- Financial Management (Redux + React Query)
+- Equipment and Asset Management (Redux + React Query)
+- Business Intelligence and Analytics (React Query + local Context)
+- Integration Management (Redux + React Query)
+- Audit Trail and Logging (React Query)
+- Help and Support System (React Query + local Context)
 
 ## 3. Technical Architecture
 
@@ -155,32 +170,43 @@ CREATE TABLE inventory (
 );
 ```
 
-## 7. API Endpoints (Main Routes)
+## 7. API Endpoints
 
 ```python
+# Auth
+@app.route("/api/auth/login", methods=["POST"])
+@app.route("/api/auth/logout", methods=["POST"])
+
+# Onboard
+@app.route("/api/onboarding/details", methods=["POST"])
+
+# Users
+@app.route("/api/users", methods=["GET", "POST"])
+@app.route("/api/users/<int:user_id>", methods=["GET", "PUT", "DELETE"])
+
 # Orders
-@app.route('/api/orders', methods=['GET', 'POST'])
-@app.route('/api/orders/<int:order_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route("/api/orders", methods=["GET", "POST"])
+@app.route("/api/orders/<int:order_id>", methods=["GET", "PUT", "DELETE"])
 
 # Shipments
-@app.route('/api/shipments', methods=['GET', 'POST'])
-@app.route('/api/shipments/<int:shipment_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route("/api/shipments", methods=["GET", "POST"])
+@app.route("/api/shipments/<int:shipment_id>", methods=["GET", "PUT", "DELETE"])
 
 # Carriers
-@app.route('/api/carriers', methods=['GET', 'POST'])
-@app.route('/api/carriers/<int:carrier_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route("/api/carriers", methods=["GET", "POST"])
+@app.route("/api/carriers/<int:carrier_id>", methods=["GET", "PUT", "DELETE"])
 
 # Routes
-@app.route('/api/routes', methods=['GET', 'POST'])
-@app.route('/api/routes/<int:route_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route("/api/routes", methods=["GET", "POST"])
+@app.route("/api/routes/<int:route_id>", methods=["GET", "PUT", "DELETE"])
 
 # Inventory (WMS integration)
-@app.route('/api/inventory', methods=['GET'])
-@app.route('/api/inventory/<int:product_id>', methods=['GET'])
+@app.route("/api/inventory", methods=["GET"])
+@app.route("/api/inventory/<int:product_id>", methods=["GET"])
 
 # WMS Integration
-@app.route('/api/wms/sync-inventory', methods=['POST'])
-@app.route('/api/wms/order-fulfillment', methods=['POST'])
+@app.route("/api/wms/sync-inventory", methods=["POST"])
+@app.route("/api/wms/order-fulfillment", methods=["POST"])
 ```
 
 ## 8. Scalability and Performance
@@ -378,7 +404,7 @@ Let's first recap the core modules of our TMS:
 
 ## 2. Role Interactions with Core Modules
 
-### 2.1 Order Management Module
+### 2.1.1 Order Management Module
 
 - **Customer/Shipper**: Creates new shipping orders, views order status, modifies or cancels orders.
 - **Customer Service Representative**: Assists customers with order creation, handles order inquiries and modifications.
@@ -387,7 +413,7 @@ Let's first recap the core modules of our TMS:
 - **Warehouse Manager**: Receives order details, prepares inventory for shipment.
 - **Finance/Accounting**: Generates invoices based on order details, tracks order-related financial transactions.
 
-### 2.2 Route Planning and Optimization Module
+### 2.1.2 Route Planning and Optimization Module
 
 - **Dispatcher**: Creates and optimizes routes, assigns drivers to routes.
 - **Transportation Manager**: Reviews and approves proposed routes, analyzes route efficiency.
@@ -395,7 +421,7 @@ Let's first recap the core modules of our TMS:
 - **Carrier**: Provides input on vehicle availability and capabilities for route planning.
 - **Admin**: Configures route optimization parameters and constraints.
 
-### 2.3 Carrier Management Module
+### 2.1.3 Carrier Management Module
 
 - **Transportation Manager**: Manages carrier relationships, negotiates contracts, evaluates carrier performance.
 - **Carrier**: Updates company information, manages fleet details, sets availability.
@@ -403,7 +429,7 @@ Let's first recap the core modules of our TMS:
 - **Finance/Accounting**: Manages carrier payments and financial agreements.
 - **Admin**: Sets up new carrier accounts, manages carrier access to the system.
 
-### 2.4 Shipment Tracking Module
+### 2.1.4 Shipment Tracking Module
 
 - **Customer/Shipper**: Tracks shipment status in real-time, receives notifications on shipment progress.
 - **Driver**: Updates shipment status and location information.
@@ -411,20 +437,39 @@ Let's first recap the core modules of our TMS:
 - **Customer Service Representative**: Provides shipment status updates to customers, handles tracking-related inquiries.
 - **Warehouse Manager**: Tracks inbound shipments for resource planning.
 
-### 2.5 Inventory Management Module (with WMS integration)
+### 2.1.5 Inventory Management Module (with WMS integration)
 
 - **Warehouse Manager**: Manages inventory levels, coordinates with WMS for accurate stock information.
 - **Transportation Manager**: Views inventory levels for shipment planning.
 - **Customer Service Representative**: Checks inventory availability for customer inquiries.
 - **Admin**: Manages WMS integration, ensures data synchronization.
 
-### 2.6 Reporting and Analytics Module
+### 2.1.6 Reporting and Analytics Module
 
 - **Admin**: Configures system-wide reports, manages access to analytics.
 - **Transportation Manager**: Analyzes performance metrics, generates strategic reports.
 - **Finance/Accounting**: Generates financial reports, analyzes cost and revenue data.
 - **Carrier**: Views performance reports related to their shipments.
 - **Customer/Shipper**: Accesses reports on their shipping history and performance.
+
+### 2.2 Other Modules
+
+- **Authentication and Authorization Module**: All roles authenticate and manage their access.
+- **User Management Module**: Admin manages user accounts and roles.
+- **Notification and Alert System**: All roles receive relevant notifications based on their responsibilities.
+- **Document Management**: All roles can access relevant documents based on permissions.
+- **Compliance and Regulatory Management**: Admin and Transportation Manager ensure compliance with regulations.
+- **Customer Management**: Customer Service Representatives manage customer accounts and inquiries.
+- **Financial Management**: Finance/Accounting manages all financial transactions and reporting.
+- **Equipment and Asset Management**: Transportation Manager oversees fleet and equipment.
+- **Business Intelligence and Analytics**: Admin and Transportation Manager analyze data for decision-making.
+- **Integration Management**: Admin manages integrations with WMS and other systems.
+- **Audit Trail and Logging**: Admin monitors system activity and compliance.
+- **Help and Support System**: All roles can access support resources.
+
+### 2.3 Module State Discussions
+
+Here I want to get a better understanding of how I will handle state management for the modules. Meaning, I want to clarify what will need a redux slice and why,
 
 ## 3. Cross-Module Interactions
 
@@ -454,9 +499,14 @@ To illustrate how these modules and roles interact in a typical workflow, let's 
    - The Customer/Shipper receives updates and can track the shipment's progress.
 
 5. **Completion and Reporting**:
+
    - Upon delivery, the Driver confirms completion in the Shipment Tracking module.
    - The Finance/Accounting role generates an invoice through the Order Management module.
    - The Transportation Manager reviews performance data in the Reporting and Analytics module.
+
+6. **Feedback Loop**:
+   - The Transportation Manager analyzes the entire process for efficiency and areas of improvement.
+   - Feedback is provided to the Dispatcher, Carrier, and Warehouse Manager for future optimizations.
 
 ## 4. Implementation Considerations
 
@@ -1274,9 +1324,392 @@ The Transportation Management System (TMS) is designed to optimize and manage th
 - Feedback Loop: Establish mechanisms for continuous user feedback and system improvement
 - Documentation: Maintain thorough documentation for system architecture, APIs, and user guides
 
+# Transportation Management System: React Structure
+
+## 1. State Management Design for TMS Modules
+
+### 1.1 Global State (Redux)
+
+Redux will be used for managing global state that needs to be accessed across multiple components and modules.
+
+- Core Modules in Redux:
+
+  - Authorization and Authentication
+  - Notifications and Alerts
+  - Order Management
+  - Route Planning and Optimization
+  - Carrier Management
+  - Inventory Management
+  - User Management
+  - Compliance and Regulatory Management
+  - Customer Management
+  - Financial Management
+  - Equipment and Asset Management
+  - Integration Management
+
+- Redux Slices:
+  - `authSlice`: Reducer for authentication and authorization state
+  - `alertSlice`: Reducer for alert, error, and notification state
+  - `orderSlice`: Reducer for order-related state
+  - `routeSlice`: Reducer for route planning state
+  - `carrierSlice`: Reducer for carrier management state
+  - `inventorySlice`: Reducer for inventory management state
+  - `complianceSlice`: Reducer for compliance and regulatory state
+  - `customerSlice`: Reducer for customer management state
+  - `financialSlice`: Reducer for financial management state
+  - `equipmentSlice`: Reducer for equipment and asset management state
+  - `integrationSlice`: Reducer for integration management state
+
+
+### 1.2 React Context
+
+For state that needs to be shared among a group of components but not globally:
+
+- Shipment Tracking Context
+- Report and Analytics Context
+- Document Management Context
+- Business Intelligence and Analytics Context
+- Help and Support Context
+
+- Context Providers:
+  - `TrackingContextProvider`: Provides state and actions related to shipment tracking
+  - `ReportContextProvider`: Provides state and actions for reporting and analytics
+  - `DocumentContextProvider`: Provides state and actions for document management
+  - `BusinessIntelligenceContextProvider`: Provides state and actions for business intelligence
+  - `SupportContextProvider`: Provides state and actions for support resources
+
+### 1.3 Server State (React Query)
+
+For managing server state, caching, and synchronization:
+
+- All API calls using Axios
+- Implement React Query for efficient data fetching, caching, and synchronization
+
+### 1.4 Custom Hooks / Actions
+Define what will need custom hooks, and what will need a separate action file. A separate action file will be needed if the logic needs to be able to be called outside of a component. Whereas a custom hook is used within a component.
+
+- Custom Hooks:
+  - `useAuth`: Hook for handling authentication and user state
+  - `useUsers`: Hook for managing user-management data
+  - `useOrders`: Hook for managing order-related data
+  - `useRoutes`: Hook for managing route planning and optimization
+  - `useCarriers`: Hook for managing carrier-related data
+  - `useShipments`: Hook for managing shipment tracking data
+  - `useInventory`: Hook for managing inventory data
+  - `useReporting`: Hook for reporting and analytics data
+  - `useDocuments`: Hook for document management
+  - `useCompliance`: Hook for compliance and regulatory data
+  - `useCustomers`: Hook for customer management data
+  - `useFinancials`: Hook for financial management data
+  - `useEquipment`: Hook for equipment and asset management data
+  - `useBusinessIntelligence`: Hook for business intelligence and analytics data
+  - `useIntegration`: Hook for integration management data
+  - `useAuditTrail`: Hook for tracking user actions and audit trail
+  - `useSupport`: Hook for accessing support resources
+
+- Action Files:
+  - `alertActions`: Actions for managing alerts and notifications
+
+## 2. Structure
+
+```
+src/
+│
+├── components/ -- Reusable UI components
+│   ├── common/
+│   │   ├── Header.js
+│   │   ├── Footer.js
+│   │   ├── Sidebar.js
+|   |   └── SearchBar.js
+|   |   └── PrivateRoute.js -- Logic for routes
+│   │   └── ...
+│   ├── auth/
+│   │   ├── LoginForm.js -- Use api hook, use validation function
+│   │   ├── LogoutButton.js
+│   │   └── ...
+│   ├── onboarding/
+│   │   ├── Welcome.js
+│   │   ├── DetailsForm.js
+│   │   └── ...
+│   ├── user-management/
+│   │   ├── UserList.js
+│   │   ├── UserForm.js
+│   │   ├── UserDetails.js
+│   │   └── ...
+│   ├── orders/
+│   │   ├── OrderList.js
+│   │   ├── OrderDetails.js
+│   │   ├── OrderForm.js
+│   │   └── ...
+│   ├── carriers/
+│   │   ├── CarrierList.js
+│   │   ├── CarrierDetails.js
+│   │   ├── CarrierForm.js
+│   │   └── ...
+│   ├── shipments/
+│   │   ├── ShipmentList.js
+│   │   ├── ShipmentDetails.js
+│   │   ├── ShipmentTracking.js
+│   │   └── ...
+│   ├── routes/
+│   │   ├── RouteList.js
+│   │   ├── RouteDetails.js
+│   │   ├── RouteMap.js
+│   │   ├── RouteOptimizationForm.js
+│   │   └── ...
+│   ├── inventory/
+│   │   ├── InventoryList.js
+│   │   ├── InventoryDetails.js
+│   │   ├── StockUpdateForm.js
+│   │   └── ...
+│   ├── reporting/
+│   │   ├── Dashboard.js
+│   │   ├── ReportGenerator.js
+│   │   ├── ChartComponents/
+│   │   │   ├── BarChart.js
+│   │   │   ├── LineChart.js
+│   │   │   └── ...
+│   │   └── ...
+│   └── ...
+│
+├── contexts/ -- React Context API
+│   ├── TrackingContext.js
+│   ├── ReportContext.js
+│   ├── DocumentContext.js
+│   ├── BusinessIntelligenceContext.js
+│   ├── SupportContext.js
+│   └── ...
+│
+├── hooks/ -- Custom React Hooks
+│   ├── useAuth.js
+│   ├── useOrders.js
+│   ├── useRoutes.js
+│   ├── useCarriers.js
+│   ├── useShipments.js
+│   ├── useInventory.js
+│   ├── useReporting.js
+│   ├── useNotifications.js
+│   ├── useDocuments.js
+│   ├── useCompliance.js
+│   ├── useCustomers.js
+│   ├── useFinancials.js
+│   ├── useEquipment.js
+│   ├── useBusinessIntelligence.js
+│   ├── useIntegration.js
+│   ├── useAuditTrail.js
+│   ├── useSupport.js
+│   └── ...
+│
+├── layouts/
+│   ├── AdminLayout.js
+│   ├── DriverLayout.js
+│   ├── CustomerLayout.js
+│   └── ...
+│
+├── pages/
+│   ├── admin/
+│   │   ├── Dashboard.js
+│   │   ├── UserManagement.js
+│   │   ├── OrderManagement.js
+│   │   ├── RouteManagement.js
+│   │   ├── CarrierManagement.js
+│   │   ├── InventoryManagement.js
+│   │   ├── ReportingAnalytics.js
+│   │   └── ...
+│   ├── driver/
+│   │   ├── CurrentRoute.js
+│   │   ├── DeliveryHistory.js
+│   │   └── ...
+│   ├── customer/
+│   │   ├── PlaceOrder.js
+│   │   ├── TrackShipment.js
+│   │   └── ...
+│   └── ...
+│
+├── routes/
+│   ├── PrivateRoute.js
+│   ├── AdminRoute.js
+│   ├── DriverRoute.js
+│   ├── CustomerRoute.js
+│   └── ...
+│
+├── services/ -- API services
+│   ├── apiService.js -- Create axios instance
+│   ├── authService.js
+│   ├── orderService.js
+│   ├── routeService.js
+│   ├── carrierService.js
+│   ├── shipmentService.js
+│   ├── inventoryService.js
+│   ├── reportingService.js
+│   ├── userService.js
+│   ├── notificationService.js
+│   ├── documentService.js
+│   ├── complianceService.js
+│   ├── customerService.js
+│   ├── financialService.js
+│   ├── equipmentService.js
+│   ├── integrationService.js
+│   ├── auditService.js
+│   ├── supportService.js
+│   └── ...
+│
+├── store/
+│   ├── slices/ -- Redux slices
+│   │   ├── authSlice.js
+│   │   ├── alertsSlice.js
+│   │   ├── ordersSlice.js
+│   │   ├── routesSlice.js
+│   │   ├── carriersSlice.js
+│   │   ├── shipmentsSlice.js
+│   │   ├── inventorySlice.js
+│   │   ├── usersSlice.js
+│   │   ├── customersSlice.js
+│   │   ├── financialsSlice.js
+│   │   ├── equipmentSlice.js
+│   │   └── ...
+│   ├── actions/ -- For things that need a separate file for actions
+│   │   ├── alertsActions.js
+│   │   └── ...
+│   ├── index.js -- Configure store
+│   └── rootReducer.js -- Combine all slices
+│
+├── utils/
+│   ├── formatters.js
+│   ├── validators.js
+│   └── ...
+│
+├── App.js -- Setup routes and layout
+└── index.js -- Entry point
+```
+
+## 3. Steps to Implement
+
+### 3.1 Authentication and Authorization
+
+Authentication and Authorization will be handled using JWT tokens. The `authSlice` will manage the authentication state, and the "Role Route" component will protect routes that require authentication.
+
+- **Login Form**: The `LoginForm.js` component will handle client side validation, display validation errors using local state, useAuth to make the dispatch call, apiService handles interceptors for token management, the action sets tokens and sets user data in redux state, as well as making the dispatch call to add global alert. Errors that happen during request are stored in the store.
+
+### 3.2 Onboarding
+
+Onboarding is just to finish up details for the user. This page requires a "not_onboarded" state in the authState.user.status. Onboarding will be managed only locally, and will not be stored in redux. But it will dispatch an action to update both the token and the user state. So the flow will be, once the user tries to redirect to the dashboard, it will check if the user is onboarded, if not, it will redirect to the onboarding page. The onboarding form will use useOnboardingService to make the api call and then dispatch the action to update the user state.
+
+### 3.3 User Management
+
+The "UsersList" component displays a list of all users, the "NewUserForm" component allows for creating new users, and the "EditUserForm" component allows for editing existing users. There will be a usersSlice that manages the state of users
+
+## 4. Data Flow Frontend
+
+### 4.1 With Redux
+
+Api calls that are using Redux, React Query and Axios. The flow will be as follows:
+
+```mermaid
+stateDiagram-v2
+    state Form {
+        [*] --> Validating
+        Validating --> UseCustomHook : Valid
+        Validating --> Error : Invalid
+    }
+    UseCustomHook --> CustomHook
+    state CustomHook {
+        [*] --> MutationAction
+        MutationAction --> Mutations
+        state Mutations {
+            [*] --> AwaitService : Request
+            AwaitService --> OnSuccess
+            OnSuccess --> DispatchAction
+            OnSuccess --> Redirects
+            OnSuccess --> DispatchAlert
+            AwaitService --> OnError
+            OnError --> DispatchAlert
+        }
+    }
+    DispatchAction --> ReduxSlice
+    state ReduxSlice {
+        [*] --> ReduxReducer
+        ReduxReducer --> UpdateStore
+    }
+    AwaitService --> ModuleService
+    state ModuleService {
+        [*] --> ApiCall
+    }
+    ApiCall --> ApiService
+    ApiService --> ApiCall
+    state ApiService {
+        Interceptor --> SetToken : Request
+        Interceptor --> DoSomething : Response
+    }
+    ApiCall --> AwaitService : ResponseData/ThrowError
+
+```
+
+### 4.2 Without Redux
+
+Api calls that aren't using Redux. The flow will be as follows:
+
+```mermaid
+stateDiagram-v2
+    state Form {
+        [*] --> Validating
+        Validating --> UseCustomHook : Valid
+        Validating --> Error : Invalid
+    }
+    UseCustomHook --> CustomHook
+    state CustomHook {
+        [*] --> MutationAction
+        MutationAction --> Mutations
+        state Mutations {
+            [*] --> AwaitService : Request
+            AwaitService --> OnSuccess
+            OnSuccess --> DispatchAction
+            OnSuccess --> Redirects
+            OnSuccess --> DispatchAlert
+            AwaitService --> OnError
+            OnError --> DispatchAlert
+        }
+    }
+    AwaitService --> ModuleService
+    state ModuleService {
+        [*] --> ApiCall
+    }
+    ApiCall --> ApiService
+    ApiService --> ApiCall
+    state ApiService {
+        Interceptor --> SetToken : Request
+        Interceptor --> DoSomething : Response
+    }
+    ApiCall --> AwaitService : ResponseData/ThrowError
+```
+
+### 4.3 No Api Call, With Redux
+
+```mermaid
+stateDiagram-v2
+    state Component {
+        [*] --> Validating
+        Validating --> UseCustomHook : Valid
+        Validating --> Error : Invalid
+    }
+    UseCustomHook --> CustomHook
+    state CustomHook {
+        [*] --> Action
+        Action --> DispatchAction : Request
+    }
+    DispatchAction --> ReduxSlice
+    state ReduxSlice {
+        [*] --> ReduxAction
+        ReduxAction --> ReturnData : Response
+        ReturnData --> UpdateStore
+    }
+
+```
+
 # Diagrams
 
 ## Requirements
+
 ```mermaid
     graph TD
         A[Transportation Management System] --> B[Order Management]
@@ -1303,6 +1736,7 @@ The Transportation Management System (TMS) is designed to optimize and manage th
 ```
 
 ## Core Entities
+
 ```mermaid
 erDiagram
     USER ||--o{ USER_DETAIL : has
@@ -1363,6 +1797,7 @@ erDiagram
 ```
 
 ## Api / Interface
+
 ```mermaid
 graph LR
     Client[Client Applications]
@@ -1388,6 +1823,7 @@ graph LR
 ```
 
 ## Data Flow
+
 ```mermaid
 stateDiagram-v2
     [*] --> OrderReceived
@@ -1410,6 +1846,7 @@ stateDiagram-v2
 ```
 
 ## High Level Design
+
 ```mermaid
 graph TB
     subgraph Client_Layer
@@ -1473,6 +1910,7 @@ graph TB
 ```
 
 ## Deep Dive
+
 ```mermaid
 graph TD
     Customer[Customer] -->|Place Order| OrderService[Order Service]
