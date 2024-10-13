@@ -865,3 +865,7 @@ The useAuth hook dispatches the setUser and other set functions for auth.
 The authState changes to isAuthenticated therefore the PublicRoute's check is being triggered.
 I don't understand why if I run the useNavigate in the roleBasedNavigation it doesn't redirect immediately. But instead if continues running the code until eventually the PublicRoute's useNavigate is triggered.
 Ideas: So, what we don't want is the check to run. The check is running because the authState is being updated. I need to
+
+Oct 12
+Finished refactoring to centralize everything by core modules.
+Moving on to implementing better access and refresh tokens. I haven't decided if my access token will always have user data of just the user id. Role checking for protected routes in the backend was done by checking the jwt token's data. But that means that when refreshing an access token I will have to create that data again.
