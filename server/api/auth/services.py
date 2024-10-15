@@ -50,14 +50,7 @@ def login(email, password):
         refresh_exp_days = current_app.config['JWT_REFRESH_TOKEN_EXPIRES'] / 86400
         
         access_token = create_access_token(
-            user.user_id, additional_claims={
-                "email": email,
-                "status": user.status,
-                "firstName": first_name,
-                "lastName": last_name,
-                "roleName": user.role.role_name,
-                "roleId": user.role_id,
-            }, expires_delta=timedelta(hours=access_exp_hours)
+            user.user_id, expires_delta=timedelta(hours=access_exp_hours)
         )
 
         refresh_token = create_refresh_token(

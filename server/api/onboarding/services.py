@@ -59,14 +59,7 @@ def onboard_user(
         access_exp_hours = current_app.config['JWT_ACCESS_TOKEN_EXPIRES'] / 3600
 
         access_token = create_access_token(
-            user_id, additional_claims={
-                "status": status,
-                "email": email,
-                "firstName": first_name,
-                "lastName": last_name,
-                "roleName": role_name,
-                "roleId": role_id,
-            }, expires_delta=timedelta(hours=access_exp_hours)
+            user_id, expires_delta=timedelta(hours=access_exp_hours)
         )
 
         user_info = {
