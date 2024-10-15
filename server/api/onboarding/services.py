@@ -20,8 +20,6 @@ def onboard_user(
     last_name,
     phone_number,
     address,
-    role_id,
-    role_name,
 ):
 
     # TODO: Validation
@@ -45,7 +43,15 @@ def onboard_user(
 
         try:
             status = "active"
-            update_user(user_id, password, status)
+            user = db.session.query(User).filter(
+                User.user_id == user_id).first()
+
+            if user is None:
+                raise DatabaseQueryError("User Not Found")
+
+            update_user(user, password, status)
+        except DatabaseQueryError as e:
+            raise
         except Exception as e:
             raise DatabaseQueryError("Error Updating Password")
 
@@ -55,6 +61,9 @@ def onboard_user(
                                 last_name, phone_number, address)
         except Exception as e:
             raise DatabaseQueryError("Error Adding User Details")
+
+        role_id = user.role_id
+        role_name = user.role.role_name
 
         access_exp_hours = current_app.config['JWT_ACCESS_TOKEN_EXPIRES'] / 3600
 
@@ -98,8 +107,7 @@ def is_onboarded(user_id):
         return True
 
 
-def update_user(user_id, password, status):
-    user = db.session.query(User).filter(User.user_id == user_id).first()
+def update_user(user, password, status):
     user.password = generate_password_hash(password)
     user.status = status
     db.session.commit()

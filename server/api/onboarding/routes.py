@@ -16,12 +16,6 @@ def onboard_user():
         abort(400, description="Invalid JSON")
 
     user_id = get_jwt_identity()
-    claims = get_jwt()
-
-    role_id = claims.get("roleId")
-    role_name = claims.get("roleName")
-    if not role_id or not role_name:
-        abort(400, description="Missing Claims")
 
     email, password, confirmation, first_name, last_name, phone_number, address = data_cleanup_onboarding(data)
 
@@ -33,9 +27,7 @@ def onboard_user():
         first_name,
         last_name,
         phone_number,
-        address,
-        role_id,
-        role_name,
+        address
     )
 
     if response["success"]:
