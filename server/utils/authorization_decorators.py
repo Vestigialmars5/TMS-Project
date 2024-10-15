@@ -1,7 +1,7 @@
 from flask import jsonify, abort
 from functools import wraps
-from extensions import db
-from models.tms_models import User
+from ..extensions import db
+from ..models.tms_models import User
 
 from flask_jwt_extended import get_jwt_identity
 from server.utils.exceptions import DatabaseQueryError
@@ -17,7 +17,7 @@ def roles_required(*roles):
         def decorated_function(*args, **kwargs):
             try:
                 user_id = get_jwt_identity()
-                user = db.session.query(User).filter_by(id=user_id).first()
+                user = db.session.query(User).filter_by(user_id=user_id).first()
                 
             except SQLAlchemyError as e:
                 raise DatabaseQueryError("Error Retrieving User Role")
