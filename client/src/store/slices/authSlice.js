@@ -1,4 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import tokenService from "../../services/tokenService";
+import { showAlert } from "../actions/alertsActions";
+import { queryClient } from "../../main";
 
 const authSlice = createSlice({
   name: "AUTH",
@@ -27,6 +30,17 @@ const authSlice = createSlice({
   },
 });
 
+export const {
+  setUser,
+  clearUser,
+  startAuthenticating,
+  stopAuthenticating,
+} = authSlice.actions;
 
-export const { setUser, clearUser, startAuthenticating, stopAuthenticating } = authSlice.actions;
+export const forceLogout = () => (dispatch) => {
+  tokenService.removeTokens();
+  dispatch(clearUser());
+  queryClient.clear();
+  showAlert("You Have Been Logged Out", "info");
+}
 export default authSlice.reducer;
