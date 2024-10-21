@@ -43,7 +43,7 @@ export const useAuth = () => {
     onSuccess: () => {
       tokenService.removeTokens();
       dispatch(clearUser());
-      queryClient.setQueryData("user", null);
+      queryClient.clear();
       showAlert("Logout Successful", "success");
       navigate("/login");
     },
