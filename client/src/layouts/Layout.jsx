@@ -1,11 +1,13 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import AlertsContainer from "../components/common/AlertsContainer";
+import NavBar from "../components/common/NavBar";
 
 const Layout = () => {
   return (
     <div>
       <header>
+        <NavBar />
         <AlertsContainer key="alerts-container" />
         <div>
           <h1>Transportation Management System</h1>
