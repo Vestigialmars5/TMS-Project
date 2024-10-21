@@ -56,3 +56,18 @@ def logout():
             return jsonify(response), 200
         else:
             return jsonify(response), 500
+
+
+@auth_blueprint.route("/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    if request.method == "POST":
+        user_id = get_jwt_identity()
+        
+        response = services.refresh(user_id)
+
+        if response["success"]:
+            return jsonify(response), 200
+        else:
+            return jsonify(response), 500
+        

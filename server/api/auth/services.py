@@ -115,6 +115,14 @@ def logout(user_id):
         raise
 
 
+def refresh(user_id):
+    access_exp_hours = current_app.config['JWT_ACCESS_TOKEN_EXPIRES'] / 3600
+    access_token = create_access_token(
+        user_id, expires_delta=timedelta(hours=access_exp_hours)
+    )
+    return {"success": True, "accessToken": access_token}
+    
+
 def get_first_name_last_name(user_id):
     query = db.select(UserDetails.first_name, UserDetails.last_name).filter(
         UserDetails.user_id == user_id)
