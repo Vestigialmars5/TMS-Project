@@ -14,6 +14,7 @@ const NavBar = () => {
   const homeMatch = useMatch("/home");
   const loginMatch = useMatch("/login");
   const adminMatch = useMatch("/admin");
+  const customerMatch = useMatch("/customer");
 
   return (
     <Navbar expand="sm" className="bg-body-tertiary">
@@ -29,7 +30,10 @@ const NavBar = () => {
             </Nav.Link>
             {isAuthenticated ? (
               <>
-                <Nav.Link onClick={goToDashboard} active={Boolean(adminMatch)}>
+                <Nav.Link
+                  onClick={goToDashboard}
+                  active={Boolean(adminMatch) || Boolean(customerMatch)}
+                >
                   Dashboard
                 </Nav.Link>
                 <Nav.Link onClick={logout}>Logout</Nav.Link>
