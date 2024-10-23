@@ -86,6 +86,25 @@ class UserDetails(Base1):
         return f"UserDetails('{self.first_name}', '{self.last_name}')"
 
 
+class CustomerDetails(Base1):
+    __tablename__ = "customer_details"
+
+    customer_detail_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        "users.user_id", ondelete="CASCADE"))
+    company_name = db.Column(db.String(50), nullable=False)
+    company_address = db.Column(db.String(255), nullable=False)
+
+    user = db.relationship("User", backref="customer_details")
+
+    __table_args__ = (
+        Index('ix_customer_details_user_id', 'user_id'),
+        Index('ix_company_name', 'company_name')
+    )
+
+    def __repr__(self):
+        return f"CustomerDetails('{self.company_name}', '{self.company_address}')"
+
 class DriverDetails(Base1):
     __tablename__ = "driver_details"
 
