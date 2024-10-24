@@ -1,6 +1,7 @@
 from server.utils.validations import *
 from server.utils.cleaners import *
 
+
 def data_cleanup_login(data):
     email = clean_email(data.get("email"))
     password = data.get("password")
@@ -11,7 +12,7 @@ def data_cleanup_login(data):
     return email, password
 
 
-def data_cleanup_onboarding(data):
+def data_cleanup_onboarding_user_details(data):
     password = data.get("password")
     confirmation = data.get("confirmation")
 
@@ -25,6 +26,13 @@ def data_cleanup_onboarding(data):
     address = clean_address(data.get("address"))
 
     return email, password, confirmation, first_name, last_name, phone_number, address
+
+
+def data_cleanup_customer(data):
+    company_name = clean_company_name(data.get("companyName"))
+    company_address = clean_address(data.get("companyAddress"))
+
+    return company_name, company_address
 
 
 def data_cleanup_create_user(data):
@@ -46,6 +54,7 @@ def data_cleanup_get_users(args):
     limit = clean_limit(args.get("limit"))
 
     return search, sort_by, sort_order, page, limit
+
 
 def data_cleanup_update_user(data):
     email = clean_email(data.get("email"))
