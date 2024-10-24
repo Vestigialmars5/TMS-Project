@@ -65,12 +65,6 @@ def onboard_user(
         role_id = user.role_id
         role_name = user.role.role_name
 
-        access_exp_hours = current_app.config['JWT_ACCESS_TOKEN_EXPIRES'] / 3600
-
-        access_token = create_access_token(
-            user_id, expires_delta=timedelta(hours=access_exp_hours)
-        )
-
         user_info = {
             "userId": user_id,
             "status": status,
@@ -83,7 +77,7 @@ def onboard_user(
 
         logger.info("Onboard Attempt Successful: by %s", user_id)
         create_audit_log("Onboard", user_id=user_id, details="Success")
-        return {"success": True, "accessToken": access_token, "user": user_info}
+        return {"success": True, "user": user_info}
 
     except DatabaseQueryError as e:
         logger.error("Onboard Attempt Failed: by %s | %s", user_id, e)

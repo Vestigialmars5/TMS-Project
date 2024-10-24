@@ -19,7 +19,6 @@ export const useOnboarding = () => {
       return onboardingService.submitUserDetails(details);
     },
     onSuccess: (data) => {
-      tokenService.setAccessToken(data.accessToken);
       queryClient.setQueryData("user", data.user);
       dispatch(setUser(data.user));
       showAlert("User Details Submitted", "success");
