@@ -54,3 +54,14 @@ def incomplete_user_token(client):
 
     assert response.status_code == 200
     return response.json["accessToken"]
+
+
+@pytest.fixture()
+def incomplete_customer_token(client):
+    response = client.post("api/auth/login", json={
+        "email": consts.INCOMPLETE_CUSTOMER_EMAIL,
+        "password": consts.INCOMPLETE_CUSTOMER_PASSWORD
+    })
+
+    assert response.status_code == 200
+    return response.json["accessToken"]
