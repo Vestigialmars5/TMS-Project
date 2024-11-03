@@ -12,6 +12,9 @@ export const useRoleBasedNavigation = () => {
       case 1:
         navigate("/admin");
         break;
+      case 4:
+        navigate("/customer");
+        break;
       default:
         console.error("Invalid user role:", roleId);
         navigate("/");
