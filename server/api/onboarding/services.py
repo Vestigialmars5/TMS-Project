@@ -196,26 +196,33 @@ role_details_handler = {
 
 
 def get_onboarding_step(user_id, role_id=None):
-    user_details = db.session.query(
-        UserDetails).filter_by(user_id=user_id).first()
-    print(user_details)
+    try:
+        user_details = db.session.query(
+            UserDetails).filter_by(user_id=user_id).first()
 
-    if user_details is None:
-        return 1
+        if user_details is None:
+            return 1
 
-    if role_id is not None:
-        role_details = role_details_handler.get(
-            role_id, "role id not found")(user_id)
-    else:
-        return -1
+        if role_id is None:
+            user = db.session.query(User).filter_by(user_id=user_id).first()
+            if user is None:
+                return -1
+            role_id = user.role_id
 
-    if role_details is None:
-        return 2
+        handler = role_details_handler.get(role_id)
+        if handler is None:
+            return -1
 
-    if user_details is not None and role_details is not None:
+        role_details = handler(user_id)
+
+        if role_details is None:
+            return 2
+
         return 0
 
-    return -1
+    except Exception as e:
+        logger.error("Get Step Attempt Failed: by %s | %s", user_id, e)
+        return -1
 
 
 def update_user_password(user, password):
