@@ -41,6 +41,19 @@ def onboard_user_details():
         return jsonify(response), 500
 
 
+@onboarding_blueprint.route("/step", methods=["GET"])
+@jwt_required()
+def get_current_step():
+    user_id = get_jwt_identity()
+
+    step = services.get_onboarding_step(user_id)
+
+    return jsonify({
+        "step": step,
+        "success": step != -1
+    }), 200 if step != -1 else 400
+
+
 @onboarding_blueprint.route("/<int:role_id>", methods=["POST"])
 @jwt_required()
 def onboard_role_details(role_id):

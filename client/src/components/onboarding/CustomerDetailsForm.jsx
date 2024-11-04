@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
+import Spinner from "react-bootstrap/Spinner"
+import Button from "react-bootstrap/Button"
+import { useOnboarding } from "../../hooks/useOnboarding";
 
 const CustomerDetailsForm = () => {
+  const roleId = 4;
+
+  const { submitRoleDetails, submitRoleDetailsStatus } = useOnboarding();
   const [companyName, setCompanyName] = useState("");
   const [companyAddress, setCompanyAddress] = useState("");
   const [companyNameError, setCompanyNameError] = useState("");
@@ -34,7 +40,8 @@ const CustomerDetailsForm = () => {
       setCompanyNameError(companyNameError);
       setCompanyAddressError(companyAddressError);
     } else {
-      submitRoleDetails({ companyName, companyAddress });
+      const details = { companyName, companyAddress };
+      submitRoleDetails({ roleId, details });
     }
   };
 
@@ -60,6 +67,18 @@ const CustomerDetailsForm = () => {
         />
       </Form.Group>
       {companyAddressError && <p>{companyAddressError}</p>}
+
+      {submitRoleDetailsStatus !== "loading" ? (
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={submitRoleDetailsStatus === "loading"}
+        >
+          Submit
+        </Button>
+      ) : (
+        <Spinner animation="border" role="submitRoleDetailsStatus" /> // TODO: Check other appearances of this case, standardize if spinner inside button or instead of
+      )}
     </Form>
   );
 };
