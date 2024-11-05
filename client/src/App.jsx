@@ -5,10 +5,13 @@ import Login from "./pages/login/Login";
 import NoPage from "./pages/no-page/NoPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
+import CustomerDashboard from "./pages/customer/CustomerDashboard";
+import OrderManagement from "./pages/customer/OrderManagement";
 import "./App.css";
 import Onboarding from "./pages/onboarding/Onboarding";
 import PrivateRoute from "./routes/PrivateRoute";
 import AdminRoute from "./routes/AdminRoute";
+import CustomerRoute from "./routes/CustomerRoute";
 import PublicRoute from "./routes/PublicRoute";
 
 function App() {
@@ -39,6 +42,13 @@ function App() {
           <Route path="user-management" element={<UserManagement />} exact />
         </Route>
         {/* End private routes for admin */}
+
+        {/* Private routes for customer */}
+        <Route path="/customer" element={<CustomerRoute />}>
+          <Route index element={<CustomerDashboard />} />
+          <Route path="order" element={<OrderManagement />} exact />
+        </Route>
+        {/* End private routes for customer */}
 
         <Route path="*" element={<NoPage />} />
       </Route>
