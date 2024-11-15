@@ -3,6 +3,7 @@ from server.extensions import db
 import tests.consts as consts
 from werkzeug.security import generate_password_hash
 
+
 def add_roles():
     roles = ["Admin", "Transportation Manager", "Carrier",
              "Customer/Shipper", "Driver", "Finance/Accounting", "Warehouse Manager"]
@@ -17,6 +18,7 @@ def add_all_roles():
     add_carrier()
     add_complete_user()
     add_incomplete_user()
+    add_incomplete_customer()
     # add_customer_shipper()
     # add_driver()
     # add_finance_accounting()
@@ -26,7 +28,7 @@ def add_all_roles():
 def add_dev_admin():
     admin_password = generate_password_hash("asdfasdf")
     admin = User(email="admin@gmail.com",
-                    password=admin_password, role_id=1, status="inactive")
+                 password=admin_password, role_id=1, status="inactive")
     db.session.add(admin)
     db.session.commit()
 
@@ -39,7 +41,7 @@ def add_dev_admin():
 def add_admin():
     admin_password = generate_password_hash(consts.ADMIN_PASSWORD)
     admin = User(email=consts.ADMIN_EMAIL,
-                    password=admin_password, role_id=consts.ADMIN_ROLE_ID, status="inactive")
+                 password=admin_password, role_id=consts.ADMIN_ROLE_ID, status="inactive")
     db.session.add(admin)
     db.session.commit()
 
@@ -52,23 +54,25 @@ def add_admin():
 def add_transportation_manager():
     pass
 
+
 def add_carrier():
     carrier_password = generate_password_hash(consts.CARRIER_PASSWORD)
     carrier = User(email=consts.CARRIER_EMAIL,
-                    password=carrier_password, role_id=consts.CARRIER_ROLE_ID, status="inactive")
+                   password=carrier_password, role_id=consts.CARRIER_ROLE_ID, status="inactive")
     db.session.add(carrier)
     db.session.commit()
 
     carrier_details = UserDetails(user_id=carrier.user_id, first_name=consts.CARRIER_FIRST_NAME,
-                                    last_name=consts.CARRIER_LAST_NAME, phone_number=consts.CARRIER_PHONE_NUMBER, address=consts.CARRIER_ADDRESS)
+                                  last_name=consts.CARRIER_LAST_NAME, phone_number=consts.CARRIER_PHONE_NUMBER, address=consts.CARRIER_ADDRESS)
     db.session.add(carrier_details)
     db.session.commit()
 
 
 def add_complete_user():
-    complete_user_password = generate_password_hash(consts.COMPLETE_USER_PASSWORD)
+    complete_user_password = generate_password_hash(
+        consts.COMPLETE_USER_PASSWORD)
     complete_user = User(email=consts.COMPLETE_USER_EMAIL,
-                            password=complete_user_password, role_id=consts.COMPLETE_USER_ROLE_ID, status="inactive")
+                         password=complete_user_password, role_id=consts.COMPLETE_USER_ROLE_ID, status="inactive")
     db.session.add(complete_user)
     db.session.commit()
 
@@ -82,4 +86,16 @@ def add_incomplete_user():
     incomplete_user = User(email=consts.INCOMPLETE_USER_EMAIL, password=generate_password_hash(
         consts.INCOMPLETE_USER_PASSWORD), role_id=consts.INCOMPLETE_USER_ROLE_ID, status="inactive")
     db.session.add(incomplete_user)
+    db.session.commit()
+
+
+def add_incomplete_customer():
+    incomplete_customer = User(email=consts.INCOMPLETE_CUSTOMER_EMAIL, password=generate_password_hash(
+        consts.INCOMPLETE_CUSTOMER_PASSWORD), role_id=consts.INCOMPLETE_CUSTOMER_ROLE_ID, status="inactive")
+    db.session.add(incomplete_customer)
+    db.session.commit()
+
+    incomplete_customer_details = UserDetails(user_id=incomplete_customer.user_id, first_name=consts.INCOMPLETE_CUSTOMER_FIRST_NAME,
+                                              last_name=consts.INCOMPLETE_CUSTOMER_LAST_NAME, phone_number=consts.INCOMPLETE_CUSTOMER_PHONE_NUMBER, address=consts.INCOMPLETE_CUSTOMER_ADDRESS)
+    db.session.add(incomplete_customer_details)
     db.session.commit()

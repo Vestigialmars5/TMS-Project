@@ -98,8 +98,9 @@ def logout(user_id):
         try:
             user = db.session.query(User).filter(
                 User.user_id == user_id).first()
-            user.status = "inactive"
-            db.session.commit()
+            if user.status != "not_onboarded":
+                user.status = "inactive"
+                db.session.commit()
         except Exception as e:
             raise DatabaseQueryError("Error Updating User Status")
 

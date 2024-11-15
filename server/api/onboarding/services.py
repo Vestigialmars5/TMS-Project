@@ -1,5 +1,5 @@
 from server.extensions import db
-from server.models.tms_models import User, UserDetails
+from server.models.tms_models import User, UserDetails, CustomerDetails
 from werkzeug.security import generate_password_hash
 from flask_jwt_extended import create_access_token
 from server.utils.exceptions import *
@@ -7,11 +7,12 @@ from datetime import timedelta
 from flask import current_app
 from server.utils.logging import create_audit_log
 import logging
+import traceback
 
 logger = logging.getLogger(__name__)
 
 
-def onboard_user(
+def onboard_user_details(
     user_id,
     email,
     password,
@@ -23,35 +24,38 @@ def onboard_user(
 ):
 
     # TODO: Validation
-    logger.info("Onboard Attempt: by %s", user_id)
+    logger.info("Onboarding Step 1 Attempt: by %s", user_id)
     try:
-        # Check if user already onboarded
-        if not is_onboarded(user_id):
+        onboarding_step = get_onboarding_step(user_id)
+
+        if onboarding_step == -1 or onboarding_step > 1:
+            logger.error(
+                "Onboard 1 Attempt Failed: by %s | Wrong Step", user_id)
+            create_audit_log("Onboard 1", user_id=user_id,
+                             details="Wrong Step")
+            return {"success": False, "error": "Wrong Step", "description": "Current Step Is Out Of Sync"}
+
+        if onboarding_step == 0:
             logger.warning(
-                "Onboard Attempt Failed: by %s | User Already Onboarded", user_id)
-            create_audit_log("Onboard", user_id=user_id,
+                "Onboard 1 Attempt Failed: by %s | User Already Onboarded", user_id)
+            create_audit_log("Onboard 1", user_id=user_id,
                              details="User Already Onboarded")
             return {"success": False, "error": "Action Was Already Completed", "description": "User Already Onboarded"}
 
         # Check if password and confirmation match
         if password != confirmation:
             logger.warning(
-                "Onboard Attempt Failed: by %s | Passwords Do Not Match", user_id)
-            create_audit_log("Onboard", user_id=user_id,
+                "Onboard 1 Attempt Failed: by %s | Passwords Do Not Match", user_id)
+            create_audit_log("Onboard 1", user_id=user_id,
                              details="Passwords Do Not Match")
             return {"success": False, "error": "Passwords Do Not Match", "description": "Password and Confirmation Do Not Match"}
 
         try:
-            status = "active"
             user = db.session.query(User).filter(
                 User.user_id == user_id).first()
 
-            if user is None:
-                raise DatabaseQueryError("User Not Found")
+            update_user_password(user, password)
 
-            update_user(user, password, status)
-        except DatabaseQueryError as e:
-            raise
         except Exception as e:
             raise DatabaseQueryError("Error Updating Password")
 
@@ -65,15 +69,9 @@ def onboard_user(
         role_id = user.role_id
         role_name = user.role.role_name
 
-        access_exp_hours = current_app.config['JWT_ACCESS_TOKEN_EXPIRES'] / 3600
-
-        access_token = create_access_token(
-            user_id, expires_delta=timedelta(hours=access_exp_hours)
-        )
-
         user_info = {
             "userId": user_id,
-            "status": status,
+            "status": user.status,
             "email": email,
             "firstName": first_name,
             "lastName": last_name,
@@ -81,9 +79,9 @@ def onboard_user(
             "roleId": role_id,
         }
 
-        logger.info("Onboard Attempt Successful: by %s", user_id)
-        create_audit_log("Onboard", user_id=user_id, details="Success")
-        return {"success": True, "accessToken": access_token, "user": user_info}
+        logger.info("Onboard 1 Attempt Successful: by %s", user_id)
+        create_audit_log("Onboard 1", user_id=user_id, details="Success")
+        return {"success": True, "user": user_info}
 
     except DatabaseQueryError as e:
         logger.error("Onboard Attempt Failed: by %s | %s", user_id, e)
@@ -97,19 +95,138 @@ def onboard_user(
         raise
 
 
-def is_onboarded(user_id):
-    user_details = db.session.query(
-        UserDetails).filter_by(user_id=user_id).first()
+def onboard_customer_details(user_id, role_id, company_name, company_address):
+    logger.info("Onboarding Step 2 Attempt: by %s", user_id)
 
-    if user_details is not None:
-        return False
-    else:
-        return True
+    try:
+        onboarding_step = get_onboarding_step(user_id, role_id)
+        print(onboarding_step)
+        if onboarding_step == -1:
+            logger.error(
+                "Onboard Step 2 Attempt Failed: by %s | Invalid Role ID", user_id)
+            create_audit_log("Onboard 2", user_id=user_id,
+                             details="Invalid Role ID")
+            raise DataValidationError("Invalid Role ID")
+
+        if onboarding_step == 0:
+            logger.warning(
+                "Onboard Step 2 Attempt Failed: by %s | User Already Onboarded", user_id)
+            create_audit_log("Onboard 2", user_id=user_id,
+                             details="User Already Onboarded")
+            return {"success": False, "error": "Action Was Already Completed", "description": "User Already Onboarded"}
+
+        if onboarding_step == 1 or onboarding_step > 2:
+            logger.warning(
+                "Onboard Step 2 Attempt Failed: by %s | Wrong Step", user_id)
+            create_audit_log("Onboard 2", user_id=user_id,
+                             details="Wrong Step")
+            return {"success": False, "error": "Wrong Step", "description": "Onboard Step 1 Not Completed"}
+
+        try:
+            customer_details = CustomerDetails(
+                user_id=user_id,
+                company_name=company_name,
+                company_address=company_address
+            )
+            db.session.add(customer_details)
+            db.session.commit()
+        except Exception as e:
+            raise DatabaseQueryError("Error Adding Customer Details")
+
+        # Currently, step 2 is final step. Update user status to active
+        try:
+            user = db.session.query(User).filter_by(user_id=user_id).first()
+            user.status = "active"
+            db.session.commit()
+        except Exception as e:
+            raise DatabaseQueryError("Error Updating User Status")
+
+        role_name = user.role.role_name
+
+        user_info = {
+            "userId": user_id,
+            "email": user.email,
+            "firstName": user.user_details.first_name,
+            "lastName": user.user_details.last_name,
+            "roleName": role_name,
+            "roleId": role_id,
+            "customerDetails": {
+                "companyName": company_name,
+                "companyAddress": company_address
+            }
+        }
+
+        logger.info("Onboard Step 2 Attempt Successful: by %s", user_id)
+        create_audit_log("Onboard 2", user_id=user_id, details="Success")
+        return {"success": True, "user": user_info}
+
+    except DatabaseQueryError as e:
+        logger.error("Onboard Step 2 Attempt Failed: by %s | %s", user_id, e)
+        create_audit_log("Onboard 2", user_id=user_id, details=e.message)
+        raise
+
+    except DataValidationError as e:
+        logger.error("Onboard Step 2 Attempt Failed: by %s | %s", user_id, e)
+        create_audit_log("Onboard 2", user_id=user_id, details=e.message)
+        raise
+
+    except Exception as e:
+        print(traceback.format_exc())
+        logger.error("Onboard Step 2 Attempt Failed: by %s | %s", user_id, e)
+        create_audit_log("Onboard 2", user_id=user_id,
+                         details="Internal Server Error")
+        raise
 
 
-def update_user(user, password, status):
+def get_customer_details(user_id):
+    customer_details = db.session.query(
+        CustomerDetails).filter_by(user_id=user_id).first()
+    return customer_details
+
+
+role_details_handler = {
+    1: "",  # Admin
+    2: "",  # Transportation Manager
+    3: "",  # Carrier
+    4: get_customer_details,  # Customer/Shipper
+    5: "",  # Driver
+    6: "",  # Finance/Accounting
+    7: "",  # Warehouse Manager
+}
+
+
+def get_onboarding_step(user_id, role_id=None):
+    try:
+        user_details = db.session.query(
+            UserDetails).filter_by(user_id=user_id).first()
+
+        if user_details is None:
+            return 1
+
+        if role_id is None:
+            user = db.session.query(User).filter_by(user_id=user_id).first()
+            if user is None:
+                return -1
+            role_id = user.role_id
+
+        handler = role_details_handler.get(role_id)
+        if handler is None:
+            return -1
+
+        role_details = handler(user_id)
+
+        if role_details is None:
+            return 2
+
+        return 0
+
+    except Exception as e:
+        logger.error("Get Step Attempt Failed: by %s | %s", user_id, e)
+        return -1
+
+
+def update_user_password(user, password):
     user.password = generate_password_hash(password)
-    user.status = status
     db.session.commit()
 
 
