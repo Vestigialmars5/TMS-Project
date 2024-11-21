@@ -14,6 +14,8 @@ class Role(Base1):
         Index('ix_role_name', 'role_name'),
     )
 
+    users = db.relationship("User", backref="role", lazy=True)
+
     def __repr__(self):
         return f"Role('{self.role_name}' id: {self.role_id})"
 
@@ -32,8 +34,20 @@ class User(Base1):
     updated_at = db.Column(db.DateTime, default=datetime.now(
         timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    role = db.relationship("Role", backref="users")
-    user_details = db.relationship("UserDetails", backref="UserDetails", uselist=False)
+    user_details = db.relationship(
+        "UserDetails", backref="user", uselist=False, cascade="all, delete-orphan")
+    customer_details = db.relationship(
+        "CustomerDetails", backref="user", uselist=False, cascade="all, delete-orphan")
+    orders = db.relationship('Order', backref='customer',
+                             lazy=True, cascade='all, delete-orphan')
+    managed_warehouses = db.relationship(
+        'Warehouse', backref='manager', lazy=True)
+    driver_shipments = db.relationship(
+        'Shipment', foreign_keys='Shipment.driver_id', backref='driver', lazy=True)
+    customer_shipments = db.relationship(
+        'Shipment', foreign_keys='Shipment.customer_id', backref='customer', lazy=True)
+    audit_logs = db.relationship('AuditLog', backref='user', lazy=True)
+    reports = db.relationship('Report', backref='generator', lazy=True)
 
     __table_args__ = (
         Index('ix_email', 'email'),
@@ -95,8 +109,6 @@ class CustomerDetails(Base1):
     company_name = db.Column(db.String(50), nullable=False)
     company_address = db.Column(db.String(255), nullable=False)
 
-    user = db.relationship("User", backref="customer_details")
-
     __table_args__ = (
         Index('ix_customer_details_user_id', 'user_id'),
         Index('ix_company_name', 'company_name')
@@ -104,6 +116,7 @@ class CustomerDetails(Base1):
 
     def __repr__(self):
         return f"CustomerDetails('{self.company_name}', '{self.company_address}')"
+
 
 class DriverDetails(Base1):
     __tablename__ = "driver_details"
@@ -116,9 +129,6 @@ class DriverDetails(Base1):
     vehicle_id = db.Column(db.Integer, db.ForeignKey(
         "vehicles.vehicle_id"), nullable=False)
     status = db.Column(db.String(50), nullable=False)
-
-    user = db.relationship("User", backref="driver_details")
-    vehicle = db.relationship("Vehicle", backref="driver_details")
 
     __table_args__ = (
         Index('ix_driver_details_user_id', 'user_id'),
@@ -142,6 +152,9 @@ class Vehicle(Base1):
     volume = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(50), nullable=False)
 
+    drivers = db.relationship("DriverDetails", backref="vehicle", lazy=True)
+    shipments = db.relationship("Shipment", backref="vehicle", lazy=True)
+
     __table_args__ = (
         Index('ix_vehicle_plate', 'vehicle_plate'),
         Index('ix_vehicle_type', 'vehicle_type'),
@@ -161,7 +174,7 @@ class Warehouse(Base1):
     docks = db.Column(db.Integer, nullable=False)
     manager_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
-    manager = db.relationship("User", backref="warehouses")
+    shipments = db.relationship("Shipment", backref="warehouse", lazy=True)
 
     __table_args__ = (
         Index('ix_warehouse_name', 'warehouse_name'),
@@ -184,7 +197,10 @@ class Order(Base1):
     updated_at = db.Column(db.DateTime, default=datetime.now(
         timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    customer = db.relationship("User", backref="orders")
+    order_details = db.relationship(
+        "OrderDetails", backref="order", lazy=True, cascade="all, delete-orphan")
+    shipments = db.relationship(
+        "Shipment", backref="order", lazy=True, cascade="all, delete-orphan")
 
     __table_args__ = (
         Index('ix_order_uuid', 'order_uuid'),
@@ -207,8 +223,6 @@ class OrderDetails(Base1):
     priority = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
-
-    order = db.relationship("Order", backref="order_details")
 
     __table_args__ = (
         Index('ix_order_id', 'order_id'),
@@ -241,13 +255,8 @@ class Shipment(Base1):
     updated_at = db.Column(db.DateTime, default=datetime.now(
         timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    order = db.relationship("Order", backref="shipments")
-    customer = db.relationship("User", foreign_keys=[
-                               customer_id], backref="customer_shipments")
-    driver = db.relationship("User", foreign_keys=[
-                             driver_id], backref="driver_shipments")
-    vehicle = db.relationship("Vehicle", backref="shipments")
-    warehouse = db.relationship("Warehouse", backref="shipments")
+    invoices = db.relationship(
+        "Invoice", backref="shipment", lazy=True, cascade="all, delete-orphan")
 
     __table_args__ = (
         Index('ix_shipment_order_id', 'order_id'),
@@ -276,7 +285,8 @@ class Invoice(Base1):
     updated_at = db.Column(db.DateTime, default=datetime.now(
         timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    shipment = db.relationship("Shipment", backref="invoices")
+    payments = db.relationship(
+        "Payment", backref="invoice", lazy=True, cascade="all, delete-orphan")
 
     __table_args__ = (
         Index('ix_shipment_id', 'shipment_id'),
@@ -298,8 +308,6 @@ class Payment(Base1):
         db.DateTime, default=datetime.now(timezone.utc))
     status = db.Column(db.String(50), nullable=False)
 
-    invoice = db.relationship("Invoice", backref="payments")
-
     __table_args__ = (
         Index('ix_invoice_id', 'invoice_id'),
         Index('ix_payment_status', 'status')
@@ -313,14 +321,13 @@ class AuditLog(Base1):
     __tablename__ = "audit_logs"
 
     log_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        "users.user_id"), nullable=True)
     action = db.Column(db.String(50), nullable=False)
     timestamp = db.Column(
         db.DateTime, default=datetime.now(timezone.utc))
     details = db.Column(db.String(255))
     email = db.Column(db.String(100), nullable=True)
-
-    user = db.relationship("User", backref="audit_logs")
 
     def __init__(self, action, user_id=None, email=None, details=""):
         self.user_id = user_id
@@ -341,8 +348,6 @@ class Report(Base1):
     created_at = db.Column(
         db.DateTime, default=datetime.now(timezone.utc))
     data = db.Column(db.String(255))
-
-    user = db.relationship("User", backref="reports")
 
     def __repr__(self):
         return f"Report('{self.report_type}', '{self.created_at}')"
