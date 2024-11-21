@@ -1,4 +1,4 @@
-from server.models.tms_models import User
+from server.models.tms_models import User, UserDetails
 from tests.utilstest import admin_token, carrier_token, token_fixture
 from server.extensions import db
 import tests.consts as consts
@@ -117,6 +117,9 @@ def test_delete_user(client, token_fixture, user_id, expected_status_code, expec
 
     assert response.status_code == expected_status_code
     assert response.json["success"] == expected_success
+    if response.json["success"]:
+        assert db.session.query(User).filter_by(user_id=user_id).first() is None
+        assert db.session.query(UserDetails).filter_by(user_id=user_id).first() is None
 
 
 update_user_test_cases = [
