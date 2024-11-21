@@ -1,4 +1,9 @@
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
-Base1 = declarative_base()
-Base2 = declarative_base()
+
+class Base1(DeclarativeBase):
+    pass
+
+
+class Base2(DeclarativeBase):
+    pass
