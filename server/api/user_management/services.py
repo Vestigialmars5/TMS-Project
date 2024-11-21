@@ -87,7 +87,8 @@ def delete_user(user_id, initiator_id):
                 return {"success": False, "error": "User Not Found", "description": "User Does Not Exist"}
 
         try:
-            db.session.query(User).filter(User.user_id == user_id).delete()
+            user = db.session.query(User).filter(User.user_id == user_id).first()
+            db.session.delete(user)
             db.session.commit()
         except Exception as e:
             raise DatabaseQueryError("Error Deleting User")
