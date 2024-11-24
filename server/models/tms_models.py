@@ -192,6 +192,7 @@ class Order(Base1):
     order_uuid = db.Column(db.String(50), unique=True, nullable=False)
     customer_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     status = db.Column(db.String(50), nullable=False)
+    delivery_address = db.Column(db.String(255), nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(
@@ -205,7 +206,8 @@ class Order(Base1):
     __table_args__ = (
         Index('ix_order_uuid', 'order_uuid'),
         Index('ix_order_customer_id', 'customer_id'),
-        Index('ix_order_status', 'status')
+        Index('ix_order_status', 'status'),
+        Index('ix_deliver_address', 'delivery_address')
     )
 
     def __repr__(self):
@@ -220,14 +222,14 @@ class OrderDetails(Base1):
         "orders.order_id", ondelete="CASCADE"))
     product_id = db.Column(db.Integer, nullable=False)
     product_name = db.Column(db.String(50), nullable=False)
-    priority = db.Column(db.Integer, nullable=False)
+    # priority = db.Column(db.Integer, nullable=False) for now ignore for simplicity
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
 
     __table_args__ = (
         Index('ix_order_id', 'order_id'),
         Index('ix_product_id', 'product_id'),
-        Index('ix_priority', 'priority')
+        # Index('ix_priority', 'priority')
     )
 
     def __repr__(self):
