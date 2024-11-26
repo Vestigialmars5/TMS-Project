@@ -16,7 +16,7 @@ import { initializeAlertActions } from "./actions/alertsActions";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "alerts"],
+  whitelist: ["auth", "alerts", "orders"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
