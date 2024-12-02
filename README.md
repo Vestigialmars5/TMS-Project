@@ -13,7 +13,7 @@ My main goal regarding the project is a fully simulated TMS, that can manage tra
 # Expected Features
 
 - **User Management**: Add, edit, remove users, and assign roles and permissions.
-- **Simulation Model**: Fast-forward time, create warehouses, manage inventory, and simulate various transportation scenarios.
+- **Simulation Model**: Create warehouses, manage inventory, and simulate various transportation scenarios.
 - **Transportation Management**: Plan routes, manage carriers, track shipments, and optimize costs.
 
 # Contributing and Feedback
