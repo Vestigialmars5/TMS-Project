@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Spinner from "react-bootstrap/Spinner";
 import { useAuth } from "../../hooks/useAuth";
 import { getCurrentStep } from "../../services/onboardingService";
+import { showAlert } from "../../store/actions/alertsActions";
 
 const Onboarding = () => {
   const { user } = useAuth();
