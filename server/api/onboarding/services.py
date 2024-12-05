@@ -184,14 +184,17 @@ def get_customer_details(user_id):
     return customer_details
 
 
+def placeholder_for_handler(e):
+    return None
+
 role_details_handler = {
-    1: "",  # Admin
-    2: "",  # Transportation Manager
-    3: "",  # Carrier
+    1: placeholder_for_handler,  # Admin
+    2: placeholder_for_handler,  # Transportation Manager
+    3: placeholder_for_handler,  # Carrier
     4: get_customer_details,  # Customer/Shipper
-    5: "",  # Driver
-    6: "",  # Finance/Accounting
-    7: "",  # Warehouse Manager
+    5: placeholder_for_handler,  # Driver
+    6: placeholder_for_handler,  # Finance/Accounting
+    7: placeholder_for_handler,  # Warehouse Manager
 }
 
 
