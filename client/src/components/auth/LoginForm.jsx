@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import Spinner from "react-bootstrap/Spinner";
+import { validators } from "../../utils/validation";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -10,38 +11,20 @@ const LoginForm = () => {
 
   const { login, loginStatus } = useAuth();
 
-  const validateEmail = (email) => {
-    if (!email) {
-      return "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      return "Email address is invalid";
-    }
-    return "";
-  };
-
-  const validatePassword = (password) => {
-    if (!password) {
-      return "Password is required";
-    } else if (password.length < 8) {
-      return "Password must be at least 8 characters";
-    }
-    return "";
-  };
-
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
-    setEmailError(validateEmail(e.target.value));
+    setEmailError(validators.email(e.target.value));
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    setPasswordError(validatePassword(e.target.value));
+    setPasswordError(validators.password(e.target.value));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const emailErr = validateEmail(email);
-    const passwordErr = validatePassword(password);
+    const emailErr = validators.email(email);
+    const passwordErr = validators.password(password);
 
     if (emailErr || passwordErr) {
       setEmailError(emailErr);
