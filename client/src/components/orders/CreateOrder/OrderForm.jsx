@@ -5,9 +5,13 @@ import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { useAuth } from "../../../hooks/useAuth";
+import { useOrders } from "../../../hooks/useOrders";
 
 const OrderForm = () => {
-  const customerId = "123"; // Replace with actual customer ID from auth context
+  const { user } = useAuth();
+  const { createOrder, createOrderStatus } = useOrders();
+  const customerId = user.userId;
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [deliveryAddressError, setDeliveryAddressError] = useState("");
@@ -20,7 +24,7 @@ const OrderForm = () => {
     ],
     loading: false,
   }; // Placeholder until hook is added
-  const [selectedProducts, setSelectedProducts] = useState({});
+  const [selectedProducts, setSelectedProducts] = useState([]);
 
   useEffect(() => {
     const newTotal = products
@@ -34,29 +38,46 @@ const OrderForm = () => {
   }, [selectedProducts, products]);
 
   const handleProductSelect = (productId) => {
-    const product = products.find((p) => p.id === productId);
+    const product = products.find((product) => product.id === productId);
     setSelectedProducts((prev) => ({
       ...prev,
-      [productId]: prev[productId]
-        ? undefined
-        : {
-            quantity: 1,
-            basePrice: product.basePrice,
-          },
+      [productId]: {
+        productId,
+        productName: product.name,
+        quantity: 1,
+        basePrice: product.basePrice,
+      },
     }));
   };
 
   const handleQuantityChange = (productId, quantity) => {
     setSelectedProducts((prev) => ({
       ...prev,
-      [productId]: { ...prev[productId], quantity: parseInt(quantity) },
+      [productId]: {
+        ...prev[productId],
+        quantity: parseInt(quantity),
+      },
     }));
+  };
+
+  const validateAddress = () => {
+    // pass
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const deliveryAddressErr = validateAddress(deliveryAddress);
+
+    // Calculation for each item's total price (base price * quantity)
+    const orderProducts = products
+      .filter((product) => selectedProducts[product.id])
+      .map((product) => ({
+        productId: product.id,
+        quantity: selectedProducts[product.id].quantity,
+        totalPrice:
+          selectedProducts[product.id].quantity * product.basePrice,
+      }));
 
     if (deliveryAddressErr) {
       setDeliveryAddressError(deliveryAddressErr);
@@ -66,14 +87,7 @@ const OrderForm = () => {
         referenceId: uuidv4(),
         customerId,
         deliveryAddress,
-        products: Object.keys(selectedProducts).map((key) => ({
-          productId: key,
-          productName: products.find((p) => p.id === key).name,
-          quantity: selectedProducts[key].quantity,
-          price:
-            selectedProducts[key].quantity *
-            products.find((p) => p.id === key).basePrice,
-        })),
+        orderProducts,
       });
     }
   };
