@@ -869,3 +869,13 @@ Ideas: So, what we don't want is the check to run. The check is running because 
 Oct 12
 Finished refactoring to centralize everything by core modules.
 Moving on to implementing better access and refresh tokens. I haven't decided if my access token will always have user data of just the user id. Role checking for protected routes in the backend was done by checking the jwt token's data. But that means that when refreshing an access token I will have to create that data again.
+
+April 15
+Okay, I'm back from my long break, I have done more since Oct 12 but for some reason I didn't update this. Today I have reinstalled things and created files that got deleted because of factory resetting my computer. 
+FOR FUTURE REFERENCE DO THESE STEPS:
+.env creation
+create venv
+install from requirements
+flask --app server db-init
+flask --app server populate-db
+npm run dev (in the client folder)
