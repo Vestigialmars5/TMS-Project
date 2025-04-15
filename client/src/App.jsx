@@ -46,7 +46,7 @@ function App() {
         {/* Private routes for customer */}
         <Route path="/customer" element={<CustomerRoute />}>
           <Route index element={<CustomerDashboard />} />
-          <Route path="order" element={<OrderManagement />} exact />
+          <Route path="orders" element={<OrderManagement />} exact />
         </Route>
         {/* End private routes for customer */}
 
