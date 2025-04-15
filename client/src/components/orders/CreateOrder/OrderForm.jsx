@@ -38,16 +38,24 @@ const OrderForm = () => {
   }, [selectedProducts, products]);
 
   const handleProductSelect = (productId) => {
-    const product = products.find((product) => product.id === productId);
-    setSelectedProducts((prev) => ({
-      ...prev,
-      [productId]: {
-        productId,
-        productName: product.name,
-        quantity: 1,
-        basePrice: product.basePrice,
-      },
-    }));
+    setSelectedProducts((prev) => {
+      if (prev[productId]) {
+        const newSelected = { ...prev };
+        delete newSelected[productId];
+        return newSelected;
+      }
+
+      const product = products.find((product) => product.id === productId);
+      return {
+        ...prev,
+        [productId]: {
+          productId,
+          productName: product.name,
+          quantity: 1,
+          basePrice: product.basePrice,
+        },
+      };
+    });
   };
 
   const handleQuantityChange = (productId, quantity) => {
@@ -75,8 +83,7 @@ const OrderForm = () => {
       .map((product) => ({
         productId: product.id,
         quantity: selectedProducts[product.id].quantity,
-        totalPrice:
-          selectedProducts[product.id].quantity * product.basePrice,
+        totalPrice: selectedProducts[product.id].quantity * product.basePrice,
       }));
 
     if (deliveryAddressErr) {
