@@ -61,3 +61,11 @@ def data_cleanup_update_user(data):
     role_id = clean_role_id(data.get("roleId"))
 
     return email, role_id
+
+
+def data_cleanup_create_order(data):
+    reference_id = clean_reference_id(data.get("referenceId"))
+    customer_id = clean_user_id(data.get("customerId"))
+    delivery_address = clean_address(data.get("deliveryAddress"))
+    order_products = clean_products(data.get("orderProducts"))
+    return reference_id, customer_id, delivery_address, order_products
