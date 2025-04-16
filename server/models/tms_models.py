@@ -236,7 +236,7 @@ class OrderDetails(Base1):
         return f"OrderDetails('{self.quantity}', '{self.price}')"
 
 
-class Products(Base1):
+class Product(Base1):
     __tablename__ = "products"
 
     product_id = db.Column(db.Integer, primary_key=True)
