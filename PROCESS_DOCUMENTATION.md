@@ -869,3 +869,6 @@ Ideas: So, what we don't want is the check to run. The check is running because 
 Oct 12
 Finished refactoring to centralize everything by core modules.
 Moving on to implementing better access and refresh tokens. I haven't decided if my access token will always have user data of just the user id. Role checking for protected routes in the backend was done by checking the jwt token's data. But that means that when refreshing an access token I will have to create that data again.
+
+Apr 15
+Right now I need to add the Product table to the models, then create the validations for it. Add the insertion of the order to the database and check for errors.
