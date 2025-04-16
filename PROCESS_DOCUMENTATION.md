@@ -761,7 +761,7 @@ Jun 19
 I modified the database and added a lot more stuff. So now I need to refactor my code to fix the new schema. Lesson for later -> **Set up the schema before developing the code, cannot use a test database with real code, but can use test code with real database**.
 
 Jun 23
-I decided to declare how to pass data from and to the db. The rule will be to leave the data ready to use for the other. For example passing role_name: "Admin" to the frontend would be setting it as roleName in the backend.
+~~I decided to declare how to pass data from and to the db. The rule will be to leave the data ready to use for the other. For example passing role_name: "Admin" to the frontend would be setting it as roleName in the backend.~~ The backend will handle changing it back and forth, in data cleanup.
 I'm having trouble validating token, I'm researching and it turns out that the OPTIONS request in the preflight is having trouble with the jwt_required decorator. I think the solution is very simple since I've had this issue before but I just can't fix it.
 
 Jun 24
