@@ -10,10 +10,10 @@ export const useOrders = () => {
 
   const createOrderMutation = useMutation({
     mutationFn: (order) => orderService.createOrder(order),
-    onSuccess: () => {
-      queryClient.invalidateQueries("orders");
-      dispatch(addOrder(order));
+    onSuccess: (responseData, variables) => {
       showAlert("Order Created Successfully", "success");
+      queryClient.invalidateQueries("orders");
+      dispatch(addOrder(variables));
     },
     onError: (error) => {
       const message =

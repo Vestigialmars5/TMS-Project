@@ -82,6 +82,7 @@ const OrderForm = () => {
       .filter((product) => selectedProducts[product.id])
       .map((product) => ({
         productId: product.id,
+        productName: product.name,
         quantity: selectedProducts[product.id].quantity,
         totalPrice: selectedProducts[product.id].quantity * product.basePrice,
       }));

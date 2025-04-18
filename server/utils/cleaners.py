@@ -156,14 +156,20 @@ def clean_product(product):
     
     if "productId" not in product or not isinstance(product["productId"], int) or product["productId"] <= 0:
         raise DataValidationError("Product Id Missing or Invalid")
+
+    if "productName" not in product or not isinstance(product["productName"], str):
+        raise DataValidationError("Product Name Missing or Invalid")
     
     if "quantity" not in product or not isinstance(product["quantity"], int) or product["quantity"] <= 0:
         raise DataValidationError("Product Quantity Missing or Invalid")
 
-    if "totalPrice" not in product or not isinstance(product["totalPrice"], int) or product["totalPrice"] <= 0:
+
+    if "totalPrice" not in product or not isinstance(product["totalPrice"], float) or product["totalPrice"] <= 0:
         raise DataValidationError("Product Total Price Missing or Invalid")
+
+    clean = {"product_id": product["productId"], "product_name": product["productName"], "quantity":product["quantity"], "total_price":product["totalPrice"]}
     
-    return product
+    return clean
 
 def clean_reference_id(reference_id):
     if not reference_id or not isinstance(reference_id, str):

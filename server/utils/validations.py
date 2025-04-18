@@ -75,3 +75,35 @@ def validate_update_user(user_id, email, role_id, initiator_id):
         return False, "No Changes Made"
 
     return True, user
+
+
+def order_exists(reference_id):
+    try:
+        return db.session.query(Order).filter(Order.order_uuid == reference_id).first() is not None
+    except Exception as e:
+        raise DatabaseQueryError("Error Finding Order")
+
+
+# TODO: Uncomment when I add products to the db
+def validate_order_products(products):
+    return True, ""
+
+    try:
+        for product in products:
+            product_details = db.session.query(Product).filter(Product.product_id == product["product_id"]).first()
+
+            if product_details is None:
+                return False, "Product Does Not Exist"
+            
+            if product_details["product_name"] is None:
+                return False, "Product Name Missing"
+            
+            if product_details["quantity"] <= 0:
+                return False, "Invalid Product Quantity"
+            
+            if product_details["total_price"] <= 0:
+                return False, "Invalid Total Price"
+            
+        return True, ""
+    except:
+        raise DatabaseQueryError("Error Handling Product")

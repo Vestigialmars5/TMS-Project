@@ -4,13 +4,12 @@ from server.utils.authorization_decorators import roles_required
 from server.utils.data_cleanup import data_cleanup_create_order
 from server.api.orders import services
 
-orders_blueprint = Blueprint(
-    "orders_blueprint", __name__, url_prefix="/api/orders")
+orders_blueprint = Blueprint("orders_blueprint", __name__, url_prefix="/api")
 
 
 @orders_blueprint.route("/orders", methods=["POST"])
 @jwt_required()
-@roles_required("Customer")
+@roles_required("Customer/Shipper")
 def create_order():
     if request.method == "POST":
         initiator_id = get_jwt_identity()
@@ -28,6 +27,10 @@ def create_order():
 
         if response["success"]:
             return jsonify(response), 201
+        elif response["error"] == "Invalid Data":
+            return jsonify(response), 400
+        elif response["error"] == "Not Found":
+            return jsonify(response), 404
         elif response["error"] == "Unique Constraint Violation":
             return jsonify(response), 409
         else:
