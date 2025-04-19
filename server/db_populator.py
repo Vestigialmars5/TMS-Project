@@ -19,7 +19,7 @@ def add_all_roles():
     add_complete_user()
     add_incomplete_user()
     add_incomplete_customer()
-    # add_customer_shipper()
+    add_customer_shipper()
     # add_driver()
     # add_finance_accounting()
     # add_warehouse_manager()
@@ -53,6 +53,20 @@ def add_admin():
 
 def add_transportation_manager():
     pass
+
+
+def add_customer_shipper():
+    customer_password = generate_password_hash(consts.CUSTOMER_PASSWORD)
+    customer = User(email=consts.CUSTOMER_EMAIL,
+                            password=customer_password, role_id=consts.CUSTOMER_ROLE_ID, status="inactive")
+    db.session.add(customer)
+    db.session.commit()
+
+    customer_details = UserDetails(user_id=customer.user_id, first_name=consts.CUSTOMER_FIRST_NAME,
+                                           last_name=consts.CUSTOMER_LAST_NAME, phone_number=consts.CUSTOMER_PHONE_NUMBER,
+                                           address=consts.CUSTOMER_ADDRESS)
+    db.session.add(customer_details)
+    db.session.commit()
 
 
 def add_carrier():

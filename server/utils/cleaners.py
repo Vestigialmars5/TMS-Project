@@ -60,12 +60,12 @@ def clean_phone_number(phone_number):
 def clean_address(address):
     # TODO: Implement address validation service
     if not address or not isinstance(address, str):
-        raise DataValidationError("Invalid Address")
+        raise DataValidationError("Address Missing or Invalid")
 
     address = address.strip()
 
     if 0 >= len(address) < 10:
-        raise DataValidationError("Invalid Address")
+        raise DataValidationError("Address Length Invalid")
 
     return address
 
