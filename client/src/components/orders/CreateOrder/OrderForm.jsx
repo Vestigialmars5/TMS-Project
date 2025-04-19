@@ -24,7 +24,7 @@ const OrderForm = () => {
     ],
     loading: false,
   }; // Placeholder until hook is added
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState({});
 
   useEffect(() => {
     const newTotal = products
