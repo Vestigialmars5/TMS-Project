@@ -24,6 +24,16 @@ def admin_token(client):
 
 
 @pytest.fixture()
+def customer_token(client):
+    response = client.post("api/auth/login", json={
+        "email": consts.CUSTOMER_EMAIL,
+        "password": consts.CUSTOMER_PASSWORD
+    })
+    assert response.status_code == 200
+    return response.json["accessToken"]
+
+
+@pytest.fixture()
 def carrier_token(client):
     response = client.post("api/auth/login", json={
         "email": consts.CARRIER_EMAIL,

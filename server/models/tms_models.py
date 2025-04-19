@@ -236,6 +236,15 @@ class OrderDetails(Base1):
         return f"OrderDetails('{self.quantity}', '{self.price}')"
 
 
+class Product(Base1):
+    __tablename__ = "products"
+
+    product_id = db.Column(db.Integer, primary_key=True)
+    product_name = db.Column(db.String(50), nullable=False)
+    product_price = db.Column(db.Float, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+
+
 class Shipment(Base1):
     __tablename__ = "shipments"
 

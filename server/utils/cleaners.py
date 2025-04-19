@@ -1,4 +1,5 @@
 import re
+import uuid
 from server.utils.exceptions import DataValidationError
 from server.utils.consts import MIN_NAME, MAX_NAME
 
@@ -59,12 +60,12 @@ def clean_phone_number(phone_number):
 def clean_address(address):
     # TODO: Implement address validation service
     if not address or not isinstance(address, str):
-        raise DataValidationError("Invalid Address")
+        raise DataValidationError("Address Missing or Invalid")
 
     address = address.strip()
 
     if 0 >= len(address) < 10:
-        raise DataValidationError("Invalid Address")
+        raise DataValidationError("Address Length Invalid")
 
     return address
 
@@ -136,3 +137,51 @@ def clean_limit(limit):
         return 25
 
     return limit
+
+
+def clean_products(products):
+    if not products or not isinstance(products, list) or len(products) == 0:
+        raise DataValidationError("Product List Missing or Invalid")
+    
+    clean_products_list = []
+
+    for product in products:
+        clean_products_list.append(clean_product(product))
+    
+    return clean_products_list
+    
+def clean_product(product):
+    if not product or not isinstance(product, dict):
+        raise DataValidationError("Product Missing or Invalid")
+    
+    if "productId" not in product or not isinstance(product["productId"], int) or product["productId"] <= 0:
+        raise DataValidationError("Product Id Missing or Invalid")
+
+    if "productName" not in product or not isinstance(product["productName"], str):
+        raise DataValidationError("Product Name Missing or Invalid")
+    
+    if "quantity" not in product or not isinstance(product["quantity"], int) or product["quantity"] <= 0:
+        raise DataValidationError("Product Quantity Missing or Invalid")
+
+
+    if "totalPrice" not in product or not isinstance(product["totalPrice"], float) or product["totalPrice"] <= 0:
+        raise DataValidationError("Product Total Price Missing or Invalid")
+
+    clean = {"product_id": product["productId"], "product_name": product["productName"], "quantity":product["quantity"], "total_price":product["totalPrice"]}
+    
+    return clean
+
+def clean_reference_id(reference_id):
+    if not reference_id or not isinstance(reference_id, str):
+        raise DataValidationError("Reference Id Missing or Invalid")
+
+    reference_id = reference_id.strip()
+
+    try:
+        uuid_obj = uuid.UUID(reference_id, version=4)
+        if str(uuid_obj.version) != "4":
+            raise DataValidationError("Invalid UUID Version")
+    except ValueError:
+        raise DataValidationError("Invalid UUId Format For Reference Id")
+    
+    return reference_id
