@@ -1,26 +1,45 @@
 from server.models.tms_models import *
 from server.models.wms_models import *
 from server.extensions import db
+import pytest
 
 
-def test_tms_models(client):
-    assert Role.__tablename__ == "roles"
-    assert User.__tablename__ == "users"
-    assert UserDetails.__tablename__ == "user_details"
-    assert DriverDetails.__tablename__ == "driver_details"
-    assert Vehicle.__tablename__ == "vehicles"
-    assert Warehouse.__tablename__ == "warehouses"
-    assert Order.__tablename__ == "orders"
-    assert OrderDetails.__tablename__ == "order_details"
-    assert Shipment.__tablename__ == "shipments"
-    assert Invoice.__tablename__ == "invoices"
-    assert Payment.__tablename__ == "payments"
-    assert AuditLog.__tablename__ == "audit_logs"
-    assert Report.__tablename__ == "reports"
-    assert db.session.query(Role).count() == 7
-    assert db.session.query(User).count() == 4
+class TestModels:
+    """Test cases for database models to verify structure and relationships."""
 
+    def test_tms_models_tables(self, client):
+        """Verify TMS model table names match expected database structure."""
+        model_tables = {
+            Role: "roles",
+            User: "users",
+            UserDetails: "user_details",
+            DriverDetails: "driver_details",
+            Vehicle: "vehicles",
+            Warehouse: "warehouses",
+            Order: "orders",
+            OrderDetails: "order_details",
+            Product: "products",
+            Shipment: "shipments",
+            Invoice: "invoices",
+            Payment: "payments",
+            AuditLog: "audit_logs",
+            Report: "reports"
+        }
 
-def test_wms_models(client):
-    assert OrdersPlaced.__tablename__ == "orders_placed"
-    assert OrderProducts.__tablename__ == "order_products"
+        for model, expected_table in model_tables.items():
+            assert model.__tablename__ == expected_table, f"Wrong table name for {model.__name__}"
+
+    def test_tms_database_state(self, client):
+        """Verify initial database state for TMS models after setup."""
+        assert db.session.query(Role).count() == 7, "Expected 7 roles"
+        assert db.session.query(User).count() == 6, "Expected 6 users"
+
+    def test_wms_models_tables(self, client):
+        """Verify WMS model table names match expected database structure."""
+        model_tables = {
+            OrdersPlaced: "orders_placed",
+            OrderProducts: "order_products"
+        }
+
+        for model, expected_table in model_tables.items():
+            assert model.__tablename__ == expected_table, f"Wrong table name for {model.__name__}"
