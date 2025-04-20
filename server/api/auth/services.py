@@ -24,9 +24,9 @@ def login(email, password):
     try:
         # Check if email and password are valid
         if not validate_login_credentials(email, password):
-            logger.warning("Login Attempt Failed: by %s | Invalid Credentials", email)
-            create_audit_log("Login", email=email, details="Invalid Credentials")
-            return {"success": False, "error": "Invalid Credentials", "description": "Email Or Password Incorrect"}
+            logger.warning("Login Attempt Failed: by %s | Invalid Login Credentials", email)
+            create_audit_log("Login", email=email, details="Invalid Login Credentials")
+            return {"success": False, "error": "Invalid Login Credentials", "description": "Email Or Password Incorrect"}
 
         try:
             user = db.session.query(User).filter(User.email == email).first()
