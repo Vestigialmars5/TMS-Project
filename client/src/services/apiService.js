@@ -23,8 +23,10 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    console.log(error.response);
-    if (error.response.status === 401 && !originalRequest._retry) {
+    const isUnauthorized = error.response.status === 401;
+    const isNotInvalidLoginCredentials = error.response.data.error !== "Invalid Login Credentials";
+    const hasNotBeenRetried = !originalRequest._retry;
+    if (isUnauthorized && isNotInvalidLoginCredentials && hasNotBeenRetried) {
       originalRequest._retry = true;
 
       try {
@@ -38,7 +40,6 @@ api.interceptors.response.use(
             },
           }
         );
-        console.log(response);
         const {accessToken} = response.data;
         tokenService.setAccessToken(accessToken);
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;

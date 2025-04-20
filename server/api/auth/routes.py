@@ -26,7 +26,7 @@ def login():
 
         if response["success"]:
             return jsonify(response), 200
-        elif response["error"] == "Invalid Credentials":
+        elif response["error"] == "Invalid Login Credentials":
             return jsonify(response), 401
         elif response["error"] == "Action Not Allowed":
             return jsonify(response), 403
