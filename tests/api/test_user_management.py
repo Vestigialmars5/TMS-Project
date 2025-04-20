@@ -1,179 +1,239 @@
+import pytest
 from server.models.tms_models import User, UserDetails
-from tests.utilstest import admin_token, carrier_token, token_fixture
+from tests.utilstest import token_fixture, TestUtils, admin_token, carrier_token, auth_headers, get_user_id
 from server.extensions import db
 import tests.consts as consts
-import pytest
-
-create_user_test_cases = [
-    # Test case 1: Create user with valid inputs
-    ("admin_token", "new@gmail.com", "newnewnew", 1, 201, True),
-    # Test case 2: Create user with existing email
-    ("admin_token", consts.ADMIN_EMAIL, consts.ADMIN_PASSWORD,
-     consts.ADMIN_ROLE_ID, 409, False),
-    # Test case 3: Create user with invalid email
-    ("admin_token",
-     consts.INVALID_EMAIL, "password", 1, 400, False),
-    # Test case 4: Create user with invalid password
-    ("admin_token", "new@gmail.com", "short", 1, 400, False),
-    # Test case 5: Create user with invalid role_id
-    ("admin_token", "new@gmail.com",
-     "newnewnew", 100, 400, False),
-    # Test case 6: Create user with no inputs
-    ("admin_token", "", "", 0, 400, False),
-    # Test case 7: Create user with no email
-    ("admin_token", "", "password", 1, 400, False),
-    # Test case 8: Create user with no password
-    ("admin_token", "new@gmail.com", "", 1, 400, False),
-    # Test case 9: Create user with no role_id
-    ("admin_token", "new@gmail.com", "newnewnew", 0, 400, False),
-    # Test case 10: Create user with no token
-    ("", "new@gmail.com", "newnewnew", 1, 401, False),
-    # Test case 11: Create user with invalid token
-    ("carrier_token", "new@gmail.com", "newnewnew", 1, 401, False)
-]
+import json
 
 
-@pytest.mark.parametrize("token_fixture, email, password, role_id, expected_status_code, expected_success", create_user_test_cases, ids=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"], indirect=["token_fixture"])
-def test_create_user(client, token_fixture, email, password, role_id, expected_status_code, expected_success):
-    response = client.post("/api/users", headers={
-        "Authorization": f"Bearer {token_fixture}",
-        "Content-Type": "application/json"
-    }, json={
-        "email": email,
-        "password": password,
-        "roleId": role_id
-    })
+class TestUserManagement:
+    """Test cases for user management functionality"""
 
-    assert response.status_code == expected_status_code
-    assert response.json["success"] == expected_success
+    @pytest.mark.parametrize(
+        "token_fixture, email, password, role_id, expected_status_code, expected_success",
+        [
+            # Valid creation
+            ("admin_token", "new@gmail.com", "newnewnew", 1, 201, True),
+            # Email already exists
+            ("admin_token", consts.ADMIN_EMAIL,
+             consts.ADMIN_PASSWORD, consts.ADMIN_ROLE_ID, 409, False),
+            # Invalid email format
+            ("admin_token", consts.INVALID_EMAIL, "password", 1, 400, False),
+            # Invalid password (too short)
+            ("admin_token", "new@gmail.com", "short", 1, 400, False),
+            # Invalid role_id
+            ("admin_token", "new@gmail.com", "newnewnew", 100, 400, False),
+            # Missing all fields
+            ("admin_token", "", "", 0, 400, False),
+            # Missing email
+            ("admin_token", "", "password", 1, 400, False),
+            # Missing password
+            ("admin_token", "new@gmail.com", "", 1, 400, False),
+            # Missing role_id
+            ("admin_token", "new@gmail.com", "newnewnew", 0, 400, False),
+            # No authorization
+            ("", "new@gmail.com", "newnewnew", 1, 401, False),
+            # Unauthorized role (carrier)
+            ("carrier_token", "new@gmail.com", "newnewnew", 1, 401, False)
+        ],
+        ids=[
+            "valid_creation",
+            "duplicate_email",
+            "invalid_email_format",
+            "invalid_password",
+            "invalid_role_id",
+            "missing_all_fields",
+            "missing_email",
+            "missing_password",
+            "missing_role_id",
+            "no_authorization",
+            "unauthorized_role"
+        ],
+        indirect=["token_fixture"]
+    )
+    def test_create_user(self, client, token_fixture, email, password, role_id,
+                         expected_status_code, expected_success, auth_headers):
+        """Test creating new users with various inputs and validations."""
 
+        headers = auth_headers(token_fixture)
 
-get_users_test_cases = [
-    # Test case 1: Get users with valid inputs
-    ("admin_token", "admin", "email", "asc", 1, 2, 200, True),
-    # Test case 2: Get users with no token
-    ("", "admin", "email", "asc", 1, 2, 401, False),
-    # Test case 3: Get users with invalid token
-    ("carrier_token", "admin", "email", "asc", 1, 2, 401, False),
-    # Test case 4: Get users with invalid search
-    ("admin_token", 1, "email", "asc", 1, 2, 200, True),
-    # Test case 5: Get users with invalid sort_by
-    ("admin_token", "admin", "invalid_sort_by", "asc", 1, 2, 200, True),
-    # Test case 6: Get users with invalid sort_order
-    ("admin_token", "admin", "email", "invalid_sort_order", 1, 2, 200, True),
-    # Test case 7: Get users with invalid page
-    ("admin_token", "admin", "email", "asc", 0, 2, 200, True),
-    # Test case 8: Get users with invalid limit
-    ("admin_token", "admin", "email", "asc", 1, 0, 200, True),
-    # Test case 9: Get users with no search, sort_by, sort_order, page, limit
-    ("admin_token", "", "", "", 0, 0, 200, True),
-    # Test case 10: Get users with non-existing search
-    ("admin_token", "non_existing", "email", "asc", 1, 2, 200, True),
-]
+        response = client.post("/api/users", headers=headers, json={
+            "email": email,
+            "password": password,
+            "roleId": role_id
+        })
 
+        TestUtils.assert_response_structure(
+            response,
+            expected_status_code,
+            expected_success
+        )
 
-@pytest.mark.parametrize("token_fixture, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success", get_users_test_cases, ids=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], indirect=["token_fixture"])
-def test_get_users(client, token_fixture, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success):
-    response = client.get(f"/api/users?search={search_field}&sortBy={sort_by}&sortOrder={sort_order}&page={page}&limit={limit}", headers={
-        "Authorization": f"Bearer {token_fixture}",
-        "Content-Type": "application/json"
-    }, json={})
+    @pytest.mark.parametrize(
+        "token_fixture, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success",
+        [
+            # Valid request
+            ("admin_token", "admin", "email", "asc", 1, 2, 200, True),
+            # No authorization
+            ("", "admin", "email", "asc", 1, 2, 401, False),
+            # Unauthorized role
+            ("carrier_token", "admin", "email", "asc", 1, 2, 401, False),
+            # Non-string search (should still work)
+            ("admin_token", 1, "email", "asc", 1, 2, 200, True),
+            # Invalid sort_by field
+            ("admin_token", "admin", "invalid_sort_by", "asc", 1, 2, 200, True),
+            # Invalid sort_order
+            ("admin_token", "admin", "email",
+             "invalid_sort_order", 1, 2, 200, True),
+            # Invalid page number
+            ("admin_token", "admin", "email", "asc", 0, 2, 200, True),
+            # Invalid limit
+            ("admin_token", "admin", "email", "asc", 1, 0, 200, True),
+            # Empty parameters
+            ("admin_token", "", "", "", 0, 0, 200, True),
+            # Non-matching search
+            ("admin_token", "non_existing", "email", "asc", 1, 2, 200, True),
+        ],
+        ids=[
+            "valid_request",
+            "no_authorization",
+            "unauthorized_role",
+            "non_string_search",
+            "invalid_sort_by",
+            "invalid_sort_order",
+            "invalid_page",
+            "invalid_limit",
+            "empty_parameters",
+            "non_matching_search"
+        ],
+        indirect=["token_fixture"]
+    )
+    def test_get_users(self, client, token_fixture, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success, auth_headers):
+        """Test retrieving users with various filtering and sorting options"""
 
-    assert response.status_code == expected_status_code
-    assert response.json["success"] == expected_success
+        headers = auth_headers(token_fixture)
 
+        response = client.get(f"/api/users?search={search_field}&sortBy={sort_by}&sortOrder={sort_order}&page={page}&limit={limit}", headers=headers, json={})
+        print(response, "resssponse")
 
-delete_user_test_cases = [
-    # Test case 1: Delete user with valid user_id
-    ("admin_token", "complete_user_id", 200, True),
+        TestUtils.assert_response_structure(
+            response,
+            expected_status_code,
+            expected_success,
+            expected_fields=["users"] if expected_success else None
+        )
 
-    # Test case 2: Delete user with non-existing user_id
-    ("admin_token", 1000, 404, False),
+    @pytest.mark.parametrize(
+        "token_fixture, user_id, expected_status_code, expected_success",
+        [
+            # Valid request
+            ("admin_token", "complete_user_id", 200, True),
+            # Invalid user_id (non-existing)
+            ("admin_token", 1000, 404, False),
+            # No authorization
+            ("", "complete_user_id", 401, False),
+            # Unauthorized role
+            ("carrier_token", "complete_user_id", 401, False),
+            # Invalid action (deleting self)
+            ("admin_token", "self", 403, False)
+        ],
+        ids=[
+            "valid_request",
+            "invalid_user_id",
+            "no_authorization",
+            "unauthorized_role",
+            "invalid_action"
+        ], indirect=["token_fixture"])
+    def test_delete_user(self, client, token_fixture, user_id, expected_status_code, expected_success, get_user_id, auth_headers):
+        """Test deleting users with various inputs"""
 
-    # Test case 3: Delete user with no token
-    ("", "complete_user_id", 401, False),
+        if user_id == "self":
+            user_id = get_user_id(consts.ADMIN_EMAIL)
+        elif user_id == "complete_user_id":
+            user_id = get_user_id(consts.COMPLETE_USER_EMAIL)
 
-    # Test case 4: Delete user with invalid token
-    ("carrier_token", "complete_user_id", 401, False),
+        headers = auth_headers(token_fixture)
+        response = client.delete(f"/api/users/{user_id}", headers=headers, json={})
 
-    # Test case 5: Delete self
-    ("admin_token", "self", 403, False)
-]
+        assert response.status_code == expected_status_code
+        assert response.json["success"] == expected_success
+        if response.json["success"]:
+            assert db.session.query(User).filter_by(
+                user_id=user_id).first() is None
+            assert db.session.query(UserDetails).filter_by(
+                user_id=user_id).first() is None
 
+    @pytest.mark.parametrize(
+        "token_fixture, user_id, email, role_id, expected_status_code, expected_success",
+        [
+            # Valid request
+            ("admin_token", "complete_user_id", "updated@gmail.com", 2, 200, True),
+            # Invalid user_id (non-existing)
+            ("admin_token", 1000, "updated@gmail.com", 1, 404, False),
+            # Invalid email format
+            ("admin_token", "complete_user_id",
+             consts.INVALID_EMAIL, 1, 400, False),
+            # Invalid role_id
+            ("admin_token", "complete_user_id",
+             "updated@gmail.com", 100, 400, False),
+            # No authorization
+            ("", "complete_user_id", "updated@gmail.com", 1, 401, False),
+            # Unauthorized role
+            ("carrier_token", "complete_user_id",
+             "updated@gmail.com", 1, 401, False),
+            # No changes made
+            ("admin_token", "complete_user_id", consts.COMPLETE_USER_EMAIL,
+             consts.COMPLETE_USER_ROLE_ID, 200, True)
+        ],
+        ids=[
+            "valid_request",
+            "invalid_user_id",
+            "invalid_email_format",
+            "invalid_role_id",
+            "no_authorization",
+            "unauthorized_role",
+            "no_changes_made"
+        ], indirect=["token_fixture"])
+    def test_update_user(self, client, token_fixture, user_id, email, role_id, expected_status_code, expected_success, get_user_id, auth_headers):
+        """Test updating users with various inputs"""
 
-@pytest.mark.parametrize("token_fixture, user_id, expected_status_code, expected_success", delete_user_test_cases, ids=["1", "2", "3", "4", "5"], indirect=["token_fixture"])
-def test_delete_user(client, token_fixture, user_id, expected_status_code, expected_success):
-    if user_id == "self":
-        user_id = db.session.query(User).filter_by(
-            email=consts.ADMIN_EMAIL).first().user_id
-    elif user_id == "complete_user_id":
-        user_id = db.session.query(User).filter_by(
-            email=consts.COMPLETE_USER_EMAIL).first().user_id
+        if user_id == "complete_user_id":
+            user_id = get_user_id(consts.COMPLETE_USER_EMAIL)
 
-    response = client.delete(f"/api/users/{user_id}", headers={
-        "Authorization": f"Bearer {token_fixture}",
-        "Content-Type": "application/json"
-    }, json={})
+        headers = auth_headers(token_fixture)
 
-    assert response.status_code == expected_status_code
-    assert response.json["success"] == expected_success
-    if response.json["success"]:
-        assert db.session.query(User).filter_by(user_id=user_id).first() is None
-        assert db.session.query(UserDetails).filter_by(user_id=user_id).first() is None
+        response = client.put(f"/api/users/{user_id}", headers=headers, json={
+            "email": email,
+            "roleId": role_id
+        })
 
+        TestUtils.assert_response_structure(
+            response,
+            expected_status_code,
+            expected_success,
+        )
 
-update_user_test_cases = [
-    # Test case 1: Update user with valid inputs
-    ("admin_token", "complete_user_id", "updated@gmail.com", 2, 200, True),
-    # Test case 2: Update user with non-existing user_id
-    ("admin_token", 1000, "updated@gmail.com", 1, 404, False),
-    # Test case 3: Update user with invalid email
-    ("admin_token", "complete_user_id",
-     consts.INVALID_EMAIL, 1, 400, False),
-    # Test case 4: Update user with invalid role_id
-    ("admin_token", "complete_user_id", "updated@gmail.com", 100, 400, False),
-    # Test case 5: Update user with no token
-    ("", "complete_user_id", "updated@gmail.com", 1, 401, False),
-    # Test case 6: Update user with invalid token
-    ("carrier_token", "complete_user_id", "updated@gmail.com", 1, 401, False),
-    # Test case 7: No changes made
-    ("admin_token", "complete_user_id", consts.COMPLETE_USER_EMAIL,
-     consts.COMPLETE_USER_ROLE_ID, 200, True)
-]
+    @pytest.mark.parametrize(
+        "token_fixture, expected_status_code, expected_success",
+        [
+            # Valid request
+            ("admin_token", 200, True),
+            # No authorization
+            ("", 401, False)
+        ],
+        ids=[
+            "valid_request",
+            "no_authorization"
+        ], indirect=["token_fixture"])
+    def test_get_roles(self, client, token_fixture, expected_status_code, expected_success, auth_headers):
+        """Test retrieving roles with various inputs"""
 
+        headers = auth_headers(token_fixture)
 
-@pytest.mark.parametrize("token_fixture, user_id, email, role_id, expected_status_code, expected_success", update_user_test_cases, ids=["1", "2", "3", "4", "5", "6", "7"], indirect=["token_fixture"])
-def test_update_user(client, token_fixture, user_id, email, role_id, expected_status_code, expected_success):
-    if user_id == "complete_user_id":
-        user_id = db.session.query(User).filter_by(
-            email=consts.COMPLETE_USER_EMAIL).first().user_id
+        response = client.get("/api/roles", headers=headers, json={})
 
-    response = client.put(f"/api/users/{user_id}", headers={
-        "Authorization": f"Bearer {token_fixture}",
-        "Content-Type": "application/json"
-    }, json={
-        "email": email,
-        "roleId": role_id
-    })
-
-    assert response.status_code == expected_status_code
-    assert response.json["success"] == expected_success
-
-
-get_roles_test_cases = [
-    # Test case 1: Get roles with valid token
-    ("admin_token", 200, True),
-    # Test case 2: Get roles with no token
-    ("", 401, False)
-]
-
-
-@pytest.mark.parametrize("token_fixture, expected_status_code, expected_success", get_roles_test_cases, ids=["1", "2"], indirect=["token_fixture"])
-def test_get_roles(client, token_fixture, expected_status_code, expected_success):
-    response = client.get("/api/roles", headers={
-        "Authorization": f"Bearer {token_fixture}",
-        "Content-Type": "application/json"
-    }, json={})
-
-    assert response.status_code == expected_status_code
-    assert response.json["success"] == expected_success
+        TestUtils.assert_response_structure(
+            response,
+            expected_status_code,
+            expected_success,
+        )

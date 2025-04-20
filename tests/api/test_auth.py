@@ -1,48 +1,68 @@
 import tests.consts as consts
-from utilstest import admin_token
+from tests.utilstest import admin_token, TestUtils, auth_headers, token_fixture
 import pytest
 
 
-# Test Cases
-test_cases = [
-    # Test case 1: Login with valid inputs
-    (consts.ADMIN_EMAIL, consts.ADMIN_PASSWORD, 200, True),
-    # Test case 2: Login with invalid email
-    (consts.INVALID_EMAIL, consts.ADMIN_PASSWORD, 400, False),
-    # Test case 3: Login with invalid password
-    (consts.ADMIN_EMAIL, consts.INVALID_PASSWORD, 400, False),
-    # Test case 4: Login with no inputs
-    ("", "", 400, False),
-    # Test case 5: Login with incorrect password
-    (consts.ADMIN_EMAIL, consts.CARRIER_PASSWORD, 401, False),
-    # Test case 6: Login with incorrect email
-    ("i_dont_exist@gmail.com", consts.ADMIN_PASSWORD, 401, False)
-]
+class TestAuth:
+    """Test cases for authentication endpoints"""
 
+    @pytest.mark.parametrize(
+        "email, password, expected_status_code, expected_success",
+        [
+            # Valid login
+            (consts.ADMIN_EMAIL, consts.ADMIN_PASSWORD, 200, True),
+            # Invalid email format
+            (consts.INVALID_EMAIL, consts.ADMIN_PASSWORD, 400, False),
+            # Invalid password format (too short)
+            (consts.ADMIN_EMAIL, consts.INVALID_PASSWORD, 400, False),
+            # Missing credentials
+            ("", "", 400, False),
+            # Incorrect password
+            (consts.ADMIN_EMAIL, consts.CARRIER_PASSWORD, 401, False),
+            # Non-existent user
+            ("i_dont_exist@gmail.com", consts.ADMIN_PASSWORD, 401, False)
+        ],
+        ids=[
+            "valid_login",
+            "invalid_email_format",
+            "invalid_password_format",
+            "missing_credentials",
+            "incorrect_password", 
+            "non_existent_user"
+        ]
+    )
+    def test_login(self, client, email, password, expected_status_code, expected_success):
+        """Test the login endpoint with various inputs"""
+        response = TestUtils.login(client, email, password)
 
-@pytest.mark.parametrize("email, password, expected_status_code, expected_success", test_cases, ids=["1", "2", "3", "4", "5", "6"])
-def test_login(client, admin_token, email, password, expected_status_code, expected_success):
-    response = client.post("/api/auth/login", json={
-        "email": email,
-        "password": password
-    })
+        TestUtils.assert_response_structure(
+            response,
+            expected_status_code,
+            expected_success,
+        )
 
-    assert response.status_code == expected_status_code
-    assert response.json["success"] == expected_success
+    @pytest.mark.parametrize(
+        "token_fixture, expected_status_code, expected_success",
+        [
+            # Valid logout
+            ("admin_token", 200, True),
+            # No authorization header
+            ("", 401, False),
+        ],
+        ids=[
+            "valid_logout",
+            "no_authorization_header"
+        ], indirect=["token_fixture"]
+    )
+    def test_logout(self, client, token_fixture, expected_status_code, expected_success, auth_headers):
+        """Test logout functionality"""
 
+        headers = auth_headers(token_fixture)
 
-def logout(client, token):
-    response = client.post("/api/auth/logout", headers={
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }, json={})
+        response = client.post("/api/auth/logout", headers=headers, json={})
 
-    return response
-
-
-def test_logout(client, admin_token):
-    # Test case 1: Logout with valid token
-    response = logout(client, admin_token)
-
-    assert response.status_code == 200
-    assert response.json["success"] == True
+        TestUtils.assert_response_structure(
+            response,
+            expected_status_code,
+            expected_success,
+        )
