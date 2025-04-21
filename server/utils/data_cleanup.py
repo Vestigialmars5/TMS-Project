@@ -54,15 +54,14 @@ def data_cleanup_search(args):
     return search, page, limit
 
 def data_cleanup_sort_users(args):
-
-    sort_by = clean_sort_by(args.get("sortBy"))
-    sort_order = clean_sort_order_users(args.get("sortOrder"))
+    sort_by = clean_sort_by_users(args.get("sortBy"))
+    sort_order = clean_sort_order(args.get("sortOrder"))
     return sort_by, sort_order
 
 def data_cleanup_sort_orders(args):
+    sort_by = clean_sort_by_orders(args.get("sortBy"))
+    sort_order = clean_sort_order(args.get("sortOrder"))
 
-    sort_by = clean_sort_by(args.get("sortBy"))
-    sort_order = clean_sort_order_orders(args.get("sortOrder"))
     return sort_by, sort_order
 
 
