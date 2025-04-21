@@ -193,6 +193,7 @@ class Order(Base1):
     customer_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     status = db.Column(db.String(50), nullable=False)
     delivery_address = db.Column(db.String(255), nullable=False)
+    total = db.Column(db.Float, nullable=False, default=0.0)
     created_at = db.Column(
         db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(
@@ -207,7 +208,8 @@ class Order(Base1):
         Index('ix_order_uuid', 'order_uuid'),
         Index('ix_order_customer_id', 'customer_id'),
         Index('ix_order_status', 'status'),
-        Index('ix_deliver_address', 'delivery_address')
+        Index('ix_deliver_address', 'delivery_address'),
+        Index('ix_total', 'total')
     )
 
     def to_dict(self):
@@ -216,6 +218,7 @@ class Order(Base1):
             "reference_id": self.order_uuid,
             "customer_id": self.customer_id,
             "status": self.status,
+            "total": self.total,
             "delivery_address": self.delivery_address,
             "created_at": self.created_at,
             "updated_at": self.updated_at
@@ -227,6 +230,7 @@ class Order(Base1):
             "referenceId": self.order_uuid,
             "customerId": self.customer_id,
             "status": self.status,
+            "total": self.total,
             "deliveryAddress": self.delivery_address,
             "createdAt": self.created_at,
             "updatedAt": self.updated_at
