@@ -48,12 +48,22 @@ def data_cleanup_create_user(data):
 
 def data_cleanup_search(args):
     search = clean_search(args.get("search"))
-    sort_by = clean_sort_by(args.get("sortBy"))
-    sort_order = clean_sort_order_users(args.get("sortOrder"))
     page = clean_page(args.get("page"))
     limit = clean_limit(args.get("limit"))
 
-    return search, sort_by, sort_order, page, limit
+    return search, page, limit
+
+def data_cleanup_sort_users(args):
+
+    sort_by = clean_sort_by(args.get("sortBy"))
+    sort_order = clean_sort_order_users(args.get("sortOrder"))
+    return sort_by, sort_order
+
+def data_cleanup_sort_orders(args):
+
+    sort_by = clean_sort_by(args.get("sortBy"))
+    sort_order = clean_sort_order_orders(args.get("sortOrder"))
+    return sort_by, sort_order
 
 
 def data_cleanup_update_user(data):
