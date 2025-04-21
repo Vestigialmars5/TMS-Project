@@ -210,6 +210,28 @@ class Order(Base1):
         Index('ix_deliver_address', 'delivery_address')
     )
 
+    def to_dict(self):
+        return {
+            "order_id": self.order_id,
+            "reference_id": self.order_uuid,
+            "customer_id": self.customer_id,
+            "status": self.status,
+            "delivery_address": self.delivery_address,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+
+    def to_dict_js(self):
+        return {
+            "orderId": self.order_id,
+            "referenceId": self.order_uuid,
+            "customerId": self.customer_id,
+            "status": self.status,
+            "deliveryAddress": self.delivery_address,
+            "createdAt": self.created_at,
+            "updatedAt": self.updated_at
+        }
+
     def __repr__(self):
         return f"Order('{self.order_uuid}', '{self.status}')"
 
