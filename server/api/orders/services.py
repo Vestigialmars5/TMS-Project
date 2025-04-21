@@ -21,16 +21,16 @@ def create_order(reference_id, customer_id, delivery_address, order_products, in
     
 
         # Validate the products exists (TODO: Probably add a call to the inventory here)
-        is_valid, error = validate_order_products(order_products)
+        is_valid, total = validate_order_products(order_products)
         if not is_valid:
-            if error == "Product Does Not Exist":
-                logger.error("Create Order Attempt Failed: by %s | %s", initiator_id, error)
-                create_audit_log("Create Order", user_id=initiator_id, details=error)
-                return {"success": False, "error": "Not Found", "description": error}
+            if total == "Product Does Not Exist":
+                logger.error("Create Order Attempt Failed: by %s | %s", initiator_id, total)
+                create_audit_log("Create Order", user_id=initiator_id, details=total)
+                return {"success": False, "error": "Not Found", "description": total}
             else:
-                logger.error("Create Order Attempt Failed: by %s | %s", initiator_id, error)
-                create_audit_log("Create Order", user_id=initiator_id, details=error)
-                return {"success": False, "error": "Invalid Data", "description":error}
+                logger.error("Create Order Attempt Failed: by %s | %s", initiator_id, total)
+                create_audit_log("Create Order", user_id=initiator_id, details=total)
+                return {"success": False, "error": "Invalid Data", "description":total}
 
         if not user_exists(customer_id):
             logger.error("Create Order Attempt Failed: by %s | Customer Does Not Exist", initiator_id)
@@ -40,7 +40,7 @@ def create_order(reference_id, customer_id, delivery_address, order_products, in
         # TODO: Add Address Checking
 
         try:
-            order = insert_order(reference_id, customer_id, delivery_address)
+            order = insert_order(reference_id, customer_id, delivery_address, total)
             insert_order_details(order.order_id, order_products)
         except DatabaseQueryError as e:
             raise
@@ -62,6 +62,33 @@ def create_order(reference_id, customer_id, delivery_address, order_products, in
     except Exception as e:
         logger.error("Create Order Attempt Failed: by %s | %s", initiator_id, e)
         create_audit_log("Create Order", user_id=initiator_id, details=e.message)
+        raise
+
+
+def get_orders(search, sort_by, sort_order, page, limit, initiator_id):
+
+    logger.info("Get Orders Attempt: by %s", initiator_id)
+
+    try:
+        try:
+            orders = construct_query_orders(
+                search, sort_by, sort_order, page, limit)
+
+            logger.info("Get Orders Attempt Successful: by %s", initiator_id)
+            create_audit_log("Get Orders", initiator_id, details="Success")
+            return {"success": True, "orders": orders}
+
+        except Exception as e:
+            raise DatabaseQueryError(f"Error Fetching Orders {e}")
+
+    except DatabaseQueryError as e:
+        logger.error("Get Orders Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Get Orders", user_id=initiator_id, details=e.message)
+        raise
+
+    except Exception as e:
+        logger.error("Get Orders Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Get Orders", user_id=initiator_id, details="Internal Server Error")
         raise
 
 
@@ -92,3 +119,38 @@ def insert_order_details(order_id, products):
     except SQLAlchemyError as e:
         db.session.rollback()
         raise DatabaseQueryError("Error During Bulk Inserting")
+    
+
+def construct_query_orders(search, sort_by, sort_order, page, limit):
+    """
+    Construct the query for getting orders.
+
+    @param search (str): The search query.
+    @param sort (str): The sort order.
+    @param page (int): The page number.
+    @param limit (int): The number of items per page.
+    @return (str, list): The query and params.
+    """
+
+    query = db.session.query(Order)
+
+    if search:
+        search_filter = f"%{search}%"
+        query = query.filter(
+            Order.status.like(search_filter)
+        )
+
+    if sort_by and sort_order:
+        if sort_order == "asc":
+            query.order_by(db.asc(sort_by))
+        else:
+            query.order_by(db.desc(sort_by))
+
+    offset = (page - 1) * limit
+    query = query.offset(offset).limit(limit)
+
+    orders = query.all()
+
+    order_list = [order.to_dict_js() for order in orders]
+
+    return order_list

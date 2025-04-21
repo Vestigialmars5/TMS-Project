@@ -12,7 +12,7 @@ import Spinner from "react-bootstrap/Spinner"
 const OrdersList = () => {
   const [searchField, setSearchField] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
-  const [sortBy, setSortBy] = useState("referenceId");
+  const [sortBy, setSortBy] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
@@ -80,7 +80,7 @@ const OrdersList = () => {
       ) : error ? (
         <p>Try Again...</p>
       ) : orders && orders.length > 0 ? (
-        orders.map((user, index) => <OrderCard key={index} order={order} />)
+        orders.map((order, index) => <OrderCard key={index} order={order} />)
       ) : (
         <p>No Orders Found</p>
       )}

@@ -86,24 +86,26 @@ def order_exists(reference_id):
 
 # TODO: Uncomment when I add products to the db
 def validate_order_products(products):
-    return True, ""
 
     try:
+        total = 0
         for product in products:
-            product_details = db.session.query(Product).filter(Product.product_id == product["product_id"]).first()
+            # product_details = db.session.query(Product).filter(Product.product_id == product["product_id"]).first()
 
-            if product_details is None:
-                return False, "Product Does Not Exist"
+            # if product_details is None:
+                # return False, "Product Does Not Exist"
             
-            if product_details["product_name"] is None:
-                return False, "Product Name Missing"
+            # if product_details["product_name"] is None:
+                # return False, "Product Name Missing"
             
-            if product_details["quantity"] <= 0:
-                return False, "Invalid Product Quantity"
+            # if product_details["quantity"] <= 0:
+                # return False, "Invalid Product Quantity"
             
-            if product_details["total_price"] <= 0:
-                return False, "Invalid Total Price"
+            # if product_details["total_price"] <= 0:
+                # return False, "Invalid Total Price"
             
-        return True, ""
+            total += product["total_price"]
+            
+        return True, total
     except:
         raise DatabaseQueryError("Error Handling Product")

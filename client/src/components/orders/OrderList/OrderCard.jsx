@@ -8,10 +8,10 @@ const OrderCard = ({ order }) => {
   return (
     <>
       <ListGroup horizontal>
-        <ListGroup.Item>{order.referenceId}</ListGroup.Item>
+        <ListGroup.Item>{order.orderId}</ListGroup.Item>
         <ListGroup.Item>{order.customerId}</ListGroup.Item>
-        <ListGroup.Item>{order.deliveryAddress}</ListGroup.Item>
-        <ListGroup.Item>{order.orderProducts}</ListGroup.Item>
+        <ListGroup.Item>{order.total}</ListGroup.Item>
+        <ListGroup.Item>{order.status}</ListGroup.Item>
         <ListGroup.Item>
           <Button variant="secondary">
             Edit

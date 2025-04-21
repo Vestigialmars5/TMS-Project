@@ -122,6 +122,19 @@ def clean_sort_by_users(sort_order):
     return sort_order
 
 
+def clean_sort_by_orders(sort_order):
+    if not sort_order or not isinstance(sort_order, str):
+        return "status"
+
+    sort_order = sort_order.strip().lower()
+
+    if sort_order not in ["status"]:
+        return "status"
+
+    return sort_order
+
+
+
 def clean_page(page):
     if not page or not isinstance(page, int):
         return 1
