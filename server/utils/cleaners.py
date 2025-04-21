@@ -98,7 +98,7 @@ def clean_search(search):
     return search.strip()
 
 
-def clean_sort_by(sort_by):
+def clean_sort_order(sort_by):
     if not sort_by or not isinstance(sort_by, str):
         return "asc"
 
@@ -110,7 +110,7 @@ def clean_sort_by(sort_by):
     return sort_by
 
 
-def clean_sort_order_users(sort_order):
+def clean_sort_by_users(sort_order):
     if not sort_order or not isinstance(sort_order, str):
         return "email"
 
