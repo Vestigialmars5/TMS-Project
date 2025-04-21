@@ -114,7 +114,6 @@ class TestUserManagement:
         headers = auth_headers(token_fixture)
 
         response = client.get(f"/api/users?search={search_field}&sortBy={sort_by}&sortOrder={sort_order}&page={page}&limit={limit}", headers=headers, json={})
-        print(response, "resssponse")
 
         TestUtils.assert_response_structure(
             response,
