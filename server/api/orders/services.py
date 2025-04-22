@@ -92,6 +92,40 @@ def get_orders(search, sort_by, sort_order, page, limit, initiator_id):
         raise
 
 
+def get_order_details(order_id, initiator_id):
+
+    logger.info("Get Order Details Attempt: by %s", initiator_id)
+
+    try:
+        try:
+            details = db.session.query(OrderDetails).filter(OrderDetails.order_id == order_id).all()
+
+            if len(details) <= 0:
+                logger.error("Get Order Details Attempt Failed: by %s | No Order Details Found", initiator_id)
+                create_audit_log("Get Order Details", user_id=initiator_id, details="No Order Details Found")
+                return {"success": False, "error": "Not Found", "description": "No Order Details Found"}
+            
+            details_list = [detail.to_dict_js() for detail in details]
+
+            logger.info("Get Order Details Attempt Successful: by %s", initiator_id)
+            create_audit_log("Get Order Details", initiator_id, details="Success")
+            return {"success": True, "details": details_list}
+
+        except Exception as e:
+            raise DatabaseQueryError(f"Error Fetching Order Details {e}")
+
+    except DatabaseQueryError as e:
+        logger.error("Get Order Details Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Get Order Details", user_id=initiator_id, details=e)
+        raise
+
+    except Exception as e:
+        logger.error("Get Order Details Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Get Order Details", user_id=initiator_id, details="Internal Server Error")
+        raise
+
+
+
 def insert_order(reference_id, customer_id, delivery_address):
     order = Order(order_uuid=reference_id, customer_id=customer_id, status="Pending", delivery_address=delivery_address)
     db.session.add(order)

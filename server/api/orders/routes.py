@@ -1,7 +1,7 @@
 from flask import Blueprint, request, abort, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from server.utils.authorization_decorators import roles_required
-from server.utils.data_cleanup import data_cleanup_create_order, data_cleanup_search, data_cleanup_sort_orders
+from server.utils.data_cleanup import data_cleanup_create_order, data_cleanup_search, data_cleanup_sort_orders, data_cleanup_get_order_details
 from server.api.orders import services
 
 orders_blueprint = Blueprint("orders_blueprint", __name__, url_prefix="/api")
@@ -55,5 +55,26 @@ def get_orders():
 
         if response["success"]:
             return jsonify(response), 200
+        else:
+            return jsonify(response), 500
+
+
+@orders_blueprint.route("/orders/details", methods=["GET"])
+@jwt_required()
+@roles_required("Customer/Shipper")
+def get_order_details():
+    if request.method == "GET":
+
+        order_id = data_cleanup_get_order_details(request.args)
+
+        initiator_id = get_jwt_identity()
+
+        response = services.get_order_details(
+            order_id, initiator_id)
+
+        if response["success"]:
+            return jsonify(response), 200
+        elif response["error"] == "Not Found":
+            return jsonify(response), 404
         else:
             return jsonify(response), 500

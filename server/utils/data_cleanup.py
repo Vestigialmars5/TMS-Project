@@ -78,3 +78,8 @@ def data_cleanup_create_order(data):
     delivery_address = clean_address(data.get("deliveryAddress"))
     order_products = clean_products(data.get("orderProducts"))
     return reference_id, customer_id, delivery_address, order_products
+
+
+def data_cleanup_get_order_details(data):
+    order_id = clean_order_id(data.get("orderId"))
+    return order_id

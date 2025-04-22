@@ -17,3 +17,12 @@ export const getOrders = async ({
   });
   return response.data.orders;
 };
+
+export const getOrderDetails = async ({
+  orderId,
+}) => {
+  const response = await api.get("/orders/details", {
+    params: { orderId },
+  });
+  return response.data.details;
+}

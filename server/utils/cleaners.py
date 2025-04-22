@@ -198,3 +198,19 @@ def clean_reference_id(reference_id):
         raise DataValidationError("Invalid UUId Format For Reference Id")
     
     return reference_id
+
+
+def clean_order_id(order_id):
+    if not order_id:
+        raise DataValidationError("Order Id Missing")
+    
+    if isinstance(order_id, str):
+        try:
+            order_id = int(order_id)
+        except ValueError:
+            raise DataValidationError("Order Id Invalid")
+    
+    if order_id <= 0:
+        raise DataValidationError("Order Id Invalid")
+    
+    return order_id
