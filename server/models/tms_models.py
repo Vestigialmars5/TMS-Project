@@ -252,6 +252,26 @@ class OrderDetails(Base1):
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
 
+    def to_dict(self):
+        return {
+            "order_detail_id": self.order_detail_id,
+            "order_id": self.order_id,
+            "product_id": self.product_id,
+            "product_name": self.product_name,
+            "quantity": self.quantity,
+            "price": self.price,
+        }
+
+    def to_dict_js(self):
+        return {
+            "orderDetailId": self.order_detail_id,
+            "orderId": self.order_id,
+            "productId": self.product_id,
+            "productName": self.product_name,
+            "quantity": self.quantity,
+            "price": self.price,
+        }
+
     __table_args__ = (
         Index('ix_order_id', 'order_id'),
         Index('ix_product_id', 'product_id'),
