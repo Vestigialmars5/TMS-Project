@@ -817,7 +817,7 @@ Jul 19
 I've been trying to set up my flask factory but I can't get anything to work.
 
 Jul 26
-I have been trying to refactor my whole app, I was able to make a flask factory pattern, but now I'm struggling refactoring to sqlalchemy. 
+I have been trying to refactor my whole app, I was able to make a flask factory pattern, but now I'm struggling refactoring to sqlalchemy.
 
 Jul 28
 Yesterday I was able to implement the multiple database initiation. Today I realized that there are some problems with migrations. For some reason it wants to delete all of my tables. I'm going to probably have to create a smaller example and ask online.
@@ -871,7 +871,7 @@ Finished refactoring to centralize everything by core modules.
 Moving on to implementing better access and refresh tokens. I haven't decided if my access token will always have user data of just the user id. Role checking for protected routes in the backend was done by checking the jwt token's data. But that means that when refreshing an access token I will have to create that data again.
 
 April 15
-Okay, I'm back from my long break, I have done more since Oct 12 but for some reason I didn't update this. Today I have reinstalled things and created files that got deleted because of factory resetting my computer. 
+Okay, I'm back from my long break, I have done more since Oct 12 but for some reason I didn't update this. Today I have reinstalled things and created files that got deleted because of factory resetting my computer.
 FOR FUTURE REFERENCE DO THESE STEPS:
 .env creation
 create venv
@@ -882,3 +882,31 @@ npm run dev (in the client folder)
 
 Right now I need to add the Product table to the models, then create the validations for it. Add the insertion of the order to the database and check for errors.
 
+Apr 23
+I have decided to do the following with Spinners.
+If in button:
+
+```jsx
+{
+  status !== "loading" ? (
+    <Button type="submit" variant="primary" disabled={status === "loading"}>
+      Submit
+    </Button>
+  ) : (
+    <Spinner animation="border" role="submitStatus" />
+  );
+}
+```
+
+If getting data for a component:
+```jsx
+{isLoading ? (
+  <Spinner animation="border" role="dataStatus"/>
+) : error ? (
+  <p>Try Again...</p>
+) : data && data.length > 0 ? (
+  <DataComponent>
+) : (
+  <p>No data Found</p>
+)}
+```
