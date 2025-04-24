@@ -2,7 +2,7 @@ import React from "react";
 import OrderForm from "../../components/orders/CreateOrder/OrderForm";
 import OrdersList from "../../components/orders/OrderList/OrdersList";
 
-const CustomerDashboard = () => {
+const OrderManagement = () => {
   return (
     <div>
       <h1>Order Management</h1>
@@ -12,4 +12,4 @@ const CustomerDashboard = () => {
   );
 };
 
-export default CustomerDashboard;
+export default OrderManagement;
