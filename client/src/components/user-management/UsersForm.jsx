@@ -15,7 +15,7 @@ const UsersForm = () => {
 
   const {
     data: roles,
-    isLoading: rolesLoading,
+    isPending: rolesPending,
     error: rolesError,
   } = useRoles();
   const { createUser, createUserStatus } = useUsers();
@@ -78,67 +78,63 @@ const UsersForm = () => {
     }
   };
 
-  if (rolesLoading) {
-    return (
-      <Button variant="primary" disabled>
-        <Spinner animation="border" role="status" />
-        Loading Roles...
-      </Button>
-    );
-  }
-
-  if (rolesError) {
-    console.error(rolesError);
-    return <p>Error loading roles</p>;
-  }
-
   return (
     <div>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            value={email}
-            onChange={handleEmailChange}
-          />
-          {emailError && <p>{emailError}</p>}
-        </Form.Group>
-        <Form.Group controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          {passwordError && <p>{passwordError}</p>}
-        </Form.Group>
-        <Form.Group controlId="role">
-          <Form.Label>Role</Form.Label>
-          <Form.Control as="select" value={roleId} onChange={handleRoleChange}>
-            <option value={0}>Select a Role</option>
-            {roles.map((role) => (
-              <option key={role.roleId} value={role.roleId}>
-                {role.roleName}
-              </option>
-            ))}
-          </Form.Control>
-          {roleError && <p>{roleError}</p>}
-        </Form.Group>
-        <Form.Group>
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={createUserStatus === "pending"}
-          >
-            {createUserStatus !== "pending" ? (
-              "Create User"
-            ) : (
-              <Spinner animation="border" role="createUserStatus" />
-            )}
-          </Button>
-        </Form.Group>
-      </Form>
+      {!rolesPending ? (
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="email">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              value={email}
+              onChange={handleEmailChange}
+            />
+            {emailError && <p>{emailError}</p>}
+          </Form.Group>
+          <Form.Group controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+            {passwordError && <p>{passwordError}</p>}
+          </Form.Group>
+          <Form.Group controlId="role">
+            <Form.Label>Role</Form.Label>
+            <Form.Control
+              as="select"
+              value={roleId}
+              onChange={handleRoleChange}
+            >
+              <option value={0}>Select a Role</option>
+              {roles.map((role) => (
+                <option key={role.roleId} value={role.roleId}>
+                  {role.roleName}
+                </option>
+              ))}
+            </Form.Control>
+            {roleError && <p>{roleError}</p>}
+          </Form.Group>
+          <Form.Group>
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={createUserStatus === "pending"}
+            >
+              {createUserStatus !== "pending" ? (
+                "Create User"
+              ) : (
+                <Spinner animation="border" role="createUserStatus" />
+              )}
+            </Button>
+          </Form.Group>
+        </Form>
+      ) : roleError ? (
+        <p>There was an error getting roles</p>
+      ) : (
+        <Spinner animation="border" role="rolesPending" />
+      )}
     </div>
   );
 };

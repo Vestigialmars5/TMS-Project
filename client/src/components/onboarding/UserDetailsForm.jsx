@@ -116,7 +116,13 @@ const UserDetailsForm = () => {
     <Form onSubmit={handleSubmit}>
       <Form.Group controlId="email">
         <Form.Label>Email</Form.Label>
-        <Form.Control type="email" name="email" value={email} disabled readOnly />
+        <Form.Control
+          type="email"
+          name="email"
+          value={email}
+          disabled
+          readOnly
+        />
       </Form.Group>
 
       <Form.Group controlId="password">
@@ -185,18 +191,17 @@ const UserDetailsForm = () => {
         />
       </Form.Group>
       {addressError && <p>{addressError}</p>}
-
-      {submitUserDetailsStatus !== "loading" ? (
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={submitUserDetailsStatus === "loading"}
-        >
-          Submit
-        </Button>
-      ) : (
-        <Spinner animation="border" role="submitDetailsStatus" /> // TODO: Check other appearances of this case, standardize if spinner inside button or instead of
-      )}
+      <Button
+        variant="primary"
+        type="submit"
+        disabled={submitUserDetailsStatus === "pending"}
+      >
+        {submitUserDetailsStatus !== "pending" ? (
+          "Submit"
+        ) : (
+          <Spinner animation="border" role="submitUserDetailsStatus" />
+        )}
+      </Button>
     </Form>
   );
 };
