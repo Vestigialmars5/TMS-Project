@@ -886,19 +886,23 @@ Apr 23
 I have decided to do the following with Spinners.
 If in button:
 
+
 ```jsx
-{
-  status !== "loading" ? (
-    <Button type="submit" variant="primary" disabled={status === "loading"}>
-      Submit
-    </Button>
+<Button
+  variant="primary"
+  type="submit"
+  disabled={updateUserStatus === "pending"}
+>
+  {updateUserStatus !== "pending" ? (
+    "Update"
   ) : (
-    <Spinner animation="border" role="submitStatus" />
-  );
-}
+    <Spinner animation="border" role="updateUserStatus" />
+  )}
+</Button>
 ```
 
 If getting data for a component:
+
 ```jsx
 {isLoading ? (
   <Spinner animation="border" role="dataStatus"/>
