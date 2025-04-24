@@ -78,3 +78,38 @@ class TestOrders:
             expected_status_code,
             expected_success
         )
+
+    @pytest.mark.parametrize(
+        "token_fixture, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success",
+        [
+            # Valid request
+            ("customer_token", "", "", "asc", 1, 2, 200, True),
+            # No authorization
+            # Unauthorized role
+            # Non-string search (should still work)
+            # Invalid sort_by field
+            # Invalid sort_order
+            # Invalid page number
+            # Invalid limit
+            # Empty parameters
+            # Non-matching search
+        ],
+        ids=[
+            "valid_request",
+        ],
+        indirect=["token_fixture"]
+    )
+    def test_get_orders(self, client, token_fixture, search_field, sort_by, sort_order, page, limit, expected_status_code, expected_success, auth_headers):
+        """Test retrieving orders with various filtering and sorting options"""
+
+        headers = auth_headers(token_fixture)
+
+        response = client.get(
+            f"/api/orders?search={search_field}&sortBy={sort_by}&sortOrder={sort_order}&page={page}&limit={limit}", headers=headers, json={})
+
+        TestUtils.assert_response_structure(
+            response,
+            expected_status_code,
+            expected_success,
+            expected_fields=["orders"] if expected_success else None
+        )

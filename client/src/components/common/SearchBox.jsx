@@ -8,7 +8,7 @@ const SearchBox = ({ searchValue, searchChange }) => {
       <Form.Group controlId="search">
         <Form.Control
           type="text"
-          placeholder="Search users..."
+          placeholder="Search..."
           value={searchValue}
           onChange={searchChange}
         />

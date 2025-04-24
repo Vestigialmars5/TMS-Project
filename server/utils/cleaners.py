@@ -98,7 +98,7 @@ def clean_search(search):
     return search.strip()
 
 
-def clean_sort_by(sort_by):
+def clean_sort_order(sort_by):
     if not sort_by or not isinstance(sort_by, str):
         return "asc"
 
@@ -110,7 +110,7 @@ def clean_sort_by(sort_by):
     return sort_by
 
 
-def clean_sort_order_users(sort_order):
+def clean_sort_by_users(sort_order):
     if not sort_order or not isinstance(sort_order, str):
         return "email"
 
@@ -120,6 +120,19 @@ def clean_sort_order_users(sort_order):
         return "email"
 
     return sort_order
+
+
+def clean_sort_by_orders(sort_order):
+    if not sort_order or not isinstance(sort_order, str):
+        return "status"
+
+    sort_order = sort_order.strip().lower()
+
+    if sort_order not in ["status"]:
+        return "status"
+
+    return sort_order
+
 
 
 def clean_page(page):
@@ -185,3 +198,19 @@ def clean_reference_id(reference_id):
         raise DataValidationError("Invalid UUId Format For Reference Id")
     
     return reference_id
+
+
+def clean_order_id(order_id):
+    if not order_id:
+        raise DataValidationError("Order Id Missing")
+    
+    if isinstance(order_id, str):
+        try:
+            order_id = int(order_id)
+        except ValueError:
+            raise DataValidationError("Order Id Invalid")
+    
+    if order_id <= 0:
+        raise DataValidationError("Order Id Invalid")
+    
+    return order_id

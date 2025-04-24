@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, abort
 from server.api.user_management import services
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from server.utils.data_cleanup import data_cleanup_create_user, data_cleanup_get_users, clean_user_id, data_cleanup_update_user
+from server.utils.data_cleanup import data_cleanup_create_user, data_cleanup_search, clean_user_id, data_cleanup_update_user, data_cleanup_sort_users
 from server.utils.authorization_decorators import roles_required
 
 user_management_bp = Blueprint("users", __name__, url_prefix="/api")
@@ -74,8 +74,10 @@ def create_user():
 def get_users():
     if request.method == "GET":
 
-        search, sort_by, sort_order, page, limit = data_cleanup_get_users(
+        search, page, limit = data_cleanup_search(
             request.args)
+        
+        sort_by, sort_order = data_cleanup_sort_users(request.args)
 
         initiator_id = get_jwt_identity()
 

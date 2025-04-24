@@ -193,6 +193,7 @@ class Order(Base1):
     customer_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     status = db.Column(db.String(50), nullable=False)
     delivery_address = db.Column(db.String(255), nullable=False)
+    total = db.Column(db.Float, nullable=False, default=0.0)
     created_at = db.Column(
         db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(
@@ -207,8 +208,33 @@ class Order(Base1):
         Index('ix_order_uuid', 'order_uuid'),
         Index('ix_order_customer_id', 'customer_id'),
         Index('ix_order_status', 'status'),
-        Index('ix_deliver_address', 'delivery_address')
+        Index('ix_deliver_address', 'delivery_address'),
+        Index('ix_total', 'total')
     )
+
+    def to_dict(self):
+        return {
+            "order_id": self.order_id,
+            "reference_id": self.order_uuid,
+            "customer_id": self.customer_id,
+            "status": self.status,
+            "total": self.total,
+            "delivery_address": self.delivery_address,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+
+    def to_dict_js(self):
+        return {
+            "orderId": self.order_id,
+            "referenceId": self.order_uuid,
+            "customerId": self.customer_id,
+            "status": self.status,
+            "total": self.total,
+            "deliveryAddress": self.delivery_address,
+            "createdAt": self.created_at,
+            "updatedAt": self.updated_at
+        }
 
     def __repr__(self):
         return f"Order('{self.order_uuid}', '{self.status}')"
@@ -225,6 +251,26 @@ class OrderDetails(Base1):
     # priority = db.Column(db.Integer, nullable=False) for now ignore for simplicity
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
+
+    def to_dict(self):
+        return {
+            "order_detail_id": self.order_detail_id,
+            "order_id": self.order_id,
+            "product_id": self.product_id,
+            "product_name": self.product_name,
+            "quantity": self.quantity,
+            "price": self.price,
+        }
+
+    def to_dict_js(self):
+        return {
+            "orderDetailId": self.order_detail_id,
+            "orderId": self.order_id,
+            "productId": self.product_id,
+            "productName": self.product_name,
+            "quantity": self.quantity,
+            "price": self.price,
+        }
 
     __table_args__ = (
         Index('ix_order_id', 'order_id'),
