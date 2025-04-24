@@ -1410,6 +1410,17 @@ Define what will need custom hooks, and what will need a separate action file. A
 - Action Files:
   - `alertActions`: Actions for managing alerts and notifications
 
+### Module-Specific Guidelines
+
+| Module | React Query Usage | Redux Usage |
+|--------|------------------|-------------|
+| Authentication | Session validation, user permissions | User session, tokens, current user |
+| Orders | List fetching, order details, mutations | Active filters, selected orders |
+| Inventory | Stock levels, location data | UI preferences, active warehouse |
+| Carriers | Carrier details, availability | Preferred carrier settings |
+| Shipments | Tracking updates, status changes | Active tracking views, notification settings |
+| Reports | Report data, metrics | Report configurations, saved report templates |
+
 ## 2. Structure
 
 ```
