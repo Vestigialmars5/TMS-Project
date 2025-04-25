@@ -15,23 +15,25 @@ const CustomerRoute = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticating && !isAuthenticated) {
-      showAlert("You Must Be Logged In To Access This Page", "warning");
-      navigate("/login");
-    }
+    if (location.pathname === "/customer") {
+      if (!isAuthenticating && !isAuthenticated) {
+        showAlert("You Must Be Logged In To Access This Page", "warning");
+        navigate("/login");
+      }
 
-    if (
-      !isAuthenticating &&
-      isAuthenticated &&
-      user.status === "not_onboarded"
-    ) {
-      showAlert("Please Complete Your Onboarding", "warning");
-      navigate("/onboarding");
-    }
+      if (
+        !isAuthenticating &&
+        isAuthenticated &&
+        user.status === "not_onboarded"
+      ) {
+        showAlert("Please Complete Your Onboarding", "warning");
+        navigate("/onboarding");
+      }
 
-    if (!isAuthenticating && isAuthenticated && required !== user.roleId) {
-      showAlert("You Are Not Authorized To Access This Page", "danger");
-      goToDashboard(user.roleId);
+      if (!isAuthenticating && isAuthenticated && required !== user.roleId) {
+        showAlert("You Are Not Authorized To Access This Page", "danger");
+        goToDashboard(user.roleId);
+      }
     }
   }, [isAuthenticating, isAuthenticated, user, goToDashboard]);
 

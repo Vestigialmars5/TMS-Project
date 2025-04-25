@@ -15,28 +15,30 @@ const AdminRoute = () => {
   const { goToDashboard } = useRoleBasedNavigation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isAuthenticating && !isAuthenticated) {
-      showAlert("You Must Be Logged In To Access This Page", "warning");
-      navigate("/login");
-    }
+    useEffect(() => {
+    if (location.pathname === "/admin") {
 
-    if (!isAuthenticating && isAuthenticated && user.status === "not_onboarded") {
-      showAlert("Please Complete Your Onboarding", "warning");
-      navigate("/onboarding");
-    }
+      if (!isAuthenticating && !isAuthenticated) {
+        showAlert("You Must Be Logged In To Access This Page", "warning");
+        navigate("/login");
+      }
 
-    if (!isAuthenticating && isAuthenticated && required !== user.roleId) {
-      showAlert("You Are Not Authorized To Access This Page", "danger");
-      goToDashboard(user.roleId);
-    }
+      if (!isAuthenticating && isAuthenticated && user.status === "not_onboarded") {
+        showAlert("Please Complete Your Onboarding", "warning");
+        navigate("/onboarding");
+      }
 
+      if (!isAuthenticating && isAuthenticated && required !== user.roleId) {
+        showAlert("You Are Not Authorized To Access This Page", "danger");
+        goToDashboard(user.roleId);
+      }
+    }
   }, [isAuthenticating, isAuthenticated, user, goToDashboard]);
 
   if (isAuthenticating || !isAuthenticated) {
     return <Spinner />;
   }
-  
+
   return <Outlet />;
 };
 
