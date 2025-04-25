@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import { validators } from "../../utils/validation";
 
@@ -52,13 +53,17 @@ const LoginForm = () => {
           {passwordError && <p>{passwordError}</p>}
         </div>
         <div className="inputContainer">
-          {loginStatus !== "pending" ? (
-            <button type="submit" disabled={loginStatus === "pending"}>
-              Login
-            </button>
-          ) : (
-            <Spinner animation="border" role="loginStatus" />
-          )}
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={loginStatus === "pending"}
+          >
+            {loginStatus !== "pending" ? (
+              "Login"
+            ) : (
+              <Spinner animation="border" role="loginStatus" />
+            )}
+          </Button>
         </div>
       </form>
     </div>

@@ -1328,67 +1328,73 @@ The Transportation Management System (TMS) is designed to optimize and manage th
 
 ## 1. State Management Design for TMS Modules
 
-### 1.1 Global State (Redux)
+### 1.1 State Management Philosophy
 
-Redux will be used for managing global state that needs to be accessed across multiple components and modules.
+My TMS will follow a pragmatic approach to state management that prioritizes simplicity and maintainability:
 
-- Core Modules in Redux:
+1. **React Query for API Data**: Use React Query as the primary tool for managing server-state
+2. **Redux for Global UI State**: Use Redux selectively for truly global state
+3. **Local State for Component UI**: Use React's useState for component-specific state
+4. **Context API for Shared Module State**: Use Context for state shared within a specific module
 
-  - Authorization and Authentication
-  - Notifications and Alerts
-  - Order Management
-  - Route Planning and Optimization
-  - Carrier Management
-  - Inventory Management
-  - User Management
-  - Compliance and Regulatory Management
-  - Customer Management
-  - Financial Management
-  - Equipment and Asset Management
-  - Integration Management
+### 1.2 React Query (Primary for Server State)
 
-- Redux Slices:
-  - `authSlice`: Reducer for authentication and authorization state
-  - `alertSlice`: Reducer for alert, error, and notification state
-  - `orderSlice`: Reducer for order-related state
-  - `routeSlice`: Reducer for route planning state
-  - `carrierSlice`: Reducer for carrier management state
-  - `inventorySlice`: Reducer for inventory management state
-  - `complianceSlice`: Reducer for compliance and regulatory state
-  - `customerSlice`: Reducer for customer management state
-  - `financialSlice`: Reducer for financial management state
-  - `equipmentSlice`: Reducer for equipment and asset management state
-  - `integrationSlice`: Reducer for integration management state
+React Query will handle most API interactions for several advantages:
 
+- Automatic loading and error states
+- Built-in caching and refetching strategies
+- Optimistic updates for mutations
+- Pagination and infinite scrolling support
+- Query invalidation and dependency management
 
-### 1.2 React Context
+Example pattern for React Query usage:
 
-For state that needs to be shared among a group of components but not globally:
+```jsx
+// Fetching data with React Query
+const {
+  data: orders,
+  isLoading,
+  error,
+} = useQuery({
+  queryKey: ["orders"],
+  queryFn: fetchOrders,
+  refetchOnWindowFocus: false,
+});
 
-- Shipment Tracking Context
-- Report and Analytics Context
-- Document Management Context
-- Business Intelligence and Analytics Context
-- Help and Support Context
+// Mutating data with React Query
+const { mutate: createOrder, isLoading: isSubmitting } = useMutation({
+  mutationFn: (orderData) => apiClient.post("/orders", orderData),
+  onSuccess: () => {
+    queryClient.invalidateQueries(["orders"]);
+    // Show success notification
+  },
+  onError: (error) => {
+    // Handle error, show notification
+  },
+});
+```
 
-- Context Providers:
-  - `TrackingContextProvider`: Provides state and actions related to shipment tracking
-  - `ReportContextProvider`: Provides state and actions for reporting and analytics
-  - `DocumentContextProvider`: Provides state and actions for document management
-  - `BusinessIntelligenceContextProvider`: Provides state and actions for business intelligence
-  - `SupportContextProvider`: Provides state and actions for support resources
+### 1.3 Redux (For Global State Only)
 
-### 1.3 Server State (React Query)
+Redux will be used selectively for:
 
-For managing server state, caching, and synchronization:
+- **Authentication**: User session, tokens, permissions
+- **UI Preferences**: Theme, language, sidebar state
+- **Global Notifications**: System-wide alerts and messages
+- **Active Work Context**: Currently selected order/shipment when needed across multiple components
 
-- All API calls using Axios
-- Implement React Query for efficient data fetching, caching, and synchronization
+Redux slices will be limited to:
+
+- `authSlice`: Authentication state
+- `alertsSlice`: Global notifications
+**For now I will keep orders, and users slice, but will only use them in the future for things like ui preferences, filtering, or specific needs.**
 
 ### 1.4 Custom Hooks / Actions
+
 Define what will need custom hooks, and what will need a separate action file. A separate action file will be needed if the logic needs to be able to be called outside of a component. Whereas a custom hook is used within a component.
 
 - Custom Hooks:
+
   - `useAuth`: Hook for handling authentication and user state
   - `useUsers`: Hook for managing user-management data
   - `useOrders`: Hook for managing order-related data
@@ -1410,16 +1416,33 @@ Define what will need custom hooks, and what will need a separate action file. A
 - Action Files:
   - `alertActions`: Actions for managing alerts and notifications
 
-### Module-Specific Guidelines
+### 1.5 Redux Integration
+For cases where both React Query and Redux are needed, custom hooks can integrate them:
 
-| Module | React Query Usage | Redux Usage |
-|--------|------------------|-------------|
-| Authentication | Session validation, user permissions | User session, tokens, current user |
-| Orders | List fetching, order details, mutations | Active filters, selected orders |
-| Inventory | Stock levels, location data | UI preferences, active warehouse |
-| Carriers | Carrier details, availability | Preferred carrier settings |
-| Shipments | Tracking updates, status changes | Active tracking views, notification settings |
-| Reports | Report data, metrics | Report configurations, saved report templates |
+```jsx
+export function useOrderWithRedux(orderId) {
+  const dispatch = useDispatch();
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['orders', orderId],
+    queryFn: () => fetchOrderById(orderId),
+    onSuccess: (data) => {
+      dispatch(setActiveOrder(data));
+    }
+  });
+
+  return { data, isLoading, error };
+}
+```
+
+### Module-Specific Guidelines
+| Module | Primary State Management | When to use Redux |
+|--------|--------------------------|-------------------|
+| Authentication | Redux for session state | For user session, tokens, permissions |
+| Orders | React Query for data | Only for active order selection across views |
+| Inventory	| React Query for inventory data | For UI preferences, active filters |
+| Carriers | React Query for carrier data | Only if needed for cross-component state |
+| Shipments	| React Query for shipment data + Context for tracking views | Only for global settings
+| Reports | React Query for report data | For saved report configurations |
 
 ## 2. Structure
 

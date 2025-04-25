@@ -126,8 +126,8 @@ def get_order_details(order_id, initiator_id):
 
 
 
-def insert_order(reference_id, customer_id, delivery_address):
-    order = Order(order_uuid=reference_id, customer_id=customer_id, status="Pending", delivery_address=delivery_address)
+def insert_order(reference_id, customer_id, delivery_address, total):
+    order = Order(order_uuid=reference_id, customer_id=customer_id, status="Pending", delivery_address=delivery_address, total=total)
     db.session.add(order)
     db.session.commit()
     return order

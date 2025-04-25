@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { useQuery } from "@tanstack/react-query";
 import OrderDetailsCard from "./OrderDetailsCard";
-import { getOrderDetails } from "../../../services/orderService";
-import Spinner from "react-bootstrap/Spinner";
 
 const OrderCard = ({ order }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -22,7 +19,7 @@ const OrderCard = ({ order }) => {
         <ListGroup.Item>{order.total}</ListGroup.Item>
         <ListGroup.Item>{order.status}</ListGroup.Item>
         <ListGroup.Item>
-          <Button variant="secondary" onClick={handleShowDetails}>
+          <Button variant="primary" onClick={handleShowDetails}>
             All Details
           </Button>
         </ListGroup.Item>

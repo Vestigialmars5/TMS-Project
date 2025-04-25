@@ -16,13 +16,14 @@ const OrderForm = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [deliveryAddressError, setDeliveryAddressError] = useState("");
 
-  const { products, loading } = {
+  const { products, productsState, error } = {
     products: [
       { id: 1, name: "potatoes", basePrice: 10.99 },
       { id: 2, name: "tomatoes", basePrice: 8.99 },
       { id: 3, name: "carrots", basePrice: 5.99 },
     ],
-    loading: false,
+    productsState: "success",
+    error: false,
   }; // Placeholder until hook is added
   const [selectedProducts, setSelectedProducts] = useState({});
 
@@ -126,9 +127,11 @@ const OrderForm = () => {
 
       <section>
         <h4>Available Products</h4>
-        {loading ? (
-          <Spinner animation="border" />
-        ) : (
+        {productsState === "pending" ? (
+          <Spinner animation="border" role="status" />
+        ) : error ? (
+          <p>Try again...</p>
+        ) : products && products.length > 0 ? (
           products.map((product) => (
             <Form.Check
               key={product.id}
@@ -138,6 +141,8 @@ const OrderForm = () => {
               onChange={() => handleProductSelect(product.id)}
             />
           ))
+        ) : (
+          <p>No products available</p>
         )}
       </section>
 
@@ -174,7 +179,17 @@ const OrderForm = () => {
         <p>${totalPrice.toFixed(2)}</p>
       </section>
 
-      <Button type="submit">Create Order</Button>
+      <Button
+        variant="primary"
+        type="submit"
+        disabled={createOrderStatus === "pending"}
+      >
+        {createOrderStatus !== "pending" ? (
+          "Create Order"
+        ) : (
+          <Spinner animation="border" role="createOrderStatus" />
+        )}
+      </Button>
     </Form>
   );
 };

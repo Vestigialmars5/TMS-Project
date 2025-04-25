@@ -68,17 +68,17 @@ const CustomerDetailsForm = () => {
       </Form.Group>
       {companyAddressError && <p>{companyAddressError}</p>}
 
-      {submitRoleDetailsStatus !== "loading" ? (
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={submitRoleDetailsStatus === "loading"}
-        >
-          Submit
-        </Button>
-      ) : (
-        <Spinner animation="border" role="submitRoleDetailsStatus" /> // TODO: Check other appearances of this case, standardize if spinner inside button or instead of
-      )}
+      <Button
+        variant="primary"
+        type="submit"
+        disabled={submitRoleDetailsStatus === "pending"}
+      >
+        {submitRoleDetailsStatus !== "pending" ? (
+          "Submit"
+        ) : (
+          <Spinner animation="border" role="submitRoleDetailsStatus" />
+        )}
+      </Button>
     </Form>
   );
 };
