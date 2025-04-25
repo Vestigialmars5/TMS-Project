@@ -19,7 +19,7 @@ const OrderCard = ({ order }) => {
         <ListGroup.Item>{order.total}</ListGroup.Item>
         <ListGroup.Item>{order.status}</ListGroup.Item>
         <ListGroup.Item>
-          <Button variant="secondary" onClick={handleShowDetails}>
+          <Button variant="primary" onClick={handleShowDetails}>
             All Details
           </Button>
         </ListGroup.Item>

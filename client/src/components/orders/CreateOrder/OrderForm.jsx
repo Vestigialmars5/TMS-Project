@@ -127,7 +127,7 @@ const OrderForm = () => {
 
       <section>
         <h4>Available Products</h4>
-        {productsState !== "pending" ? (
+        {productsState === "pending" ? (
           <Spinner animation="border" role="status" />
         ) : error ? (
           <p>Try again...</p>

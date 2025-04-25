@@ -24,9 +24,8 @@ const UsersList = () => {
   } = useQuery({
     queryKey: ["users", searchField, sortBy, sortOrder, page, limit],
     queryFn: () => getUsers({ searchField, sortBy, sortOrder, page, limit }),
-    config: {
-      keepPreviousData: true,
-    },
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const handleSearchChange = useCallback(
