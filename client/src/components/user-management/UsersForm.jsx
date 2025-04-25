@@ -15,7 +15,7 @@ const UsersForm = () => {
 
   const {
     data: roles,
-    isPending: rolesPending,
+    status: rolesStatus,
     error: rolesError,
   } = useRoles();
   const { createUser, createUserStatus } = useUsers();
@@ -78,9 +78,18 @@ const UsersForm = () => {
     }
   };
 
+  if (rolesError) {
+    const message =
+      rolesError.response?.data?.description ||
+      rolesError.response?.data?.error ||
+      "An Unknown Error Occurred";
+    console.error(rolesError);
+    showAlert(`Error Retrieving Roles: ${message}`, "danger");
+  }
+
   return (
     <div>
-      {!rolesPending ? (
+      {rolesStatus !== "pending" ? (
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="email">
             <Form.Label>Email</Form.Label>
@@ -125,15 +134,15 @@ const UsersForm = () => {
               {createUserStatus !== "pending" ? (
                 "Create User"
               ) : (
-                <Spinner animation="border" role="createUserStatus" />
+                <Spinner animation="border" role="status" />
               )}
             </Button>
           </Form.Group>
         </Form>
-      ) : roleError ? (
+      ) : rolesError ? (
         <p>There was an error getting roles</p>
       ) : (
-        <Spinner animation="border" role="rolesPending" />
+        <Spinner animation="border" role="status" />
       )}
     </div>
   );

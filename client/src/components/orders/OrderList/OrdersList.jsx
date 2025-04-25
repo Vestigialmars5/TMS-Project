@@ -7,7 +7,7 @@ import { debounce } from "../../../utils/utils";
 import { showAlert } from "../../../store/actions/alertsActions";
 import { getOrders } from "../../../services/orderService";
 import OrderCard from "./OrderCard";
-import Spinner from "react-bootstrap/Spinner"
+import Spinner from "react-bootstrap/Spinner";
 
 const OrdersList = () => {
   const [searchField, setSearchField] = useState("");
@@ -18,16 +18,14 @@ const OrdersList = () => {
   const [total, setTotal] = useState(0);
 
   const {
-      data: orders,
-      isLoading,
-      error,
-    } = useQuery({
-      queryKey: ["orders", searchField, sortBy, sortOrder, page, limit],
-      queryFn: () => getOrders({ searchField, sortBy, sortOrder, page, limit }),
-      config: {
-        keepPreviousData: true,
-      },
-    });
+    data: orders,
+    status: ordersStatus,
+    error,
+  } = useQuery({
+    queryKey: ["orders", searchField, sortBy, sortOrder, page, limit],
+    queryFn: () => getOrders({ searchField, sortBy, sortOrder, page, limit }),
+    keepPreviousData: true,
+  });
 
   const handleSearchChange = useCallback(
     debounce((e) => {
@@ -38,13 +36,13 @@ const OrdersList = () => {
   );
 
   if (error) {
-      const message =
-        error.response?.data?.description ||
-        error.response?.data?.error ||
-        "An Unknown Error Occurred";
-      console.error(error);
-      showAlert(`Error Retrieving Orders: ${message}`, "danger");
-    }
+    const message =
+      error.response?.data?.description ||
+      error.response?.data?.error ||
+      "An Unknown Error Occurred";
+    console.error(error);
+    showAlert(`Error Retrieving Orders: ${message}`, "danger");
+  }
 
   return (
     <div>
@@ -75,8 +73,8 @@ const OrdersList = () => {
           <Tab.Pane eventKey="#Actions"></Tab.Pane>
         </Tab.Content>
       </Tab.Container>
-      {isLoading ? (
-        <Spinner animation="border" />
+      {ordersStatus === "pending" ? (
+        <Spinner animation="border" role="status"/>
       ) : error ? (
         <p>Try Again...</p>
       ) : orders && orders.length > 0 ? (

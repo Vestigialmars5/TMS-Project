@@ -16,13 +16,13 @@ const OrderForm = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [deliveryAddressError, setDeliveryAddressError] = useState("");
 
-  const { products, loading, error } = {
+  const { products, productsState, error } = {
     products: [
       { id: 1, name: "potatoes", basePrice: 10.99 },
       { id: 2, name: "tomatoes", basePrice: 8.99 },
       { id: 3, name: "carrots", basePrice: 5.99 },
     ],
-    loading: false,
+    productsState: "success",
     error: false,
   }; // Placeholder until hook is added
   const [selectedProducts, setSelectedProducts] = useState({});
@@ -127,8 +127,8 @@ const OrderForm = () => {
 
       <section>
         <h4>Available Products</h4>
-        {loading ? (
-          <Spinner animation="border" role="productAvailabilityStatus" />
+        {productsState !== "pending" ? (
+          <Spinner animation="border" role="status" />
         ) : error ? (
           <p>Try again...</p>
         ) : products && products.length > 0 ? (

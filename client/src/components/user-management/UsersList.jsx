@@ -1,11 +1,10 @@
-import { useQuery, QueryClient, keepPreviousData } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import React, { useState, useCallback } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import { getUsers } from "../../services/usersService";
 import { showAlert } from "../../store/actions/alertsActions";
 import Tab from "react-bootstrap/Tab";
 import { debounce } from "../../utils/utils";
-import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import SearchBox from "../../components/common/SearchBox";
 import UserCard from "./UserCard";
@@ -20,7 +19,7 @@ const UsersList = () => {
 
   const {
     data: users,
-    isLoading,
+    status: usersStatus,
     error,
   } = useQuery({
     queryKey: ["users", searchField, sortBy, sortOrder, page, limit],
@@ -74,8 +73,8 @@ const UsersList = () => {
           <Tab.Pane eventKey="#Actions"></Tab.Pane>
         </Tab.Content>
       </Tab.Container>
-      {isLoading ? (
-        <Spinner animation="border" />
+      {usersStatus === "pending" ? (
+        <Spinner animation="border" role="status"/>
       ) : error ? (
         <p>Try Again...</p>
       ) : users && users.length > 0 ? (

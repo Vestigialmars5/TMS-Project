@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { useQuery } from "@tanstack/react-query";
 import OrderDetailsCard from "./OrderDetailsCard";
 
 const OrderCard = ({ order }) => {

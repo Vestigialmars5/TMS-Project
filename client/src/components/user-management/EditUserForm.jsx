@@ -7,11 +7,7 @@ import { showAlert } from "../../store/actions/alertsActions";
 import Spinner from "react-bootstrap/Spinner";
 
 const EditUserForm = ({ user, cancelEdit }) => {
-  const {
-    data: roles,
-    isLoading: rolesLoading,
-    error: rolesError,
-  } = useRoles();
+  const { data: roles, status: rolesStatus, error: rolesError } = useRoles();
   const { updateUser, updateUserStatus } = useUsers();
 
   const [email, setEmail] = useState(user.email);
@@ -79,50 +75,69 @@ const EditUserForm = ({ user, cancelEdit }) => {
     cancelEdit();
   }
 
+  if (rolesError) {
+    const message =
+      rolesError.response?.data?.description ||
+      rolesError.response?.data?.error ||
+      "An Unknown Error Occurred";
+    console.error(rolesError);
+    showAlert(`Error Retrieving Roles: ${message}`, "danger");
+  }
+
   return (
     <>
-      <Form onSubmit={handleEditUser}>
-        <Form.Group controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            defaultValue={email}
-            onChange={handleEmailChange}
-            autoFocus
-          />
-          {emailError && <p>{emailError}</p>}
-        </Form.Group>
+      {rolesStatus !== "pending" ? (
+        <Form onSubmit={handleEditUser}>
+          <Form.Group controlId="email">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              defaultValue={email}
+              onChange={handleEmailChange}
+              autoFocus
+            />
+            {emailError && <p>{emailError}</p>}
+          </Form.Group>
 
-        <Form.Group controlId="role">
-          <Form.Label>Role</Form.Label>
-          <Form.Control as="select" value={roleId} onChange={handleRoleChange}>
-            <option value={0}>{roleName}</option>
-            {roles.map((role) => (
-              <option key={role.roleId} value={role.roleId}>
-                {role.roleName}
-              </option>
-            ))}
-          </Form.Control>
-          {roleError && <p>{roleError}</p>}
-        </Form.Group>
+          <Form.Group controlId="role">
+            <Form.Label>Role</Form.Label>
+            <Form.Control
+              as="select"
+              value={roleId}
+              onChange={handleRoleChange}
+            >
+              <option value={0}>{roleName}</option>
+              {roles.map((role) => (
+                <option key={role.roleId} value={role.roleId}>
+                  {role.roleName}
+                </option>
+              ))}
+            </Form.Control>
+            {roleError && <p>{roleError}</p>}
+          </Form.Group>
 
-        <Form.Group>
-          <Button variant="secondary" onClick={handleCancelEdit}>
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={updateUserStatus === "pending"}
-          >
-            {updateUserStatus !== "pending" ? (
-              "Update"
-            ) : (
-              <Spinner animation="border" role="updateUserStatus" />
-            )}
-          </Button>
-        </Form.Group>
-      </Form>
+          <Form.Group>
+            <Button variant="secondary" onClick={handleCancelEdit}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={updateUserStatus === "pending"}
+            >
+              {updateUserStatus !== "pending" ? (
+                "Update"
+              ) : (
+                <Spinner animation="border" role="status" />
+              )}
+            </Button>
+          </Form.Group>
+        </Form>
+      ) : rolesError ? (
+        <p>There was an error getting roles</p>
+      ) : (
+        <Spinner animation="border" role="status" />
+      )}
     </>
   );
 };

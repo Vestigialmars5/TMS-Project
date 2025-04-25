@@ -9,13 +9,13 @@ import { showAlert } from "../../store/actions/alertsActions";
 
 const Onboarding = () => {
   const { user } = useAuth();
-  const {data: currentStep, isLoading, error} = useQuery({
+  const {data: currentStep, status: currentStepStatus, error} = useQuery({
     queryKey: ["currentStep"],
     queryFn: () => getCurrentStep(),
   });
 
-  if (isLoading || !user) {
-    return <Spinner />;
+  if (currentStepStatus === "pending" || !user) {
+    return <Spinner animation="border" role="status"/>;
   }
 
   if (error) {
