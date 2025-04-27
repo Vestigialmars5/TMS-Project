@@ -235,8 +235,6 @@ CREATE TABLE inventory (
 
 ## 1. User Roles
 
-Based on your suggestions and considering typical TMS requirements, here's a refined list of user roles:
-
 1. Admin
 2. Transportation Manager
 3. Carrier
@@ -359,41 +357,12 @@ Tasks:
 
 ## 3. Role-Based Access Control (RBAC)
 
-To implement these roles in the TMS, we'll use a Role-Based Access Control system. Here's a high-level overview of how this could be structured in the database:
+To implement these roles in the TMS, we'll use a Role-Based Access Control system.
 
-```sql
-CREATE TABLE roles (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
-);
-
-CREATE TABLE permissions (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
-);
-
-CREATE TABLE role_permissions (
-    role_id INTEGER,
-    permission_id INTEGER,
-    PRIMARY KEY (role_id, permission_id),
-    FOREIGN KEY (role_id) REFERENCES roles (id),
-    FOREIGN KEY (permission_id) REFERENCES permissions (id)
-);
-
-CREATE TABLE users (
-    id INTEGER PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password_hash VARCHAR(128) NOT NULL,
-    role_id INTEGER,
-    FOREIGN KEY (role_id) REFERENCES roles (id)
-);
-```
 
 # Transportation Management System: User Roles and Core Module Interactions
 
 ## 1. Core Modules
-
-Let's first recap the core modules of our TMS:
 
 1. Order Management
 2. Route Planning and Optimization
@@ -473,8 +442,6 @@ Here I want to get a better understanding of how I will handle state management 
 
 ## 3. Cross-Module Interactions
 
-To illustrate how these modules and roles interact in a typical workflow, let's consider the lifecycle of an order:
-
 1. **Order Creation**:
 
    - The Customer/Shipper creates an order in the Order Management module.
@@ -509,8 +476,6 @@ To illustrate how these modules and roles interact in a typical workflow, let's 
    - Feedback is provided to the Dispatcher, Carrier, and Warehouse Manager for future optimizations.
 
 ## 4. Implementation Considerations
-
-To support these interactions in our Flask and React-based TMS:
 
 1. **API Design**: Create RESTful endpoints for each module, with appropriate permissions for different roles.
 
@@ -663,27 +628,6 @@ def order_status_change_webhook():
 4. WMS updates order status as it's processed
 5. WMS notifies TMS when order is ready for shipment
 
-```python
-def create_order(order_data):
-    # Create order in TMS
-    order = Order.create(order_data)
-
-    # Check inventory with WMS
-    inventory_status = requests.get(f"{WMS_API_URL}/inventory", params={"items": order.items})
-
-    if inventory_status.is_sufficient():
-        # Send order to WMS for fulfillment
-        wms_response = requests.post(f"{WMS_API_URL}/orders", json=order.to_dict())
-
-        if wms_response.is_success():
-            order.update(status="In Fulfillment")
-        else:
-            order.update(status="Fulfillment Error")
-    else:
-        order.update(status="Insufficient Inventory")
-
-    return order
-```
 
 ### 5.2 Inventory Synchronization
 
@@ -1451,39 +1395,18 @@ src/
 │
 ├── components/ -- Reusable UI components
 │   ├── common/
-│   │   ├── Header.js
-│   │   ├── Footer.js
-│   │   ├── Sidebar.js
-|   |   └── SearchBar.js
-|   |   └── PrivateRoute.js -- Logic for routes
 │   │   └── ...
 │   ├── auth/
-│   │   ├── LoginForm.js -- Use api hook, use validation function
-│   │   ├── LogoutButton.js
 │   │   └── ...
 │   ├── onboarding/
-│   │   ├── Welcome.js
-│   │   ├── DetailsForm.js
 │   │   └── ...
 │   ├── user-management/
-│   │   ├── UserList.js
-│   │   ├── UserForm.js
-│   │   ├── UserDetails.js
 │   │   └── ...
 │   ├── orders/
-│   │   ├── OrderList.js
-│   │   ├── OrderDetails.js
-│   │   ├── OrderForm.js
 │   │   └── ...
 │   ├── carriers/
-│   │   ├── CarrierList.js
-│   │   ├── CarrierDetails.js
-│   │   ├── CarrierForm.js
 │   │   └── ...
 │   ├── shipments/
-│   │   ├── ShipmentList.js
-│   │   ├── ShipmentDetails.js
-│   │   ├── ShipmentTracking.js
 │   │   └── ...
 │   ├── routes/
 │   │   ├── RouteList.js
@@ -1506,32 +1429,8 @@ src/
 │   │   └── ...
 │   └── ...
 │
-├── contexts/ -- React Context API
-│   ├── TrackingContext.js
-│   ├── ReportContext.js
-│   ├── DocumentContext.js
-│   ├── BusinessIntelligenceContext.js
-│   ├── SupportContext.js
-│   └── ...
 │
 ├── hooks/ -- Custom React Hooks
-│   ├── useAuth.js
-│   ├── useOrders.js
-│   ├── useRoutes.js
-│   ├── useCarriers.js
-│   ├── useShipments.js
-│   ├── useInventory.js
-│   ├── useReporting.js
-│   ├── useNotifications.js
-│   ├── useDocuments.js
-│   ├── useCompliance.js
-│   ├── useCustomers.js
-│   ├── useFinancials.js
-│   ├── useEquipment.js
-│   ├── useBusinessIntelligence.js
-│   ├── useIntegration.js
-│   ├── useAuditTrail.js
-│   ├── useSupport.js
 │   └── ...
 │
 ├── layouts/
@@ -1542,21 +1441,10 @@ src/
 │
 ├── pages/
 │   ├── admin/
-│   │   ├── Dashboard.js
-│   │   ├── UserManagement.js
-│   │   ├── OrderManagement.js
-│   │   ├── RouteManagement.js
-│   │   ├── CarrierManagement.js
-│   │   ├── InventoryManagement.js
-│   │   ├── ReportingAnalytics.js
 │   │   └── ...
 │   ├── driver/
-│   │   ├── CurrentRoute.js
-│   │   ├── DeliveryHistory.js
 │   │   └── ...
 │   ├── customer/
-│   │   ├── PlaceOrder.js
-│   │   ├── TrackShipment.js
 │   │   └── ...
 │   └── ...
 │
@@ -1569,38 +1457,12 @@ src/
 │
 ├── services/ -- API services
 │   ├── apiService.js -- Create axios instance
-│   ├── authService.js
-│   ├── orderService.js
-│   ├── routeService.js
-│   ├── carrierService.js
-│   ├── shipmentService.js
-│   ├── inventoryService.js
-│   ├── reportingService.js
-│   ├── userService.js
-│   ├── notificationService.js
-│   ├── documentService.js
-│   ├── complianceService.js
-│   ├── customerService.js
-│   ├── financialService.js
-│   ├── equipmentService.js
-│   ├── integrationService.js
-│   ├── auditService.js
-│   ├── supportService.js
 │   └── ...
 │
 ├── store/
 │   ├── slices/ -- Redux slices
 │   │   ├── authSlice.js
 │   │   ├── alertsSlice.js
-│   │   ├── ordersSlice.js
-│   │   ├── routesSlice.js
-│   │   ├── carriersSlice.js
-│   │   ├── shipmentsSlice.js
-│   │   ├── inventorySlice.js
-│   │   ├── usersSlice.js
-│   │   ├── customersSlice.js
-│   │   ├── financialsSlice.js
-│   │   ├── equipmentSlice.js
 │   │   └── ...
 │   ├── actions/ -- For things that need a separate file for actions
 │   │   ├── alertsActions.js
