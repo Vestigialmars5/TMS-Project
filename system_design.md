@@ -355,6 +355,197 @@ Tasks:
 - Assist customers with using the TMS platform
 - Escalate complex issues to appropriate departments
 
+1. Admin Role
+Create Operations
+Ensure unique username/email validation for new user accounts
+Verify proper role assignment with appropriate permissions
+Track user creation in audit logs
+Validate system settings before saving changes
+Ensure data consistency when setting up integrations
+Read Operations
+Implement pagination for large data sets (users, orders, etc.)
+Consider data masking for sensitive information (PII)
+Add search and filtering capabilities for better usability
+Ensure audit logs are properly indexed for quick access
+Update Operations
+Prevent modification of critical system settings without confirmation
+Log all configuration changes with before/after values
+Check for permission changes that might create security gaps
+Validate integration settings before updating
+Delete Operations
+Prevent accidental deletion of critical system data
+Implement soft delete where appropriate
+Ensure referential integrity is maintained
+Check for dependencies before allowing deletion
+Track deletion events in audit logs
+2. Transportation Manager
+Create Operations
+Validate transportation strategies against business rules
+Ensure new carrier contracts meet compliance requirements
+Check for conflicts when creating new transportation routes
+Verify KPI thresholds are reasonable
+Read Operations
+Provide comprehensive filters for performance metrics
+Ensure proper visualization of complex transportation data
+Enable comparison of current vs. historical performance
+Update Operations
+Validate changes to transportation strategies
+Log changes to carrier relationships
+Ensure modifications to route optimization parameters are validated
+Check impact of priority changes on existing shipments
+Delete Operations
+Prevent deletion of active transportation strategies
+Check for dependencies before allowing deletion of routes
+Ensure proper archiving of historical performance data
+3. Carrier Role
+Create Operations
+Validate vehicle information meets regulatory requirements
+Ensure driver information is complete and valid
+Verify insurance and compliance documentation
+Check for duplicate vehicle registrations
+Read Operations
+Limit access to only their assigned shipments
+Provide detailed route information for their assigned routes
+Show only relevant performance metrics
+Update Operations
+Validate updates to availability information
+Track changes to vehicle status and capacity
+Ensure timely shipment status updates
+Verify documentation uploads meet requirements
+Delete Operations
+Prevent deletion of vehicles currently assigned to shipments
+Ensure proper archiving of completed shipment data
+Maintain historic performance data even after vehicle deletion
+4. Customer/Shipper Role
+Create Operations
+Validate order data for completeness and accuracy
+Check product availability before order creation
+Enforce business rules for minimum order quantities
+Verify shipping address validity
+Ensure proper authorization for order placement
+Read Operations
+Limit visibility to only their own orders and shipments
+Provide real-time status updates for their shipments
+Enable tracking history for completed shipments
+Show estimated delivery times when available
+Update Operations
+Only allow modifications during permitted stages (pending/draft)
+Require approval for changes to orders in progress
+Prevent changes to orders already in transit
+Log all modification requests, even rejected ones
+Clearly communicate which fields can be modified at each stage
+Notify relevant parties (dispatch, warehouse) of approved changes
+Delete Operations
+Only allow cancellation during appropriate stages
+Require confirmation for order cancellation
+Track cancellation reasons for analytics
+Ensure proper handling of inventory already allocated
+Apply cancellation fees according to business rules
+5. Driver Role
+Create Operations
+Log status updates and location information
+Create incident reports when issues occur
+Document delivery confirmations
+Record hours of service data
+Read Operations
+Limit access to only assigned routes and deliveries
+Provide optimized navigation information
+Show delivery instructions and special requirements
+Access contact information for customers and dispatch
+Update Operations
+Track changes to delivery status
+Log location updates for shipment tracking
+Validate hours of service updates for compliance
+Ensure timely reporting of delays or issues
+Delete Operations
+Prevent accidental deletion of delivery confirmations
+Log any removal of previously reported incidents
+Maintain compliance data even if route assignments change
+6. Finance/Accounting Role
+Create Operations
+Validate invoice data before creation
+Ensure proper tax calculations
+Verify billing details match order information
+Check for duplicate invoices
+Read Operations
+Provide filtered views of financial transactions
+Enable detailed reporting on revenue and costs
+Show payment status for all invoices
+Access to reconciliation tools
+Update Operations
+Track all changes to financial records
+Require authorization for adjustments to invoices
+Log dispute resolutions
+Maintain audit trail for payment processing
+Delete Operations
+Prevent deletion of financial records
+Implement reversal processes instead of deletion
+Ensure compliance with financial regulations
+Maintain complete financial history
+7. Warehouse Manager Role
+Create Operations
+Validate inventory location assignments
+Ensure proper documentation of receiving operations
+Check for accurate product information
+Verify packaging and labeling requirements
+Read Operations
+Provide real-time inventory level visibility
+Show upcoming shipments requiring preparation
+Access to storage location optimization tools
+View staff assignments and productivity metrics
+Update Operations
+Track inventory adjustments with reasons
+Log changes to warehouse configurations
+Verify updates to product storage requirements
+Monitor staff assignment changes
+Delete Operations
+Prevent accidental removal of inventory records
+Ensure proper archiving of historical inventory data
+Check dependencies before allowing location changes
+Maintain audit trail for all inventory removals
+8. Dispatcher Role
+Create Operations
+Validate route assignments against driver availability
+Check vehicle capacity against shipment requirements
+Ensure optimal scheduling of pickups and deliveries
+Verify emergency response plans
+Read Operations
+Provide real-time visibility of all active shipments
+Show driver locations and status updates
+Access to route optimization tools
+View performance metrics for route efficiency
+Update Operations
+Track changes to route assignments
+Log rerouting decisions and reasons
+Monitor adjustments to delivery schedules
+Verify impact of changes on connected shipments
+Delete Operations
+Prevent removal of active route assignments
+Ensure proper handling of cancelled routes
+Maintain historical route data for analysis
+Log all cancellation reasons
+9. Customer Service Representative Role
+Create Operations
+Validate customer information when creating accounts
+Ensure complete documentation of customer interactions
+Verify shipping quote accuracy
+Log issue details when creating support tickets
+Read Operations
+Access customer history and previous interactions
+View shipment status across all customers
+Search capabilities for quick issue resolution
+Access to knowledge base for support information
+Update Operations
+Track changes to customer information
+Log resolution steps for customer issues
+Monitor adjustments to orders on behalf of customers
+Verify appropriate escalation of complex issues
+Delete Operations
+Prevent accidental deletion of customer records
+Ensure proper handling of customer account closures
+Maintain history of resolved support issues
+Log reasons for any data removal requests
+
 ## 3. Role-Based Access Control (RBAC)
 
 To implement these roles in the TMS, we'll use a Role-Based Access Control system.
