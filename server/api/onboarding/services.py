@@ -100,7 +100,6 @@ def onboard_customer_details(user_id, role_id, company_name, company_address):
 
     try:
         onboarding_step = get_onboarding_step(user_id, role_id)
-        print(onboarding_step)
         if onboarding_step == -1:
             logger.error(
                 "Onboard Step 2 Attempt Failed: by %s | Invalid Role ID", user_id)
@@ -178,6 +177,33 @@ def onboard_customer_details(user_id, role_id, company_name, company_address):
         raise
 
 
+def onboard_role_details_placeholder(user_id, role_id):
+    
+    # Currently, step 2 is final step. Update user status to active
+    try:
+        user = db.session.query(User).filter_by(user_id=user_id).first()
+        print(user)
+        user.status = "active"
+        db.session.commit()
+    except Exception as e:
+        raise DatabaseQueryError("Error Updating User Status")
+    
+    print(user)
+
+    role_name = user.role.role_name
+
+    user_info = {
+        "userId": user_id,
+        "email": user.email,
+        "firstName": user.user_details.first_name,
+        "lastName": user.user_details.last_name,
+        "roleName": role_name,
+        "roleId": role_id,
+    }
+
+    return {"success": True, "user":user_info}
+
+
 def get_customer_details(user_id):
     customer_details = db.session.query(
         CustomerDetails).filter_by(user_id=user_id).first()
@@ -195,6 +221,8 @@ role_details_handler = {
     5: placeholder_for_handler,  # Driver
     6: placeholder_for_handler,  # Finance/Accounting
     7: placeholder_for_handler,  # Warehouse Manager
+    8: placeholder_for_handler, # Dispatcher
+    9: placeholder_for_handler # Costumer Service Representative
 }
 
 
