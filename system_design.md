@@ -235,8 +235,6 @@ CREATE TABLE inventory (
 
 ## 1. User Roles
 
-Based on your suggestions and considering typical TMS requirements, here's a refined list of user roles:
-
 1. Admin
 2. Transportation Manager
 3. Carrier
