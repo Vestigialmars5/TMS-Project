@@ -20,7 +20,7 @@ function PrivateRoute({ required }) {
 
     if (!isAuthenticating && required && !required.includes(user.status)) {
       // if user didn't come from login display alert
-      if (location.pathname !== "/onboarding") {
+      if (!location.pathname.startsWith("/onboarding")) {
         showAlert("You Are Not Authorized To Access This Page", "danger");
       }
       goToDashboard(user.roleId);
