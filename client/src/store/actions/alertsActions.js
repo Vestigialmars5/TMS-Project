@@ -2,6 +2,8 @@ import { addAlert, removeAlert, clearAlerts } from "../slices/alertsSlice";
 import { v4 as uuidv4 } from "uuid";
 
 let store;
+const duration = 5000; // 5 seconds
+const alertTimeouts = new Map();
 
 export const initializeAlertActions = (reduxStore) => {
   store = reduxStore;
@@ -14,17 +16,17 @@ export const showAlert = (message, type) => {
   }
 
   const id = uuidv4();
+  const expiresAt = Date.now() + duration; 
   store.dispatch(addAlert({ id, message, type }));
 
-  setTimeout(() => {
-    // Alert may not exist if it was closed before timeout
-    const alertToRemove = store
-      .getState()
-      .alerts.alerts.find((alert) => alert.id === id);
-    if (alertToRemove) {
-      store.dispatch(removeAlert(id));
-    }
-  }, 5000);
+  const timeoutId = setTimeout(() => {
+    removeAlertIfExists(id);
+    alertTimeouts.delete(id);
+  }, duration);
+
+  alertTimeouts.set(id, timeoutId);
+  return id;
+
 };
 
 export const closeAlert = (id) => {
@@ -33,7 +35,25 @@ export const closeAlert = (id) => {
     return;
   }
 
+  if (alertTimeouts.has(id)) {
+    clearTimeout(alertTimeouts.get(id));
+    alertTimeouts.delete(id);
+  }
+
   store.dispatch(removeAlert(id));
+};
+
+const removeAlertIfExists = (id) => {
+  if (!store) {
+    console.error("Store Is Not Initialized");
+    return;
+  }
+
+  const alertToRemove = store.getState().alerts.alerts.find((alert) => alert.id === id);
+
+  if (alertToRemove) {
+    store.dispatch(removeAlert(id));
+  }
 };
 
 export const clearAllAlerts = () => {
@@ -41,6 +61,9 @@ export const clearAllAlerts = () => {
     console.error("Store Is Not Initialized");
     return;
   }
+
+  alertTimeouts.forEach((timeoutId) => clearTimeout(timeoutId));
+  alertTimeouts.clear();
 
   store.dispatch(clearAlerts());
 };
