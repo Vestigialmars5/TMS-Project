@@ -15,7 +15,7 @@ const CustomerRoute = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (location.pathname === "/customer") {
+    if (location.pathname.startsWith("/customer")) {
       if (!isAuthenticating && !isAuthenticated) {
         showAlert("You Must Be Logged In To Access This Page", "warning");
         navigate("/login");

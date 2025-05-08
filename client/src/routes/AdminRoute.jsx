@@ -16,7 +16,7 @@ const AdminRoute = () => {
   const navigate = useNavigate();
 
     useEffect(() => {
-    if (location.pathname === "/admin") {
+    if (location.pathname.startsWith("/admin")) {
 
       if (!isAuthenticating && !isAuthenticated) {
         showAlert("You Must Be Logged In To Access This Page", "warning");
