@@ -66,15 +66,15 @@ def onboard_role_details(role_id):
 
     # Admin
     if role_id == 1:
-        pass
+        response = services.onboard_role_details_placeholder(user_id, 1)
 
     # Transportation Manager
     elif role_id == 2:
-        pass
+        response = services.onboard_role_details_placeholder(user_id, 2)
 
     # Carrier
     elif role_id == 3:
-        pass
+        response = services.onboard_role_details_placeholder(user_id, 3)
 
     # Customer
     elif role_id == 4:
@@ -86,15 +86,23 @@ def onboard_role_details(role_id):
 
     # Driver
     elif role_id == 5:
-        pass
+        response = services.onboard_role_details_placeholder(user_id, 5)
 
     # Finance/Accounting
     elif role_id == 6:
-        pass
+        response = services.onboard_role_details_placeholder(user_id, 6)
 
     # Warehouse Manager
     elif role_id == 7:
-        pass
+        response = services.onboard_role_details_placeholder(user_id, 7)
+
+    # Dispatcher
+    elif role_id == 8:
+        response = services.onboard_role_details_placeholder(user_id, 8)
+
+    # Costumer Service Representative
+    elif role_id == 9:
+        response = services.onboard_role_details_placeholder(user_id, 9)
     else:
         abort(400, description="Invalid Role Name")
 
