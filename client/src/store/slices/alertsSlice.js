@@ -7,7 +7,10 @@ const alertsSlice = createSlice({
     },
     reducers: {
         addAlert: (state, action) => {
-            state.alerts.push(action.payload);
+            state.alerts.push({
+                ...action.payload,
+                expiresAt: action.payload.expiresAt || Date.now() + 5000,
+            });
         },
         removeAlert: (state, action) => {
             state.alerts = state.alerts.filter(alert => alert.id !== action.payload);

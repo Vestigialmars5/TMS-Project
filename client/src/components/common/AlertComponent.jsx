@@ -1,7 +1,6 @@
-import React, {useEffect } from "react";
+import React from "react";
 import { closeAlert } from "../../store/actions/alertsActions";
 import Alert from "react-bootstrap/Alert";
-
 
 const AlertComponent = ({ id, message, type }) => {
 
