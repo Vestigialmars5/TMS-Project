@@ -15,7 +15,7 @@ const DispatcherRoute = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (location.pathname === "/dispatcher") {
+    if (location.pathname.startsWith("/dispatcher")) {
       if (!isAuthenticating && !isAuthenticated) {
         showAlert("You Must Be Logged In To Access This Page", "warning");
         navigate("/login");
