@@ -17,7 +17,7 @@ export const showAlert = (message, type) => {
 
   const id = uuidv4();
   const expiresAt = Date.now() + duration; 
-  store.dispatch(addAlert({ id, message, type }));
+  store.dispatch(addAlert({ id, message, type, expiresAt }));
 
   const timeoutId = setTimeout(() => {
     removeAlertIfExists(id);
