@@ -98,7 +98,6 @@ def onboard_role_details(role_id):
 
     # Dispatcher
     elif role_id == 8:
-        print("here")
         response = services.onboard_role_details_placeholder(user_id, 8)
 
     # Costumer Service Representative

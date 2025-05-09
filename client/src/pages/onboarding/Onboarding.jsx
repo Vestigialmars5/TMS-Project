@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import UserDetailsForm from "../../components/onboarding/UserDetailsForm";
 import CustomerDetailsForm from "../../components/onboarding/CustomerDetailsForm";
 import { useQuery } from "@tanstack/react-query";

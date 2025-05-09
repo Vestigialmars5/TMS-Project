@@ -182,13 +182,11 @@ def onboard_role_details_placeholder(user_id, role_id):
     # Currently, step 2 is final step. Update user status to active
     try:
         user = db.session.query(User).filter_by(user_id=user_id).first()
-        print(user)
         user.status = "active"
         db.session.commit()
     except Exception as e:
         raise DatabaseQueryError("Error Updating User Status")
     
-    print(user)
 
     role_name = user.role.role_name
 
