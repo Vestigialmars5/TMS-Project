@@ -1996,7 +1996,7 @@ graph TD
 ### 2.1 Access controls
 | Feature | Customer | CSR | Trans. Manager | Warehouse | Dispatcher | Driver | Finance | Admin |
 |---------|----------|-----|----------------|-----------|------------|--------|---------|-------|
-| User | Profiles | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit/Delete |
+| User Profiles | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit/Delete |
 | Role Assignment | No Access | No Access | Limited** | Limited** | No Access | No Access | No Access | Full Access |
 | Permission Management | No Access | No Access | No Access | No Access | No Access | No Access | No Access | Full Access |
 | User Creation | Limited* | No Access | Limited** | Limited** | Limited** | No Access | Limited** | Full Access |
