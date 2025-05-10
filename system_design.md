@@ -1997,10 +1997,10 @@ graph TD
 | Feature | Customer | CSR | Trans. Manager | Warehouse | Dispatcher | Driver | Finance | Admin |
 |---------|----------|-----|----------------|-----------|------------|--------|---------|-------|
 | User | Profiles | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit/Delete |
-| Role Assignment | No Access | No Access | Limited** | Limited** | No Access | No Access | No Access	Full Access |
-| Permission Management | No Access | No Access | No Access | No Access | No Access | No Access | No Access	Full Access |
-| User Creation | Limited* | No Access | Limited** | Limited** | Limited** | No Access | Limited**	Full Access |
-| User Deactivation | No Access | No Access | Limited** | Limited** | Limited** | No Access | Limited**	Full Access |
+| Role Assignment | No Access | No Access | Limited** | Limited** | No Access | No Access | No Access | Full Access |
+| Permission Management | No Access | No Access | No Access | No Access | No Access | No Access | No Access | Full Access |
+| User Creation | Limited* | No Access | Limited** | Limited** | Limited** | No Access | Limited** | Full Access |
+| User Deactivation | No Access | No Access | Limited** | Limited** | Limited** | No Access | Limited** | Full Access |
 | Password Reset | Self Only | Self Only | Self Only | Self Only | Self Only | Self Only | Self Only | Any User |
 | Login Monitoring | No Access | No Access | No Access | No Access | No Access | No Access | No Access | View |
 | User Activity Logs | No Access | No Access | Limited** | Limited** | No Access | No Access | No Access | View |
