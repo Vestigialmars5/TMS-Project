@@ -1993,14 +1993,43 @@ graph TD
 - [x] Create user onboarding flow
     - [ ] Finish adding the second step for other roles, and remove skip button
 
+### 2.1 Access controls
+| Feature | Customer | CSR | Trans. Manager | Warehouse | Dispatcher | Driver | Finance | Admin |
+|---------|----------|-----|----------------|-----------|------------|--------|---------|-------|
+| User | Profiles | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit* | View/Edit/Delete |
+| Role Assignment | No Access | No Access | Limited** | Limited** | No Access | No Access | No Access	Full Access |
+| Permission Management | No Access | No Access | No Access | No Access | No Access | No Access | No Access	Full Access |
+| User Creation | Limited* | No Access | Limited** | Limited** | Limited** | No Access | Limited**	Full Access |
+| User Deactivation | No Access | No Access | Limited** | Limited** | Limited** | No Access | Limited**	Full Access |
+| Password Reset | Self Only | Self Only | Self Only | Self Only | Self Only | Self Only | Self Only | Any User |
+| Login Monitoring | No Access | No Access | No Access | No Access | No Access | No Access | No Access | View |
+| User Activity Logs | No Access | No Access | Limited** | Limited** | No Access | No Access | No Access | View |
+
+*Users can only edit their own profiles
+**Managers can only manage users in their own department/team
+
 ## 3. Order Management Module
 - [x] Design order database schema
-- [ ] Create order CRUD API endpoints *Customer: Missing edit and delete (additional operational logic required)*
+- [ ] Create order CRUD API endpoints
 - [x] Build order list and detail components
 - [ ] Implement order creation wizard
 - [ ] Build order status tracking interface
 - [x] Create order search and filtering capabilities
     - [ ] Must improve this: Currently there isn't many filtering to chose from.
+
+### 3.1 Access Controls
+| Status | Customer | CSR |Trans. Manager | Warehouse | Dispatcher | Driver | Finance |
+|--------|----------|-----|---------------|-----------|------------|--------|---------|
+| Pending | Edit/Delete | Edit/Delete | View | No Access | No Access | No Access | No Access |
+| Validated | Edit* | Edit/Delete | View/Edit | View | View | No Access | No Access |
+| Assigned | View | Edit* | View/Edit | View/Edit | View | No Access | No Access |
+| In Fulfillment | View | View | View | View/Edit | View/Edit | No Access | View |
+| Ready for Shipment | View | View | View | View | View/Edit | View | View |
+| In Transit | View | View | View | View | View | View/Edit | View |
+| Delivered | View | View | View | View | View | View | View/Edit |
+| Completed | View | View | View | View | View | View |View |
+
+*Limited edits
 
 
 ## 4. Inventory Management Module
@@ -2011,6 +2040,19 @@ graph TD
 - [ ] Set up low inventory alerts
 - [ ] Build inventory adjustment interface
 
+### 4.1 Access controls
+| Feature | Customer | CSR | Trans. Manager | Warehouse | Dispatcher | Driver | Finance | Supplier |
+|---------|----------|-----|----------------|-----------|------------|--------|---------|----------|
+| Inventory Levels | View* | View | View | View/Edit | View | No Access | View | No Access |
+| Stock Locations | No Access | View | View | View/Edit | View | No Access | No Access | No Access |
+| Inventory Adjustments | No Access | No Access | View | Create/Edit | No Access | No Access | View | No Access |
+| Low Stock Alerts | No Access | View | View | View/Edit | View | No Access | No Access | No Access |
+| Inventory Reports | No Access | View | View | View/Edit | View | No Access | View | No Access |
+| Reorder Management | No Access | No Access | View/Edit | Create/Edit | No Access | No Access | View | View* |
+| Receiving | No Access | No Access | View | Create/Edit | View | View* | View | No Access |
+
+*Customer can only view inventory levels for products in their orders. Driver can only view receiving information for their deliveries. Supplier can view orders placed with them.
+
 ## 5. Route Planning & Optimization Module
 - [ ] Set up routing algorithm backend
 - [ ] Implement route optimization service
@@ -2018,6 +2060,21 @@ graph TD
 - [ ] Build route assignment functionality
 - [ ] Implement route modification capabilities
 - [ ] Create route status tracking
+
+### 5.1 Access Controls
+
+| Status | Customer | CSR | Trans. Manager | Warehouse | Dispatcher | Driver | Finance |
+|--------|----------|-----|----------------|-----------|------------|--------|---------|
+| Draft | No Access | No Access | Edit/Delete | No Access | Create/Edit | No Access | No Access |
+| Proposed | No Access | No Access | View/Edit | View | View/Edit | No Access | No Access |
+| Approved | No Access | No Access | View | View | View/Edit | No Access | No Access |
+| In Progress | View* | View | View | View | View/Edit | View/Edit* | No Access |
+| Completed | View* | View | View | View | View | View | View |
+| Canceled | No Access | View | View | View | View | No Access | View |
+
+*Customer can only view routes for their shipments. Driver can only edit route status and provide feedback on assigned routes.
+
+*Customer can only view routes for their shipments. Driver can only edit route status and provide feedback on assigned routes.
 
 ## 6. Carrier Management Module
 - [ ] Design carrier database schema
@@ -2027,6 +2084,18 @@ graph TD
 - [ ] Build carrier selection algorithm
 - [ ] Create carrier communication interface
 
+### 6.1 Access Controls
+| Feature | Customer | CSR | Trans. Manager | Warehouse | Dispatcher | Driver | Finance | Carrier |
+|---------|----------|-----|----------------|-----------|------------|--------|---------|---------|
+| Carrier Profile | No Access | View | Create/Edit/Delete | View | View | No Access | View | View/Edit* |
+| Rate Cards | No Access | View | Create/Edit/Delete | No Access | View | No Access | View/Edit | View |
+| Performance Metrics | No Access | View | View/Edit | View | View | No Access | View | View* |
+| Capacity/Availability | No Access | View | View/Edit | View | View/Edit | No Access | No Access | Edit* |
+| Documents/Contracts | No Access | View | Create/Edit/Delete | No Access | View | No Access | View/Edit | View |
+| Payment History | No Access | No Access | View | No Access | No Access | No Access | Create/Edit | View |
+
+*Carriers can only edit their own profile, view their own performance metrics, and update their own availability.
+
 ## 7. Shipment Tracking Module
 - [ ] Design shipment database schema
 - [ ] Build shipment tracking API endpoints
@@ -2034,6 +2103,18 @@ graph TD
 - [ ] Implement map visualization for shipments
 - [ ] Build status update notifications
 - [ ] Create shipment history view
+
+| Status | Customer | CSR | Trans. Manager | Warehouse | Dispatcher | Driver | Finance | Carrier |
+|--------|----------|-----|----------------|-----------|------------|---------|---------|----------|
+| Created | View* | View/Edit | View | View | Create/Edit | No Access | View | View* |
+| Assigned | View* | View | View | View | Edit | View* | View | View/Edit* |
+| In Transit | View* | View | View | View | View | Edit* | View | Edit* |
+| Delayed | View* | View/Edit | View/Edit | View | View/Edit | Edit* | View | Edit* |
+| Delivered | View* | View | View | View | View | View* | View/Edit | View* |
+| Exception | View* | View/Edit | View/Edit | View | View/Edit | View/Edit* | View | View/Edit* |
+| Completed | View* | View | View | View | View | View | View | View* |
+
+*Customer, Driver and Carrier can only access shipments assigned to them. Driver and Carrier can update status of assigned shipments.
 
 ## 8. WMS Integration
 - [ ] Design integration architecture
@@ -2051,113 +2132,33 @@ graph TD
 - [ ] Create export functionality (PDF, CSV)
 - [ ] Build custom report builder
 
-## 10. Mobile Responsiveness
-- [ ] Optimize layouts for mobile devices
-- [ ] Implement responsive navigation
-- [ ] Create mobile-specific UI elements
-- [ ] Test and fix mobile UX issues
+### 9.1 Access Controls
+| Report Type | Customer | CSR | Trans. Manager | Warehouse | Dispatcher | Driver | Finance | Carrier |
+|-------------|----------|-----|----------------|-----------|------------|---------|----------|----------|
+| Performance Dashboard | Limited* | View | View/Edit | Limited* | Limited* | Limited* | Limited* | Limited* |
+| Order Analytics | Limited* | View | View/Edit | Limited* | View | No Access | View | No Access |
+| Route Efficiency | No Access | No Access | View/Edit | No Access | View | Limited* | No Access | Limited* |
+| Carrier Performance | No Access | View | View/Edit | No Access | View | No Access | View | Limited* |
+| Inventory Reports | No Access | View | View | View/Edit | View | No Access | View | No Access |
+| Financial Reports | No Access | No Access | Limited | No Access | No Access | No Access | View/Edit | Limited* |
+| Custom Reports | Limited* | View | Create/Edit | Limited* | Limited* | No Access | Create/Edit | Limited* |
+| Export Data | Limited* | View | View | Limited* | Limited* | Limited* | View | Limited* |
 
-## 11. Advanced Features
-- [ ] Implement document management system
-- [ ] Build notification center
-- [ ] Create compliance tracking module
-- [ ] Implement financial management features
-- [ ] Build customer portal interface
-- [ ] Set up audit logging system
+*All users with "Limited" access can only view reports relevant to their role and assigned work.
 
-## 12. Testing & Deployment
-- [ ] Write unit tests for critical components
-- [ ] Set up integration tests for APIs
-- [ ] Create end-to-end test suite
-- [ ] Configure CI/CD pipeline
-- [ ] Set up staging environment
-- [ ] Create production deployment strategy
+### 9.2 Documents Access Controls
+| Document Type | Customer | CSR | Trans. Manager | Warehouse | Dispatcher | Driver | Finance | Carrier |
+|--------------|----------|-----|----------------|-----------|------------|---------|----------|----------|
+| Bills of Lading | View* | View | View | View/Upload | View | View/Upload | View | View/Upload* |
+| Proof of Delivery | View* | View | View | View | View | Create/Upload | View | View/Upload* |
+| Invoices | View* | View | View | No Access | No Access | No Access | Create/Edit | View* |
+| Customs Documents | View* | View | View/Upload | View | View | View | View | View/Upload* |
+| Insurance Certificates | No Access | View | View/Upload | View | View | View | View | View/Upload* |
+| Order Documentation | View* | View/Upload | View/Upload | View | View | View | View | No Access |
+| Contracts | View* | View | View/Edit | No Access | No Access | No Access | View/Edit | View* |
+| Compliance Reports | No Access | View | View/Upload | View/Upload | View | No Access | View | View/Upload* |
 
-## 13. Documentation & Training
-- [ ] Write API documentation
-- [ ] Create user manuals
-- [ ] Build in-app help system
-- [ ] Develop training materials
-- [ ] Set up knowledge base
-
-# Transportation Management System Development Plan
-
-## 1. Core Infrastructure
-- [x] Set up Flask backend with SQLAlchemy
-- [x] Set up React frontend with Redux, React Query
-- [x] Implement API service with Axios 
-- [x] Create database models with relationships
-- [x] Set up authentication system (JWT)
-- [x] Create error handling middleware
-- [x] Set up basic logging and monitoring 
-    -  [ ] Must improve this: The current logging leaves me wanting more information. Every time there is an error I end up having to add so many debugging statements that could very well be included in the logging.
-
-## 2. Authentication & User Management
-- [x] Implement login/logout functionality
-- [x] Create user registration process
-- [x] Set up role-based access control
-- [ ] Build user profile management screens
-- [ ] Implement password reset functionality
-- [x] Create user onboarding flow
-    - [ ] Finish adding the second step for other roles, and remove skip button
-
-## 3. Order Management Module
-- [x] Design order database schema
-- [ ] Create order CRUD API endpoints *Customer: Missing edit and delete (additional operational logic required)*
-- [x] Build order list and detail components
-- [ ] Implement order creation wizard
-- [ ] Build order status tracking interface
-- [x] Create order search and filtering capabilities
-    - [ ] Must improve this: Currently there isn't many filtering to chose from.
-
-
-## 4. Inventory Management Module
-- [ ] Design inventory database schema
-- [ ] Build inventory CRUD API endpoints
-- [ ] Create inventory list and detail views
-- [ ] Implement stock level tracking
-- [ ] Set up low inventory alerts
-- [ ] Build inventory adjustment interface
-
-## 5. Route Planning & Optimization Module
-- [ ] Set up routing algorithm backend
-- [ ] Implement route optimization service
-- [ ] Create route visualization interface
-- [ ] Build route assignment functionality
-- [ ] Implement route modification capabilities
-- [ ] Create route status tracking
-
-## 6. Carrier Management Module
-- [ ] Design carrier database schema
-- [ ] Build carrier CRUD API endpoints
-- [ ] Create carrier list and detail views
-- [ ] Implement carrier performance tracking
-- [ ] Build carrier selection algorithm
-- [ ] Create carrier communication interface
-
-## 7. Shipment Tracking Module
-- [ ] Design shipment database schema
-- [ ] Build shipment tracking API endpoints
-- [ ] Create real-time shipment tracking UI
-- [ ] Implement map visualization for shipments
-- [ ] Build status update notifications
-- [ ] Create shipment history view
-
-## 8. WMS Integration
-- [ ] Design integration architecture
-- [ ] Build inventory synchronization API
-- [ ] Implement order fulfillment integration
-- [ ] Create webhook handlers for real-time updates
-- [ ] Set up error handling for integration failures
-- [ ] Build integration monitoring dashboard
-
-## 9. Reporting & Analytics Module
-- [ ] Design reporting database schema
-- [ ] Create report generation service
-- [ ] Build dashboard components
-- [ ] Implement KPI tracking
-- [ ] Create export functionality (PDF, CSV)
-- [ ] Build custom report builder
+*Customer and Carrier can only access documents related to their own orders/shipments.
 
 ## 10. Mobile Responsiveness
 - [ ] Optimize layouts for mobile devices
