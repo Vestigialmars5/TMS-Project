@@ -226,7 +226,6 @@ class Order(Base1):
 
     def to_dict_js(self):
         return {
-            "orderId": self.order_id,
             "referenceId": self.order_uuid,
             "customerId": self.customer_id,
             "status": self.status,
