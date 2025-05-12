@@ -53,12 +53,14 @@ def data_cleanup_search(args):
 
     return search, page, limit
 
+
 def data_cleanup_sort_users(args):
     sort_by = clean_sort_by_users(args.get("sortBy"))
     sort_order = clean_sort_order(args.get("sortOrder"))
     return sort_by, sort_order
 
-def data_cleanup_sort_orders(args):
+
+def data_cleanup_customer_sort_orders(args):
     sort_by = clean_sort_by_orders(args.get("sortBy"))
     sort_order = clean_sort_order(args.get("sortOrder"))
 
@@ -72,7 +74,7 @@ def data_cleanup_update_user(data):
     return email, role_id
 
 
-def data_cleanup_create_order(data):
+def data_cleanup_customer_create_order(data):
     reference_id = clean_reference_id(data.get("referenceId"))
     customer_id = clean_user_id(data.get("customerId"))
     delivery_address = clean_address(data.get("deliveryAddress"))
@@ -80,6 +82,6 @@ def data_cleanup_create_order(data):
     return reference_id, customer_id, delivery_address, order_products
 
 
-def data_cleanup_get_order_details(data):
+def data_cleanup_customer_get_order_details(data):
     order_id = clean_order_id(data.get("orderId"))
     return order_id
