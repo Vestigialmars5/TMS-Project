@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 
 def add_roles():
     roles = ["Admin", "Transportation Manager", "Carrier",
-             "Customer/Shipper", "Driver", "Finance/Accounting", "Warehouse Manager"]
+             "Customer/Shipper", "Driver", "Finance/Accounting", "Warehouse Manager", "Dispatcher", "Customer Service Representative"]
     for role in roles:
         db.session.add(Role(role_name=role))
     db.session.commit()
@@ -16,13 +16,14 @@ def add_all_roles():
     add_admin()
     # add_transportation_manager()
     add_carrier()
-    add_complete_user()
-    add_incomplete_user()
-    add_incomplete_customer()
     add_customer_shipper()
     # add_driver()
     # add_finance_accounting()
     # add_warehouse_manager()
+    add_dispatcher()
+    add_complete_user()
+    add_incomplete_user()
+    add_incomplete_customer()
 
 
 def add_dev_admin():
@@ -58,13 +59,13 @@ def add_transportation_manager():
 def add_customer_shipper():
     customer_password = generate_password_hash(consts.CUSTOMER_PASSWORD)
     customer = User(email=consts.CUSTOMER_EMAIL,
-                            password=customer_password, role_id=consts.CUSTOMER_ROLE_ID, status="inactive")
+                    password=customer_password, role_id=consts.CUSTOMER_ROLE_ID, status="inactive")
     db.session.add(customer)
     db.session.commit()
 
     customer_details = UserDetails(user_id=customer.user_id, first_name=consts.CUSTOMER_FIRST_NAME,
-                                           last_name=consts.CUSTOMER_LAST_NAME, phone_number=consts.CUSTOMER_PHONE_NUMBER,
-                                           address=consts.CUSTOMER_ADDRESS)
+                                   last_name=consts.CUSTOMER_LAST_NAME, phone_number=consts.CUSTOMER_PHONE_NUMBER,
+                                   address=consts.CUSTOMER_ADDRESS)
     db.session.add(customer_details)
     db.session.commit()
 
@@ -80,6 +81,21 @@ def add_carrier():
                                   last_name=consts.CARRIER_LAST_NAME, phone_number=consts.CARRIER_PHONE_NUMBER, address=consts.CARRIER_ADDRESS)
     db.session.add(carrier_details)
     db.session.commit()
+
+
+def add_dispatcher():
+    dispatcher_password = generate_password_hash(
+        consts.DISPATCHER_PASSWORD)
+    dispatcher = User(email=consts.DISPATCHER_EMAIL,
+                         password=dispatcher_password, role_id=consts.DISPATCHER_ROLE_ID, status="inactive")
+    db.session.add(dispatcher)
+    db.session.commit()
+
+    dispatcher_details = UserDetails(user_id=dispatcher.user_id, first_name=consts.DISPATCHER_FIRST_NAME,
+                                        last_name=consts.DISPATCHER_LAST_NAME, phone_number=consts.DISPATCHER_PHONE_NUMBER, address=consts.DISPATCHER_ADDRESS)
+    db.session.add(dispatcher_details)
+    db.session.commit()
+
 
 
 def add_complete_user():

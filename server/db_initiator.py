@@ -23,7 +23,7 @@ def init_db_command():
 
 def populate_db(development=False, testing=False):
     with current_app.app_context():
-        # Creates roles from admin to warehouse manager
+        # Creates roles
         add_roles()
 
         if development:

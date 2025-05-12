@@ -85,7 +85,7 @@ def clean_role_id(role_id):
         raise DataValidationError("Role ID Missing or Invalid")
 
     # Role ID must be between 1 and 7
-    if not 0 < role_id <= 7:
+    if not 0 < role_id <= 9:
         raise DataValidationError("Invalid Role ID")
 
     return role_id

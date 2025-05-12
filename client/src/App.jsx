@@ -6,12 +6,15 @@ import NoPage from "./pages/no-page/NoPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
-import OrderManagement from "./pages/customer/OrderManagement";
+import CustomerOrderManagement from "./pages/customer/OrderManagement";
+import DispatcherDashboard from "./pages/dispatcher/DispatcherDashboard";
+import DispatcherOrderManagement from "./pages/dispatcher/OrderManagement";
 import "./App.css";
 import Onboarding from "./pages/onboarding/Onboarding";
 import PrivateRoute from "./routes/PrivateRoute";
 import AdminRoute from "./routes/AdminRoute";
 import CustomerRoute from "./routes/CustomerRoute";
+import DispatcherRoute from "./routes/DispatcherRoute";
 import PublicRoute from "./routes/PublicRoute";
 
 function App() {
@@ -46,9 +49,16 @@ function App() {
         {/* Private routes for customer */}
         <Route path="/customer" element={<CustomerRoute />}>
           <Route index element={<CustomerDashboard />} />
-          <Route path="orders" element={<OrderManagement />} exact />
+          <Route path="orders" element={<CustomerOrderManagement />} exact />
         </Route>
         {/* End private routes for customer */}
+
+        {/* Private routes for dispatcher */}
+        <Route path="/dispatcher" element={<DispatcherRoute />}>
+          <Route index element={<DispatcherDashboard />} />
+          <Route path="orders" element={<DispatcherOrderManagement />} exact />
+        </Route>
+        {/* End private routes for dispatcher */}
 
         <Route path="*" element={<NoPage />} />
       </Route>

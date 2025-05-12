@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useRoleBasedNavigation } from "../hooks/useRoleBasedNavigation";
 import { useEffect } from "react";
@@ -7,23 +6,26 @@ import { showAlert } from "../store/actions/alertsActions";
 import Spinner from "react-bootstrap/Spinner";
 import { useNavigate } from "react-router-dom";
 
-const AdminRoute = () => {
-  const required = 1;
+const DispatcherRoute = () => {
+  const required = 8;
   const { user, isAuthenticated, isAuthenticating } = useSelector(
     (state) => state.auth
   );
   const { goToDashboard } = useRoleBasedNavigation();
   const navigate = useNavigate();
 
-    useEffect(() => {
-    if (location.pathname.startsWith("/admin")) {
-
+  useEffect(() => {
+    if (location.pathname.startsWith("/dispatcher")) {
       if (!isAuthenticating && !isAuthenticated) {
         showAlert("You Must Be Logged In To Access This Page", "warning");
         navigate("/login");
       }
 
-      if (!isAuthenticating && isAuthenticated && user.status === "not_onboarded") {
+      if (
+        !isAuthenticating &&
+        isAuthenticated &&
+        user.status === "not_onboarded"
+      ) {
         showAlert("Please Complete Your Onboarding", "warning");
         navigate("/onboarding");
       }
@@ -42,4 +44,4 @@ const AdminRoute = () => {
   return <Outlet />;
 };
 
-export default AdminRoute;
+export default DispatcherRoute;

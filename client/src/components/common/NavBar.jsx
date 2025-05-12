@@ -15,6 +15,7 @@ const NavBar = () => {
   const loginMatch = useMatch("/login");
   const adminMatch = useMatch("/admin");
   const customerMatch = useMatch("/customer");
+  const dispatcherMatch = useMatch("/dispatcher")
 
   return (
     <Navbar expand="sm" className="bg-body-tertiary">
@@ -32,7 +33,7 @@ const NavBar = () => {
               <>
                 <Nav.Link
                   onClick={goToDashboard}
-                  active={Boolean(adminMatch) || Boolean(customerMatch)}
+                  active={Boolean(adminMatch) || Boolean(customerMatch) || Boolean(dispatcherMatch)}
                 >
                   Dashboard
                 </Nav.Link>
