@@ -88,7 +88,7 @@ def onboard_role_details(role_id):
     elif role_id == 5:
         response = services.onboard_role_details_placeholder(user_id, 5)
 
-    # Finance/Accounting
+    # Accounting
     elif role_id == 6:
         response = services.onboard_role_details_placeholder(user_id, 6)
 

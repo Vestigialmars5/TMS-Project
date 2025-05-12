@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 
 def add_roles():
     roles = ["Admin", "Transportation Manager", "Carrier",
-             "Customer/Shipper", "Driver", "Finance/Accounting", "Warehouse Manager", "Dispatcher", "Customer Service Representative"]
+             "Customer", "Driver", "Accounting", "Warehouse Manager", "Dispatcher", "Customer Service Representative"]
     for role in roles:
         db.session.add(Role(role_name=role))
     db.session.commit()
@@ -87,15 +87,14 @@ def add_dispatcher():
     dispatcher_password = generate_password_hash(
         consts.DISPATCHER_PASSWORD)
     dispatcher = User(email=consts.DISPATCHER_EMAIL,
-                         password=dispatcher_password, role_id=consts.DISPATCHER_ROLE_ID, status="inactive")
+                      password=dispatcher_password, role_id=consts.DISPATCHER_ROLE_ID, status="inactive")
     db.session.add(dispatcher)
     db.session.commit()
 
     dispatcher_details = UserDetails(user_id=dispatcher.user_id, first_name=consts.DISPATCHER_FIRST_NAME,
-                                        last_name=consts.DISPATCHER_LAST_NAME, phone_number=consts.DISPATCHER_PHONE_NUMBER, address=consts.DISPATCHER_ADDRESS)
+                                     last_name=consts.DISPATCHER_LAST_NAME, phone_number=consts.DISPATCHER_PHONE_NUMBER, address=consts.DISPATCHER_ADDRESS)
     db.session.add(dispatcher_details)
     db.session.commit()
-
 
 
 def add_complete_user():

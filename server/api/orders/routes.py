@@ -9,7 +9,7 @@ orders_blueprint = Blueprint("orders_blueprint", __name__, url_prefix="/api")
 
 @orders_blueprint.route("/orders", methods=["POST"])
 @jwt_required()
-@roles_required("Customer/Shipper")
+@roles_required("Customer")
 def create_order():
     if request.method == "POST":
         initiator_id = get_jwt_identity()
@@ -39,15 +39,15 @@ def create_order():
 
 @orders_blueprint.route("/orders", methods=["GET"])
 @jwt_required()
-@roles_required("Customer/Shipper")
+@roles_required("Customer")
 def get_orders():
     if request.method == "GET":
 
         search, page, limit = data_cleanup_search(
             request.args)
-        
+
         sort_by, sort_order = data_cleanup_sort_orders(request.args)
-        
+
         initiator_id = get_jwt_identity()
 
         response = services.get_orders(
@@ -61,7 +61,7 @@ def get_orders():
 
 @orders_blueprint.route("/orders/details", methods=["GET"])
 @jwt_required()
-@roles_required("Customer/Shipper")
+@roles_required("Customer")
 def get_order_details():
     if request.method == "GET":
 

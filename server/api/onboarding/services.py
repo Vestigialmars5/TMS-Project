@@ -178,7 +178,7 @@ def onboard_customer_details(user_id, role_id, company_name, company_address):
 
 
 def onboard_role_details_placeholder(user_id, role_id):
-    
+
     # Currently, step 2 is final step. Update user status to active
     try:
         user = db.session.query(User).filter_by(user_id=user_id).first()
@@ -186,7 +186,6 @@ def onboard_role_details_placeholder(user_id, role_id):
         db.session.commit()
     except Exception as e:
         raise DatabaseQueryError("Error Updating User Status")
-    
 
     role_name = user.role.role_name
 
@@ -199,7 +198,7 @@ def onboard_role_details_placeholder(user_id, role_id):
         "roleId": role_id,
     }
 
-    return {"success": True, "user":user_info}
+    return {"success": True, "user": user_info}
 
 
 def get_customer_details(user_id):
@@ -211,16 +210,17 @@ def get_customer_details(user_id):
 def placeholder_for_handler(e):
     return None
 
+
 role_details_handler = {
     1: placeholder_for_handler,  # Admin
     2: placeholder_for_handler,  # Transportation Manager
     3: placeholder_for_handler,  # Carrier
-    4: get_customer_details,  # Customer/Shipper
+    4: get_customer_details,  # Customer
     5: placeholder_for_handler,  # Driver
-    6: placeholder_for_handler,  # Finance/Accounting
+    6: placeholder_for_handler,  # Accounting
     7: placeholder_for_handler,  # Warehouse Manager
-    8: placeholder_for_handler, # Dispatcher
-    9: placeholder_for_handler # Costumer Service Representative
+    8: placeholder_for_handler,  # Dispatcher
+    9: placeholder_for_handler  # Costumer Service Representative
 }
 
 
