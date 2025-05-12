@@ -83,5 +83,5 @@ def data_cleanup_customer_create_order(data):
 
 
 def data_cleanup_customer_get_order_details(data):
-    order_id = clean_order_id(data.get("orderId"))
-    return order_id
+    reference_id = clean_reference_id(data.get("referenceId"))
+    return reference_id

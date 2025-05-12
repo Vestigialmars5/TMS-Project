@@ -106,14 +106,14 @@ def customer_get_orders(search, sort_by, sort_order, page, limit, initiator_id):
         raise
 
 
-def get_order_details(order_id, initiator_id):
+def get_order_details(reference_id, initiator_id):
 
     logger.info("Get Order Details Attempt: by %s", initiator_id)
 
     try:
         try:
             details = db.session.query(OrderDetails).filter(
-                OrderDetails.order_id == order_id).all()
+                OrderDetails.reference_id == reference_id).all()
 
             if len(details) <= 0:
                 logger.error(
@@ -145,6 +145,7 @@ def get_order_details(order_id, initiator_id):
         create_audit_log("Get Order Details", user_id=initiator_id,
                          details="Internal Server Error")
         raise
+
 
 
 def insert_order(reference_id, customer_id, delivery_address, total):

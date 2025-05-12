@@ -13,9 +13,9 @@ const OrderDetailsCard = ({ order }) => {
     status: detailsStatus,
     error,
   } = useQuery({
-    queryKey: ["orderDetails", order.orderId],
-    queryFn: () => getOrderDetails({ orderId: order.orderId }),
-    enabled: !!order.orderId,
+    queryKey: ["orderDetails", order.referenceId],
+    queryFn: () => getOrderDetails({ referenceId: order.referenceId }),
+    enabled: !!order.referenceId,
     refetchOnWindowFocus: false,
   });
 
@@ -34,7 +34,6 @@ const OrderDetailsCard = ({ order }) => {
         <>
           <ListGroup horizontal>
             <ListGroup.Item>{order.referenceId}</ListGroup.Item>
-            <ListGroup.Item>{order.orderId}</ListGroup.Item>
             <ListGroup.Item>{order.customerId}</ListGroup.Item>
             <ListGroup.Item>{order.total}</ListGroup.Item>
             <ListGroup.Item>{order.status}</ListGroup.Item>
@@ -49,7 +48,7 @@ const OrderDetailsCard = ({ order }) => {
           </Modal>
           <Modal backdrop="static" keyboard={false} centered>
             <Modal.Header closeButton>
-              <Modal.Title>Delete Order {order.orderId}</Modal.Title>
+              <Modal.Title>Delete Order {order.referenceId}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <p>!This Action Is Irreversible!</p>

@@ -65,12 +65,12 @@ def get_orders():
 def get_order_details():
     if request.method == "GET":
 
-        order_id = data_cleanup_customer_get_order_details(request.args)
+        reference_id = data_cleanup_customer_get_order_details(request.args)
 
         initiator_id = get_jwt_identity()
 
         response = services.get_order_details(
-            order_id, initiator_id)
+            reference_id, initiator_id)
 
         if response["success"]:
             return jsonify(response), 200
@@ -80,10 +80,10 @@ def get_order_details():
             return jsonify(response), 500
 
 
-@orders_blueprint.route("/orders/<int:order_id>", methods=["PUT"])
+@orders_blueprint.route("/orders/<int:reference_id>", methods=["PUT"])
 @jwt_required()
 @roles_required("Customer")
-def update_order(order_id):
+def update_order(reference_id):
     if request.method == "PUT":
         initiator_id = get_jwt_identity()
 
@@ -108,14 +108,14 @@ def update_order(order_id):
             return jsonify(response), 500
 
 
-@orders_blueprint.route("/orders/<int:order_id>", methods=["DELETE"])
+@orders_blueprint.route("/orders/<int:reference_id>", methods=["DELETE"])
 @jwt_required()
 @roles_required("Customer")
-def delete_order(order_id):
+def delete_order(reference_id):
     if request.method == "DELETE":
         initiator_id = get_jwt_identity()
 
-        response = services.customer_delete_order(order_id, initiator_id)
+        response = services.customer_delete_order(reference_id, initiator_id)
 
         if response["success"]:
             return jsonify(response), 200
