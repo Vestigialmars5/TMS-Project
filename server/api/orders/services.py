@@ -3,7 +3,7 @@ from server.extensions import db
 from server.models.tms_models import Order, OrderDetails
 from server.utils.exceptions import DatabaseQueryError
 from server.utils.logging import create_audit_log
-from server.utils.validations import order_exists, validate_order_products, user_exists
+from server.utils.validations import order_exists, validate_order_products, user_exists, validate_customer_update_order
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 
@@ -146,6 +146,29 @@ def get_order_details(reference_id, initiator_id):
                          details="Internal Server Error")
         raise
 
+
+def customer_update_order(reference_id, customer_id, delivery_address, order_products, initiator_id):
+    logger.info("Customer Update Order Attempt: by %s", initiator_id)
+
+    try:
+        is_valid, error = validate_customer_update_order(reference_id, customer_id, delivery_address, order_products, update_type="complete")
+
+
+        logger.info("Customer Update Order Attempt Successful: by %s | updated %s", initiator_id, order_id)
+        create_audit_log("Customer Update Order", user_id=initiator_id, details=f"Updated {order_id}")
+        return {"success": True}
+
+    except DatabaseQueryError as e:
+        logger.error("Customer Update Order Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Customer Update Order", user_id=initiator_id,
+                         details=e.message)
+        raise
+
+    except Exception as e:
+        logger.error("Customer Update Order Attempt Failed: by %s | %s", initiator_id, e)
+        create_audit_log("Customer Update Order", user_id=initiator_id,
+                         details="Internal Server Error")
+        raise
 
 
 def insert_order(reference_id, customer_id, delivery_address, total):

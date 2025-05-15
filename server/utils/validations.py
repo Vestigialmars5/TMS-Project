@@ -33,6 +33,22 @@ def get_user(user_id=None, email=None):
     except Exception as e:
         raise DatabaseQueryError("Error Getting User")
 
+
+def get_order(order_id=None, reference_id=None):
+    try:
+        if order_id:
+            return db.session.query(Order).filter(
+                Order.order_id == order_id).first()
+        elif reference_id:
+            order = db.session.query(Order).filter(
+                Order.reference_id == reference_id).first()
+            return order
+        else:
+            return None
+    except Exception as e:
+        raise DatabaseQueryError("Error Getting Order")
+
+
 def is_password_valid(password):
     if not password or not isinstance(password, str):
         return False
@@ -93,19 +109,32 @@ def validate_order_products(products):
             # product_details = db.session.query(Product).filter(Product.product_id == product["product_id"]).first()
 
             # if product_details is None:
-                # return False, "Product Does Not Exist"
-            
+            # return False, "Product Does Not Exist"
+
             # if product_details["product_name"] is None:
-                # return False, "Product Name Missing"
-            
+            # return False, "Product Name Missing"
+
             # if product_details["quantity"] <= 0:
-                # return False, "Invalid Product Quantity"
-            
+            # return False, "Invalid Product Quantity"
+
             # if product_details["total_price"] <= 0:
-                # return False, "Invalid Total Price"
-            
+            # return False, "Invalid Total Price"
+
             total += product["total_price"]
-            
+
         return True, total
     except:
         raise DatabaseQueryError("Error Handling Product")
+
+
+def validate_customer_update_order(reference_id, customer_id=None, delivery_address=None, order_products=None, update_type="complete"):
+    if not order_exists(reference_id):
+        return False, "Oder Does Not Exist"
+
+    order = get_order(reference_id=reference_id)
+
+    if (order.status == "Pending" and update_type == "complete") or (order.status == "Validated" and update_type == "limited"):
+        if (customer_id and customer_id == order.customer_id) and (delivery_address and delivery_address == order.delivery_address) and (order_products and order_products == order.products):
+            for 
+    else:
+        return False, "Order Cannot Be Modified"
