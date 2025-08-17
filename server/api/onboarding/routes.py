@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from server.api.onboarding import services
 from server.utils.data_cleanup import data_cleanup_onboarding_user_details, data_cleanup_customer
+from server.utils.helpers import get_user_role_id
+from server.utils.consts import RoleType
 
 onboarding_blueprint = Blueprint(
     "onboarding", __name__, url_prefix="/api/onboarding")
@@ -20,7 +22,8 @@ def onboard_user_details():
     email, password, confirmation, first_name, last_name, phone_number, address = data_cleanup_onboarding_user_details(
         data)
 
-    response = services.onboard_user_details(
+    operations = services.BaseOperations()
+    response = operations.onboard_user_details(
         user_id,
         email,
         password,
@@ -54,9 +57,9 @@ def get_current_step():
     }), 200 if step != -1 else 400
 
 
-@onboarding_blueprint.route("/<int:role_id>", methods=["POST"])
+@onboarding_blueprint.route("/role", methods=["POST"])
 @jwt_required()
-def onboard_role_details(role_id):
+def onboard_role_details():
     try:
         data = request.get_json()
     except Exception as e:
@@ -64,45 +67,52 @@ def onboard_role_details(role_id):
 
     user_id = get_jwt_identity()
 
+    try:
+        role_id = get_user_role_id(user_id)
+    except Exception as e:
+        abort(400, description="Error Retrieving User Role")
+
+    operations = services.get_order_operations(role_id)
+
     # Admin
-    if role_id == 1:
-        response = services.onboard_role_details_placeholder(user_id, 1)
+    if role_id == RoleType.ADMIN.id:
+        response = operations.onboard_details(user_id, role_id)
 
     # Transportation Manager
-    elif role_id == 2:
-        response = services.onboard_role_details_placeholder(user_id, 2)
+    elif role_id == RoleType.TRANSPORTATION_MANAGER.id:
+        response = operations.onboard_details(user_id, role_id)
 
     # Carrier
-    elif role_id == 3:
-        response = services.onboard_role_details_placeholder(user_id, 3)
+    elif role_id == RoleType.CARRIER.id:
+        response = operations.onboard_details(user_id, role_id)
 
     # Customer
-    elif role_id == 4:
+    elif role_id == RoleType.CUSTOMER.id:
         company_name, company_address = data_cleanup_customer(
             data)
 
-        response = services.onboard_customer_details(
+        response = operations.onboard_details(
             user_id, role_id, company_name, company_address)
 
     # Driver
-    elif role_id == 5:
-        response = services.onboard_role_details_placeholder(user_id, 5)
+    elif role_id == RoleType.DRIVER.id:
+        response = operations.onboard_details(user_id, role_id)
 
     # Accounting
-    elif role_id == 6:
-        response = services.onboard_role_details_placeholder(user_id, 6)
+    elif role_id == RoleType.ACCOUNTING.id:
+        response = operations.onboard_details(user_id, role_id)
 
     # Warehouse Manager
-    elif role_id == 7:
-        response = services.onboard_role_details_placeholder(user_id, 7)
+    elif role_id == RoleType.WAREHOUSE_MANAGER.id:
+        response = operations.onboard_details(user_id, role_id)
 
     # Dispatcher
-    elif role_id == 8:
-        response = services.onboard_role_details_placeholder(user_id, 8)
+    elif role_id == RoleType.DISPATCHER.id:
+        response = operations.onboard_details(user_id, role_id)
 
-    # Costumer Service Representative
-    elif role_id == 9:
-        response = services.onboard_role_details_placeholder(user_id, 9)
+    # Customer Service Representative
+    elif role_id == RoleType.CSR.id:
+        response = operations.onboard_details(user_id, role_id)
     else:
         abort(400, description="Invalid Role Name")
 

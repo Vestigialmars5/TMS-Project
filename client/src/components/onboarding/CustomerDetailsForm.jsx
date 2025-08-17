@@ -5,8 +5,6 @@ import Button from "react-bootstrap/Button"
 import { useOnboarding } from "../../hooks/useOnboarding";
 
 const CustomerDetailsForm = () => {
-  const roleId = 4;
-
   const { submitRoleDetails, submitRoleDetailsStatus } = useOnboarding();
   const [companyName, setCompanyName] = useState("");
   const [companyAddress, setCompanyAddress] = useState("");
@@ -41,7 +39,7 @@ const CustomerDetailsForm = () => {
       setCompanyAddressError(companyAddressError);
     } else {
       const details = { companyName, companyAddress };
-      submitRoleDetails({ roleId, details });
+      submitRoleDetails(details);
     }
   };
 
