@@ -10,7 +10,7 @@ export const getCurrentStep = async () => {
   return response.data.step;
 }
 
-export const submitRoleDetails = async ({ roleId, details }) => {
-  const response = await api.post(`/onboarding/${roleId}`, details);
+export const submitRoleDetails = async (details) => {
+  const response = await api.post(`/onboarding/role`, details);
   return response.data
 };

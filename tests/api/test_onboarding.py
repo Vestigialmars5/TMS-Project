@@ -4,7 +4,6 @@ from tests.utilstest import token_fixture
 import tests.consts as consts
 
 
-
 class TestOnboarding:
     """ Test cases for onboarding functionality """
 
@@ -21,6 +20,7 @@ class TestOnboarding:
             "valid_request"
         ],
         indirect=["token_fixture"])
+
     def test_onboard_user(self, client, token_fixture, email, password, confirmation, first_name, last_name, phone_number, address, role_id, role_name, expected_status_code, expected_success, get_role_name, auth_headers):
         """ Test onboarding a user (step 1) with various inputs """
 
@@ -58,12 +58,13 @@ class TestOnboarding:
             "valid_request"
         ],
         indirect=["token_fixture"])
+
     def test_onboard_customer(self, client, token_fixture, role_id, company_name, company_address, expected_status_code, expected_success, auth_headers):
         """ Test onboarding a user with customer role with various inputs """
 
         headers = auth_headers(token_fixture)
 
-        response = client.post("/api/onboarding/4", headers=headers, json={
+        response = client.post("/api/onboarding/role", headers=headers, json={
             "roleId": role_id,
             "companyName": company_name,
             "companyAddress": company_address

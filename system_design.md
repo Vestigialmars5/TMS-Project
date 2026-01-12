@@ -355,43 +355,224 @@ Tasks:
 - Assist customers with using the TMS platform
 - Escalate complex issues to appropriate departments
 
+### 2.10 Notes for developing
+#### **Admin**
+
+#### **Transportation Manager**
+
+``Create Operations``
+- Validate transportation strategies against business rules
+- Ensure new carrier contracts meet compliance requirements
+- Check for conflicts when creating new transportation routes
+- Verify KPI thresholds are reasonable
+
+``Read Operations``
+- Provide comprehensive filters for performance metrics
+- Ensure proper visualization of complex transportation data
+- Enable comparison of current vs. historical performance
+
+``Update Operations``
+- Validate changes to transportation strategies
+- Log changes to carrier relationships
+- Ensure modifications to route optimization parameters are validated
+- Check impact of priority changes on existing shipments
+
+``Delete Operations``
+- Prevent deletion of active transportation strategies
+- Check for dependencies before allowing deletion of routes
+- Ensure proper archiving of historical performance data
+
+#### **Carrier**
+
+``Create Operations``
+- Validate vehicle information meets regulatory requirements
+- Ensure driver information is complete and valid
+- Verify insurance and compliance documentation
+- Check for duplicate vehicle registrations
+
+``Read Operations``
+- Limit access to only their assigned shipments
+- Provide detailed route information for their assigned routes
+- Show only relevant performance metrics
+
+``Update Operations``
+- Validate updates to availability information
+- Track changes to vehicle status and capacity
+- Ensure timely shipment status updates
+- Verify documentation uploads meet requirements
+
+``Delete Operations``
+- Prevent deletion of vehicles currently assigned to shipments
+- Ensure proper archiving of completed shipment data
+- Maintain historic performance data even after vehicle deletion
+
+#### **Customer/Shipper**
+
+``Create Operations``
+- Validate order data for completeness and accuracy
+- Check product availability before order creation
+- Enforce business rules for minimum order quantities
+- Verify shipping address validity
+- Ensure proper authorization for order placement
+
+``Read Operations``
+- Limit visibility to only their own orders and shipments
+- Provide real-time status updates for their shipments
+- Enable tracking history for completed shipments
+- Show estimated delivery times when available
+
+``Update Operations``
+- Only allow modifications during permitted stages (pending/draft)
+- Require approval for changes to orders in progress
+- Prevent changes to orders already in transit
+- Log all modification requests, even rejected ones
+- Clearly communicate which fields can be modified at each stage
+- Notify relevant parties (dispatch, warehouse) of approved changes
+
+``Delete Operations``
+- Only allow cancellation during appropriate stages
+- Require confirmation for order cancellation
+- Track cancellation reasons for analytics
+- Ensure proper handling of inventory already allocated
+- Apply cancellation fees according to business rules
+
+#### **Driver**
+
+``Create Operations``
+- Log status updates and location information
+- Create incident reports when issues occur
+- Document delivery confirmations
+- Record hours of service data
+
+``Read Operations``
+- Limit access to only assigned routes and deliveries
+- Provide optimized navigation information
+- Show delivery instructions and special requirements
+- Access contact information for customers and dispatch
+
+``Update Operations``
+- Track changes to delivery status
+- Log location updates for shipment tracking
+- Validate hours of service updates for compliance
+- Ensure timely reporting of delays or issues
+
+``Delete Operations``
+- Prevent accidental deletion of delivery confirmations
+- Log any removal of previously reported incidents
+- Maintain compliance data even if route assignments change
+
+#### **Finance/Accounting**
+
+``Create Operations``
+- Validate invoice data before creation
+- Ensure proper tax calculations
+- Verify billing details match order information
+- Check for duplicate invoices
+
+``Read Operations``
+- Provide filtered views of financial transactions
+- Enable detailed reporting on revenue and costs
+- Show payment status for all invoices
+- Access to reconciliation tools
+
+``Update Operations``
+- Track all changes to financial records
+- Require authorization for adjustments to invoices
+- Log dispute resolutions
+- Maintain audit trail for payment processing
+
+``Delete Operations``
+- Prevent deletion of financial records
+- Implement reversal processes instead of deletion
+- Ensure compliance with financial regulations
+- Maintain complete financial history
+
+#### **Warehouse Manager**
+
+``Create Operations``
+- Validate inventory location assignments
+- Ensure proper documentation of receiving operations
+- Check for accurate product information
+- Verify packaging and labeling requirements
+
+``Read Operations``
+- Provide real-time inventory level visibility
+- Show upcoming shipments requiring preparation
+- Access to storage location optimization tools
+- View staff assignments and productivity metrics
+
+``Update Operations``
+- Track inventory adjustments with reasons
+- Log changes to warehouse configurations
+- Verify updates to product storage requirements
+- Monitor staff assignment changes
+
+``Delete Operations``
+- Prevent accidental removal of inventory records
+- Ensure proper archiving of historical inventory data
+- Check dependencies before allowing location changes
+- Maintain audit trail for all inventory removals
+
+#### **Dispatcher**
+
+``Create Operations``
+- Validate route assignments against driver availability
+- Check vehicle capacity against shipment requirements
+- Ensure optimal scheduling of pickups and deliveries
+- Verify emergency response plans
+
+``Read Operations``
+- Provide real-time visibility of all active shipments
+- Show driver locations and status updates
+- Access to route optimization tools
+- View performance metrics for route efficiency
+
+``Update Operations``
+- Track changes to route assignments
+- Log rerouting decisions and reasons
+- Monitor adjustments to delivery schedules
+- Verify impact of changes on connected shipments
+
+``Delete Operations``
+- Prevent removal of active route assignments
+- Ensure proper handling of cancelled routes
+- Maintain historical route data for analysis
+- Log all cancellation reasons
+
+#### **Customer Service Representative**
+
+``Create Operations``
+- Validate customer information when creating accounts
+- Ensure complete documentation of customer interactions
+- Verify shipping quote accuracy
+- Log issue details when creating support tickets
+
+``Read Operations``
+- Access customer history and previous interactions
+- View shipment status across all customers
+- Search capabilities for quick issue resolution
+- Access to knowledge base for support information
+
+``Update Operations``
+- Track changes to customer information
+- Log resolution steps for customer issues
+- Monitor adjustments to orders on behalf of customers
+- Verify appropriate escalation of complex issues
+
+``Delete Operations``
+- Prevent accidental deletion of customer records
+- Ensure proper handling of customer account closures
+- Maintain history of resolved support issues
+- Log reasons for any data removal requests
+
 ## 3. Role-Based Access Control (RBAC)
 
-To implement these roles in the TMS, we'll use a Role-Based Access Control system. Here's a high-level overview of how this could be structured in the database:
+To implement these roles in the TMS, we'll use a Role-Based Access Control system.
 
-```sql
-CREATE TABLE roles (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
-);
-
-CREATE TABLE permissions (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
-);
-
-CREATE TABLE role_permissions (
-    role_id INTEGER,
-    permission_id INTEGER,
-    PRIMARY KEY (role_id, permission_id),
-    FOREIGN KEY (role_id) REFERENCES roles (id),
-    FOREIGN KEY (permission_id) REFERENCES permissions (id)
-);
-
-CREATE TABLE users (
-    id INTEGER PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password_hash VARCHAR(128) NOT NULL,
-    role_id INTEGER,
-    FOREIGN KEY (role_id) REFERENCES roles (id)
-);
-```
 
 # Transportation Management System: User Roles and Core Module Interactions
 
 ## 1. Core Modules
-
-Let's first recap the core modules of our TMS:
 
 1. Order Management
 2. Route Planning and Optimization
@@ -471,8 +652,6 @@ Here I want to get a better understanding of how I will handle state management 
 
 ## 3. Cross-Module Interactions
 
-To illustrate how these modules and roles interact in a typical workflow, let's consider the lifecycle of an order:
-
 1. **Order Creation**:
 
    - The Customer/Shipper creates an order in the Order Management module.
@@ -507,8 +686,6 @@ To illustrate how these modules and roles interact in a typical workflow, let's 
    - Feedback is provided to the Dispatcher, Carrier, and Warehouse Manager for future optimizations.
 
 ## 4. Implementation Considerations
-
-To support these interactions in our Flask and React-based TMS:
 
 1. **API Design**: Create RESTful endpoints for each module, with appropriate permissions for different roles.
 
@@ -661,27 +838,6 @@ def order_status_change_webhook():
 4. WMS updates order status as it's processed
 5. WMS notifies TMS when order is ready for shipment
 
-```python
-def create_order(order_data):
-    # Create order in TMS
-    order = Order.create(order_data)
-
-    # Check inventory with WMS
-    inventory_status = requests.get(f"{WMS_API_URL}/inventory", params={"items": order.items})
-
-    if inventory_status.is_sufficient():
-        # Send order to WMS for fulfillment
-        wms_response = requests.post(f"{WMS_API_URL}/orders", json=order.to_dict())
-
-        if wms_response.is_success():
-            order.update(status="In Fulfillment")
-        else:
-            order.update(status="Fulfillment Error")
-    else:
-        order.update(status="Insufficient Inventory")
-
-    return order
-```
 
 ### 5.2 Inventory Synchronization
 
@@ -1449,39 +1605,18 @@ src/
 │
 ├── components/ -- Reusable UI components
 │   ├── common/
-│   │   ├── Header.js
-│   │   ├── Footer.js
-│   │   ├── Sidebar.js
-|   |   └── SearchBar.js
-|   |   └── PrivateRoute.js -- Logic for routes
 │   │   └── ...
 │   ├── auth/
-│   │   ├── LoginForm.js -- Use api hook, use validation function
-│   │   ├── LogoutButton.js
 │   │   └── ...
 │   ├── onboarding/
-│   │   ├── Welcome.js
-│   │   ├── DetailsForm.js
 │   │   └── ...
 │   ├── user-management/
-│   │   ├── UserList.js
-│   │   ├── UserForm.js
-│   │   ├── UserDetails.js
 │   │   └── ...
 │   ├── orders/
-│   │   ├── OrderList.js
-│   │   ├── OrderDetails.js
-│   │   ├── OrderForm.js
 │   │   └── ...
 │   ├── carriers/
-│   │   ├── CarrierList.js
-│   │   ├── CarrierDetails.js
-│   │   ├── CarrierForm.js
 │   │   └── ...
 │   ├── shipments/
-│   │   ├── ShipmentList.js
-│   │   ├── ShipmentDetails.js
-│   │   ├── ShipmentTracking.js
 │   │   └── ...
 │   ├── routes/
 │   │   ├── RouteList.js
@@ -1504,32 +1639,8 @@ src/
 │   │   └── ...
 │   └── ...
 │
-├── contexts/ -- React Context API
-│   ├── TrackingContext.js
-│   ├── ReportContext.js
-│   ├── DocumentContext.js
-│   ├── BusinessIntelligenceContext.js
-│   ├── SupportContext.js
-│   └── ...
 │
 ├── hooks/ -- Custom React Hooks
-│   ├── useAuth.js
-│   ├── useOrders.js
-│   ├── useRoutes.js
-│   ├── useCarriers.js
-│   ├── useShipments.js
-│   ├── useInventory.js
-│   ├── useReporting.js
-│   ├── useNotifications.js
-│   ├── useDocuments.js
-│   ├── useCompliance.js
-│   ├── useCustomers.js
-│   ├── useFinancials.js
-│   ├── useEquipment.js
-│   ├── useBusinessIntelligence.js
-│   ├── useIntegration.js
-│   ├── useAuditTrail.js
-│   ├── useSupport.js
 │   └── ...
 │
 ├── layouts/
@@ -1540,21 +1651,10 @@ src/
 │
 ├── pages/
 │   ├── admin/
-│   │   ├── Dashboard.js
-│   │   ├── UserManagement.js
-│   │   ├── OrderManagement.js
-│   │   ├── RouteManagement.js
-│   │   ├── CarrierManagement.js
-│   │   ├── InventoryManagement.js
-│   │   ├── ReportingAnalytics.js
 │   │   └── ...
 │   ├── driver/
-│   │   ├── CurrentRoute.js
-│   │   ├── DeliveryHistory.js
 │   │   └── ...
 │   ├── customer/
-│   │   ├── PlaceOrder.js
-│   │   ├── TrackShipment.js
 │   │   └── ...
 │   └── ...
 │
@@ -1567,38 +1667,12 @@ src/
 │
 ├── services/ -- API services
 │   ├── apiService.js -- Create axios instance
-│   ├── authService.js
-│   ├── orderService.js
-│   ├── routeService.js
-│   ├── carrierService.js
-│   ├── shipmentService.js
-│   ├── inventoryService.js
-│   ├── reportingService.js
-│   ├── userService.js
-│   ├── notificationService.js
-│   ├── documentService.js
-│   ├── complianceService.js
-│   ├── customerService.js
-│   ├── financialService.js
-│   ├── equipmentService.js
-│   ├── integrationService.js
-│   ├── auditService.js
-│   ├── supportService.js
 │   └── ...
 │
 ├── store/
 │   ├── slices/ -- Redux slices
 │   │   ├── authSlice.js
 │   │   ├── alertsSlice.js
-│   │   ├── ordersSlice.js
-│   │   ├── routesSlice.js
-│   │   ├── carriersSlice.js
-│   │   ├── shipmentsSlice.js
-│   │   ├── inventorySlice.js
-│   │   ├── usersSlice.js
-│   │   ├── customersSlice.js
-│   │   ├── financialsSlice.js
-│   │   ├── equipmentSlice.js
 │   │   └── ...
 │   ├── actions/ -- For things that need a separate file for actions
 │   │   ├── alertsActions.js
