@@ -151,7 +151,8 @@ def customer_update_order(reference_id, customer_id, delivery_address, order_pro
     logger.info("Customer Update Order Attempt: by %s", initiator_id)
 
     try:
-        is_valid, error = validate_customer_update_order(reference_id, customer_id, delivery_address, order_products, update_type="complete")
+        is_valid, error = validate_customer_update_order(
+            reference_id, customer_id, delivery_address, order_products, update_permission_type="complete")
 
 
         logger.info("Customer Update Order Attempt Successful: by %s | updated %s", initiator_id, order_id)

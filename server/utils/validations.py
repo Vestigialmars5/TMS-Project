@@ -127,14 +127,16 @@ def validate_order_products(products):
         raise DatabaseQueryError("Error Handling Product")
 
 
-def validate_customer_update_order(reference_id, customer_id=None, delivery_address=None, order_products=None, update_type="complete"):
-    if not order_exists(reference_id):
+def validate_customer_update_order(reference_id, customer_id=None, delivery_address=None, order_products=None, update_permission_type="complete"):
+    return False
+"""     if not order_exists(reference_id):
         return False, "Oder Does Not Exist"
 
     order = get_order(reference_id=reference_id)
 
-    if (order.status == "Pending" and update_type == "complete") or (order.status == "Validated" and update_type == "limited"):
+    if (order.status == "Pending" and update_permission_type == "complete") or (order.status == "Validated" and update_permission_type == "limited"):
         if (customer_id and customer_id == order.customer_id) and (delivery_address and delivery_address == order.delivery_address) and (order_products and order_products == order.products):
             for 
     else:
         return False, "Order Cannot Be Modified"
+ """
