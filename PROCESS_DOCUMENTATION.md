@@ -914,3 +914,29 @@ If getting data for a component:
   <p>No data Found</p>
 )}
 ```
+
+
+12 Jan 2026
+## Sprint 1 - Day 1
+
+**Goal**: Getting things running again, check what's working and what's not.
+
+**Before starting**:
+- [ ] What specific thing am I testing/fixing? **Auth flow end to end**
+- [ ] How will I know it's done? **I can access the dashboard for currently implemented roles**
+
+**Added** Done with the goals for the day so moving onto testing with postman.
+
+**Completed**:
+- Checked auth flow of admin, dispatcher and customer.
+- Added auth and users endpoints to postman
+- Checked login for admin in postman
+
+**Blocked on**:
+- 
+
+**Tempted to refactor**:
+- (write it, don't do it)
+
+**Tomorrow**:
+- Keep checking for other roles and add more endpoints
