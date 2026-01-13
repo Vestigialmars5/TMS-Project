@@ -886,7 +886,6 @@ Apr 23
 I have decided to do the following with Spinners.
 If in button:
 
-
 ```jsx
 <Button
   variant="primary"
@@ -915,28 +914,28 @@ If getting data for a component:
 )}
 ```
 
-
 12 Jan 2026
+
 ## Sprint 1 - Day 1
 
 **Goal**: Getting things running again, check what's working and what's not.
 
 **Before starting**:
+
 - [ ] What specific thing am I testing/fixing? **Auth flow end to end**
 - [ ] How will I know it's done? **I can access the dashboard for currently implemented roles**
 
 **Added** Done with the goals for the day so moving onto testing with postman.
 
 **Completed**:
+
 - Checked auth flow of admin, dispatcher and customer.
 - Added auth and users endpoints to postman
 - Checked login for admin in postman
 
 **Blocked on**:
-- 
+**Tempted to refactor**: (write it, don't do it)
+**Tomorrow**: Keep checking for other roles and add more endpoints.
 
-**Tempted to refactor**:
-- (write it, don't do it)
-
-**Tomorrow**:
-- Keep checking for other roles and add more endpoints
+January 13, 2026
+So I felt that postman was unnecessary for right now. So I'm updating the plan.
