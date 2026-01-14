@@ -1,7 +1,7 @@
 from flask import Blueprint, request, abort, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from server.utils.authorization_decorators import roles_required
-from server.utils.data_cleanup import data_cleanup_customer_create_order, data_cleanup_search, data_cleanup_customer_sort_orders, data_cleanup_customer_get_order_details
+from server.utils.data_cleanup import data_cleanup_customer_order, data_cleanup_search, data_cleanup_customer_sort_orders, data_cleanup_customer_get_order_details
 from server.api.orders import services
 
 orders_blueprint = Blueprint("orders_blueprint", __name__, url_prefix="/api")
@@ -19,7 +19,7 @@ def create_order():
         except:
             abort(400, description="Invalid JSON")
 
-        reference_id, customer_id, delivery_address, order_products = data_cleanup_customer_create_order(
+        reference_id, customer_id, delivery_address, order_products = data_cleanup_customer_order(
             data)
 
         response = services.customer_create_order(
@@ -92,9 +92,9 @@ def update_order(reference_id):
         except:
             abort(400, description="Invalid JSON")
 
-        reference_id, customer_id, delivery_address, order_products = data_cleanup_customer_update_order(data)
+        reference_id, customer_id, delivery_address, order_products = data_cleanup_customer_order(data)
 
-        response = services.customer_update_order()
+        response = services.customer_update_order(reference_id, customer_id, delivery_address, order_products, initiator_id)
 
         if response["success"]:
             return jsonify(response), 200

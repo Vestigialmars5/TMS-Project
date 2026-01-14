@@ -127,16 +127,56 @@ def validate_order_products(products):
         raise DatabaseQueryError("Error Handling Product")
 
 
-def validate_customer_update_order(reference_id, customer_id=None, delivery_address=None, order_products=None, update_permission_type="complete"):
-    return False
-"""     if not order_exists(reference_id):
+def validate_customer_update_order(reference_id, customer_id=None, delivery_address=None, order_products=None):
+
+    ORDER_FIELD_PERMISSIONS = {
+        "Pending": {"customer_id", "delivery_address", "order_products"},
+        "Validated": {"delivery_address"},
+        "Assigned": set()
+    }
+
+    
+    if not order_exists(reference_id):
         return False, "Oder Does Not Exist"
 
     order = get_order(reference_id=reference_id)
 
-    if (order.status == "Pending" and update_permission_type == "complete") or (order.status == "Validated" and update_permission_type == "limited"):
-        if (customer_id and customer_id == order.customer_id) and (delivery_address and delivery_address == order.delivery_address) and (order_products and order_products == order.products):
-            for 
-    else:
-        return False, "Order Cannot Be Modified"
- """
+    allowed_fields = ORDER_FIELD_PERMISSIONS[order.status]
+
+    changes = get_order_changes(order, customer_id, delivery_address, order_products)
+
+    if not changes:
+        return False, "No Changes Detected"
+    
+    disallowed_fields = set(changes.keys()) - allowed_fields
+    if disallowed_fields:
+        return False, f"Cannot Modify {', '.join(disallowed_fields)}"
+    
+    return True, {"order": order, "changes": changes}
+
+
+def get_order_changes(order, customer_id, delivery_address, order_products):
+    changes = {}
+
+    if (customer_id is not None and order.customer_id != customer_id):
+        changes["customer_id"] = customer_id
+    
+    if (delivery_address is not None and order.delivery_address != delivery_address):
+        changes["delivery_address"] = delivery_address
+
+    if order_products is not None:
+        # get_product_changes(order_products)
+        changes["order_products"] = order_products
+
+
+    return changes
+
+
+def get_product_changes(products):
+    # TODO: Implement something that can check every product and compare it to the one stored in the db
+    # It will probably have to go something like this
+    # Get all order details with the reference id (that will return all the products linked to the order), then go one by one comparing each of the details.
+
+    changes = []
+
+    return changes
