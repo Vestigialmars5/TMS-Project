@@ -939,3 +939,32 @@ If getting data for a component:
 
 January 13, 2026
 So I felt that postman was unnecessary for right now. So I'm updating the plan.
+
+Jan 14 2026
+This is the plan for today and tomorrow
+
+## Sprint 1 - Day 1 (Revised)
+
+**Goal**:
+-  Order update works (Customer can modify Pending orders)
+- Refresh token test exists and passes
+- Admin can complete onboarding
+- Customer can create/view orders in frontend
+- All tests still pass
+
+**Before starting**:
+- [ ] Run tests to confirm still passing
+- [ ] What specific feature am I completing?
+
+**Completed**:
+- Created validations for approving an order update.
+
+**Tests added**:
+- 
+
+**Blocked on**:
+- 
+
+**Tomorrow**:
+- Finish the services file for updating orders
+- Create tests for refresh token
