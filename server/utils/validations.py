@@ -137,7 +137,7 @@ def validate_customer_update_order(reference_id, customer_id=None, delivery_addr
 
     
     if not order_exists(reference_id):
-        return False, "Oder Does Not Exist"
+        return False, "Order Does Not Exist"
 
     order = get_order(reference_id=reference_id)
 
