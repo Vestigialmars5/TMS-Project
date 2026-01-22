@@ -968,3 +968,29 @@ This is the plan for today and tomorrow
 **Tomorrow**:
 - Finish the services file for updating orders
 - Create tests for refresh token
+
+
+Jan 22 2026
+## Sprint 1 - Day 2
+
+**Goal**: Complete orders service layer
+
+**Before starting**:
+- [x] Run tests to confirm still passing
+
+**Tasks**:
+- [x] Implement `customer_update_order`  
+- [x] Fix "Oder" typo
+- [x] Add tests for order update
+- [ ] Add test for token refresh
+
+**Verify**:
+- [ ] `pytest tests/api/test_orders.py -v` still passes
+- [ ] Manual test: Create order → Update delivery address → Verify change
+
+**Blocked on**:
+- 
+
+**Tomorrow**:
+- Test order flow in frontend
+- Finish up debugging the test for order update
